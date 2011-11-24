@@ -1,0 +1,6 @@
+CMakeCache*
+CMakeFiles
+Makefile
+*.cmake
+*.o
+tt3d
