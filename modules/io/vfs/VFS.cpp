@@ -88,13 +88,37 @@ MountPriority MountWrapper::getPriority() {
 }
 
 bool comparePriority(MountWrapperPtr a, MountWrapperPtr b) {
-    return a->getPriority() < b->getPriority();
+    int cmp = a->getPriority() - b->getPriority();
+    if (cmp == 0) {
+        return a->getLocation().length() > b->getLocation().length();
+    } else {
+        return cmp < 0;
+    }
 }
 
 /* tt3d::VFS::VFS */
 
 VFS::VFS() {
     mounts = new std::list<MountWrapperPtr>;
+}
+
+MountPtr VFS::findMount(std::string path) {
+    for (std::list<MountWrapperPtr>::iterator i = mounts->begin();
+        i != mounts->end();
+        i++)
+    {
+        MountWrapperPtr p = *i;
+        const std::string location = p->getLocation();
+        if (location.compare(0, location.length(), path, 0, location.length()) == 0) {
+            std::string stripped = path.substr(location.length());
+            std::cout << stripped << std::endl;
+            MountPtr result = p->getMount();
+            if (result->fileExists(stripped)) {
+                return result;
+            }
+        }
+    }
+    return MountPtr();
 }
 
 void VFS::addMount(MountPtr aMount, const std::string aRoot, const MountPriority aPriority) {
@@ -110,6 +134,10 @@ void VFS::dumpMounts() {
         MountWrapperPtr p = *i;
         std::cout << "mount with priority " << p->getPriority() << " at \"" << p->getLocation() << "\": " << p->getMount()->toString() << std::endl;
     }
+}
+
+bool VFS::fileExists(std::string path) {
+    return (findMount(path) != MountPtr());
 }
 
 }

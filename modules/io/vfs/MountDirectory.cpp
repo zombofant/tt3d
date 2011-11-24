@@ -53,7 +53,7 @@ bool MountDirectory::fileExists(std::string aPath) {
         return false;
     std::string fullPath = rootPath + aPath;
     // TODO: Check whether this works on non *nix
-    return access(fullPath.c_str(), F_OK);
+    return access(fullPath.c_str(), F_OK) != -1;
 }
 
 const std::string MountDirectory::toString() {

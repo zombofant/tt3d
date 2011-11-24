@@ -98,6 +98,8 @@ bool comparePriority(MountWrapperPtr a, MountWrapperPtr b);
 class VFS {
     private:
         std::list<MountWrapperPtr> *mounts;
+    protected:
+        MountPtr findMount(std::string aPath);
     public:
         VFS();
         
@@ -105,6 +107,7 @@ class VFS {
         std::iostream *openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         std::istream *openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
         std::ostream *openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        bool fileExists(std::string aPath);
         void dumpMounts();
 };
 
