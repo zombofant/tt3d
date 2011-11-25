@@ -16,6 +16,11 @@ Vector2::Vector2(double X, double Y) {
     y = Y;
 }
 
+Vector2::Vector2(Vector2f vec2f) {
+    x = vec2f.x;
+    y = vec2f.y;
+}
+
 VectorFloat Vector2::length() {
     return sqrt(x * x + y * y);
 }
@@ -30,6 +35,13 @@ void Vector2::normalize() {
         return;
     x = x / len;
     y = y / len;
+}
+
+Vector2f Vector2::toVector2f() {
+    Vector2f result;
+    result.x = x;
+    result.y = y;
+    return result;
 }
 
 /* tt3d::Geometry::Vector3 */
@@ -52,6 +64,12 @@ Vector3::Vector3(Vector2 vec2, double Z) {
     z = Z;
 }
 
+Vector3::Vector3(Vector3f vec3f) {
+    x = vec3f.x;
+    y = vec3f.y;
+    z = vec3f.z;
+}
+
 VectorFloat Vector3::length() {
     return sqrt(x * x + y * y + z * z);
 }
@@ -67,6 +85,14 @@ void Vector3::normalize() {
     x = x / len;
     y = y / len;
     z = z / len;
+}
+
+Vector3f Vector3::toVector3f() {
+    Vector3f result;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return result;
 }
 
 /* tt3d::Geometry::Vector4 */
@@ -99,6 +125,13 @@ Vector4::Vector4(Vector3 vec3, double W) {
     w = W;
 }
 
+Vector4::Vector4(Vector4f vec4f) {
+    x = vec4f.x;
+    y = vec4f.y;
+    z = vec4f.z;
+    w = vec4f.w;
+}
+
 VectorFloat Vector4::length() {
     return sqrt(x * x + y * y + z * z + w * w);
 }
@@ -115,6 +148,15 @@ void Vector4::normalize() {
     y = y / len;
     z = z / len;
     w = w / len;
+}
+
+Vector4f Vector4::toVector4f() {
+    Vector4f result;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    result.w = w;
+    return result;
 }
 
 /* Vector2 operators */
@@ -158,7 +200,6 @@ Vector2 operator/ (Vector2 a, VectorFloat b) {
 bool operator== (Vector2 a, Vector2 b) {
     return (a.x == b.x) && (a.y == b.y);
 }
-
 
 /* Vector3 operators */
 

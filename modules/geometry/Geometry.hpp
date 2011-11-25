@@ -3,6 +3,18 @@ namespace tt3d {
 namespace Geometry {
     
 typedef double VectorFloat;
+
+struct Vector2f {
+    float x, y;
+};
+
+struct Vector3f {
+    float x, y, z;
+};
+
+struct Vector4f {
+    float x, y, z, w;
+};
     
 struct Vector2 {
     public:
@@ -22,10 +34,12 @@ struct Vector2 {
         
         Vector2();
         Vector2(double X, double Y);
+        Vector2(Vector2f vec2f);
         
         VectorFloat length();
         Vector2 normalized();
         void normalize();
+        Vector2f toVector2f();
 };
 
 struct Vector3 {
@@ -51,10 +65,12 @@ struct Vector3 {
         Vector3();
         Vector3(double X, double Y, double Z);
         Vector3(Vector2 vec2, double Z = 0.);
+        Vector3(Vector3f vec3f);
         
         VectorFloat length();
         Vector3 normalized();
         void normalize();
+        Vector3f toVector3f();
 };
 
 struct Vector4 {
@@ -85,10 +101,12 @@ struct Vector4 {
         Vector4(double X, double Y, double Z, double W);
         Vector4(Vector2 vec2, double Z = 0., double W = 0.);
         Vector4(Vector3 vec3, double W = 0.);
+        Vector4(Vector4f vec4f);
         
         VectorFloat length();
         Vector4 normalized();
         void normalize();
+        Vector4f toVector4f();
 };
 
 Vector2 operator+ (Vector2 a, Vector2 b);
