@@ -88,7 +88,7 @@ MountPriority MountWrapper::getPriority() {
 }
 
 bool comparePriority(MountWrapperPtr a, MountWrapperPtr b) {
-    int cmp = a->getPriority() - b->getPriority();
+    int cmp = b->getPriority() - a->getPriority();
     if (cmp == 0) {
         return a->getLocation().length() > b->getLocation().length();
     } else {
