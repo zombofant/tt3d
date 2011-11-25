@@ -1,4 +1,4 @@
-#include "Geometry.hpp"
+#include "Vectors.hpp"
 #include <cmath>
 
 namespace tt3d {
@@ -21,11 +21,11 @@ Vector2::Vector2(Vector2f vec2f) {
     y = vec2f.y;
 }
 
-VectorFloat Vector2::length() {
+VectorFloat Vector2::length() const {
     return sqrt(x * x + y * y);
 }
 
-Vector2 Vector2::normalized() {
+Vector2 Vector2::normalized() const {
     return *this / length();
 }
 
@@ -37,7 +37,7 @@ void Vector2::normalize() {
     y = y / len;
 }
 
-Vector2f Vector2::toVector2f() {
+Vector2f Vector2::toVector2f() const {
     Vector2f result;
     result.x = x;
     result.y = y;
@@ -70,11 +70,11 @@ Vector3::Vector3(Vector3f vec3f) {
     z = vec3f.z;
 }
 
-VectorFloat Vector3::length() {
+VectorFloat Vector3::length() const {
     return sqrt(x * x + y * y + z * z);
 }
 
-Vector3 Vector3::normalized() {
+Vector3 Vector3::normalized() const {
     return *this / length();
 }
 
@@ -87,7 +87,7 @@ void Vector3::normalize() {
     z = z / len;
 }
 
-Vector3f Vector3::toVector3f() {
+Vector3f Vector3::toVector3f() const {
     Vector3f result;
     result.x = x;
     result.y = y;
@@ -132,11 +132,11 @@ Vector4::Vector4(Vector4f vec4f) {
     w = vec4f.w;
 }
 
-VectorFloat Vector4::length() {
+VectorFloat Vector4::length() const {
     return sqrt(x * x + y * y + z * z + w * w);
 }
 
-Vector4 Vector4::normalized() {
+Vector4 Vector4::normalized() const {
     return *this / length();
 }
 
@@ -150,7 +150,7 @@ void Vector4::normalize() {
     w = w / len;
 }
 
-Vector4f Vector4::toVector4f() {
+Vector4f Vector4::toVector4f() const {
     Vector4f result;
     result.x = x;
     result.y = y;

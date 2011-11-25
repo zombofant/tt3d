@@ -9,11 +9,15 @@ namespace Geometry {
 struct Matrix3 {
     double coeff[9];
     
+    Matrix3();
+    
     static Matrix3 Rotation(const Vector3 axis, const VectorFloat angle);
 };
 
 struct Matrix4 {
     double coeff[16];
+    
+    Matrix4();
     
     static Matrix4 Rotation(const Vector3 axis, const VectorFloat angle);
     static Matrix4 Rotation(const Matrix3 m3);

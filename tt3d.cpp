@@ -1,7 +1,7 @@
 #include <GL/gl.h>
 #include "modules/io/vfs/VFS.hpp"
 #include "modules/io/vfs/MountDirectory.hpp"
-#include "modules/geometry/Geometry.hpp"
+#include "modules/geometry/Vectors.hpp"
 
 int main(int argc, const char *argv[]) {
     using namespace tt3d::VFS;

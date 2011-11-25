@@ -1,3 +1,5 @@
+#ifndef _TT3D_GEOMETRY_H
+#define _TT3D_GEOMETRY_H
 
 namespace tt3d {
 namespace Geometry {
@@ -36,10 +38,10 @@ struct Vector2 {
         Vector2(double X, double Y);
         Vector2(Vector2f vec2f);
         
-        VectorFloat length();
-        Vector2 normalized();
+        VectorFloat length() const;
+        Vector2 normalized() const;
         void normalize();
-        Vector2f toVector2f();
+        Vector2f toVector2f() const;
 };
 
 struct Vector3 {
@@ -67,10 +69,10 @@ struct Vector3 {
         Vector3(Vector2 vec2, double Z = 0.);
         Vector3(Vector3f vec3f);
         
-        VectorFloat length();
-        Vector3 normalized();
+        VectorFloat length() const;
+        Vector3 normalized() const;
         void normalize();
-        Vector3f toVector3f();
+        Vector3f toVector3f() const;
 };
 
 struct Vector4 {
@@ -103,10 +105,10 @@ struct Vector4 {
         Vector4(Vector3 vec3, double W = 0.);
         Vector4(Vector4f vec4f);
         
-        VectorFloat length();
-        Vector4 normalized();
+        VectorFloat length() const;
+        Vector4 normalized() const;
         void normalize();
-        Vector4f toVector4f();
+        Vector4f toVector4f() const;
 };
 
 Vector2 operator+ (Vector2 a, Vector2 b);
@@ -160,3 +162,5 @@ bool operator== (Vector4 a, Vector4 b);
 
 }
 }
+
+#endif
