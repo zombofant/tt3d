@@ -95,8 +95,6 @@ void Application::runApp() {
         while (!terminated) {
             SDL_Event event;
             while (SDL_PollEvent(&event) == 1) {
-                std::cout << "terminated " << terminated << std::endl;
-                std::cout << "event " << event.type << std::endl;
                 switch (event.type) {
                     case SDL_KEYDOWN:
                         handleKeypress(event.key.keysym, KM_PRESS);
