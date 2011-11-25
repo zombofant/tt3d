@@ -2,7 +2,7 @@
 #include <cmath>
 #include <string.h>
 
-#include "MatrixTemplates.cpp"
+#include "MatrixTemplates.hpp"
 
 namespace tt3d {
 namespace Geometry {
