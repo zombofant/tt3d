@@ -13,7 +13,7 @@ find_package(SDL REQUIRED)
 # TODO: proper packages for GLEW and rt
 
 include_directories(${PROJECT_SOURCE_DIR} ${OpenGL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GLEW SDL)
+set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GLEW)
 
 add_subdirectory("modules")
 
@@ -21,4 +21,4 @@ set(tt3d_MODULES tt3d_io tt3d_geometry tt3d_gl tt3d_core)
 
 add_executable(tt3d tt3d.cpp)
 add_dependencies(tt3d ${tt3d_MODULES})
-target_link_libraries(tt3d ${LIBS} ${tt3d_MODULES})
+target_link_libraries(tt3d ${tt3d_MODULES} ${LIBS})
