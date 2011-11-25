@@ -1,10 +1,10 @@
 #include <GL/gl.h>
-#include "modules/io/vfs/VFS.hpp"
-#include "modules/io/vfs/MountDirectory.hpp"
-#include "modules/io/SDL.hpp"
+#include "modules/core/coreUIBootstrap.hpp"
 
+using namespace tt3d;
 
 int main(int argc, const char *argv[]) {
-    
+    Core::TT3D core = Core::TT3D();
+    core.runApp();
     return 0;
 }

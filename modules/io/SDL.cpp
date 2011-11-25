@@ -1,3 +1,4 @@
+#include <SDL/SDL.h>
 #include "SDL.hpp"
 #include <exception>
 #include <iostream>
@@ -34,7 +35,7 @@ Application::~Application() {
 
 void Application::handleKeypress(const SDL_keysym &sym, const SDL_KeyActionMode mode) {
     switch (sym.sym) {
-        SDLK_Q:
+        case SDLK_q:
             if (sym.mod & KMOD_CTRL) 
                 handleQuit();
             break;
@@ -94,23 +95,25 @@ void Application::runApp() {
         while (!terminated) {
             SDL_Event event;
             while (SDL_PollEvent(&event) == 1) {
+                std::cout << "terminated " << terminated << std::endl;
+                std::cout << "event " << event.type << std::endl;
                 switch (event.type) {
-                    SDL_KEYDOWN:
+                    case SDL_KEYDOWN:
                         handleKeypress(event.key.keysym, KM_PRESS);
                         break;
-                    SDL_KEYUP:
+                    case SDL_KEYUP:
                         handleKeypress(event.key.keysym, KM_RELEASE);
                         break;
-                    SDL_MOUSEBUTTONDOWN:
+                    case SDL_MOUSEBUTTONDOWN:
                         handleMouseButton(event.button, KM_PRESS);
                         break;
-                    SDL_MOUSEBUTTONUP:
+                    case SDL_MOUSEBUTTONUP:
                         handleMouseButton(event.button, KM_RELEASE);
                         break;
-                    SDL_MOUSEMOTION:
+                    case SDL_MOUSEMOTION:
                         handleMouseMotion(event.motion);
                         break;
-                    SDL_QUITEV:
+                    case SDL_QUIT:
                         handleQuit();
                         break;
                     default:
