@@ -1,5 +1,6 @@
 #include "Matrices.hpp"
 #include <cmath>
+#include <string.h>
 
 namespace tt3d {
 namespace Geometry {
@@ -8,10 +9,87 @@ static inline VectorFloat sqr(VectorFloat a) {
     return a * a;
 }
 
+
+/**
+ * Write a column-wise n-dimensional identity matrix to the memory 
+ * pointed to by result.
+ * 
+ * @param result    pointer to the memory where the resulting matrix 
+ *                  will be written to.
+ */
+template <int n>
+static inline void matrixIdentity(VectorFloat result[n*n]) {
+    for (int i=0; i < n; i++) {
+        for (int j=0; i < n; j++) {
+            if (i == j)
+                result[i + j*n] = 1.;
+            else
+                result[i + j*n] = 0.;
+        }
+    }
+}
+
+/**
+ * Implements a generic matrix multiplication of two square matrices
+ * with dimension dim. 
+ * 
+ * @param a         Pointer to the column-wise coefficients of the left 
+ *                  operand.
+ * @param b         Pointer to the column-wise coefficients of the right 
+ *                  operand.
+ * @param result    Pointer to a space where the column-wise 
+ *                  coefficients of the resulting matrix will be written
+ *                  to. This must be at least sqr(dim) in size.
+ */
+template <int dim> 
+static inline void matrixMult(const VectorFloat a[dim*dim], 
+    const VectorFloat b[dim*dim], 
+    VectorFloat result[dim*dim]) 
+{
+    for (int i=0; i < dim; i++) {
+        for (int j=0; j < dim; j++) {
+            VectorFloat sum = 0;
+            for (int k=0; k < dim; k++) {
+                sum += a[i + k*dim] * b[k + j*dim];
+            }
+            result[i + j*dim] = sum;
+        }
+    }
+}
+
+/**
+ * Implements a generic matrix-vector multiplication of a square matrix
+ * with dimension dim and a vector with dimension dim.
+ */
+template <int dim>
+static inline void matrixVectorMult(const VectorFloat matrix[dim*dim], 
+    const VectorFloat vec[dim], 
+    VectorFloat result[dim]) 
+{
+    // r_i = m_ij * v_j
+    for (int i=0; i < dim; i++) {
+        VectorFloat sum = 0.;
+        for (int j=0; j < dim; j++) {
+            sum += matrix[i + j*dim] * vec[j];
+        }
+        result[i] = sum;
+    }
+}
+
+template <int dim>
+static inline void matrixScalarMult(const VectorFloat matrix[dim*dim], 
+    const VectorFloat factor, 
+    VectorFloat result[dim*dim]) 
+{
+    for (int i=0; i < dim*dim; i++) {
+        result[i] = matrix[i] * factor;
+    }
+}
+
 /* tt3d::Geometry::Matrix3 */
 
 Matrix3::Matrix3() {
-    coeff = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    matrixIdentity<3>(coeff);
 }
 
 Matrix3 Matrix3::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
@@ -45,7 +123,7 @@ Matrix3 Matrix3::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
 /* tt3d::Geometry::Matrix4 */
 
 Matrix4::Matrix4() {
-    coeff = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    matrixIdentity<4>(coeff);
 }
 
 Matrix4 Matrix4::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
@@ -54,68 +132,51 @@ Matrix4 Matrix4::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
 
 Matrix4 Matrix4::Rotation(const Matrix3 m3) {
     Matrix4 result;
-    result[0] = m3[0];
-    result[1] = m3[1];
-    result[2] = m3[2];
+    result.coeff[0] = m3.coeff[0];
+    result.coeff[1] = m3.coeff[1];
+    result.coeff[2] = m3.coeff[2];
     
-    result[4] = m3[3];
-    result[5] = m3[4];
-    result[6] = m3[5];
+    result.coeff[4] = m3.coeff[3];
+    result.coeff[5] = m3.coeff[4];
+    result.coeff[6] = m3.coeff[5];
     
-    result[8] = m3[6];
-    result[9] = m3[7];
-    result[10] = m3[8];
+    result.coeff[8] = m3.coeff[6];
+    result.coeff[9] = m3.coeff[7];
+    result.coeff[10] = m3.coeff[8];
 }
 
 /* matrix operations */
 
-/*operator * (A: TMatrix3; B: TVector3): TVector3; inline;
-begin
-  Result.X := A[0] * B.X + A[3] * B.Y + A[6] * B.Z;
-  Result.Y := A[1] * B.X + A[4] * B.Y + A[7] * B.Z;
-  Result.Z := A[2] * B.X + A[5] * B.Z + A[8] * B.Z;
-end;
-
-operator * (A: TMatrix4; B: TVector4): TVector4; inline;
-begin
-  Result.X := A[0] * B.X + A[4] * B.Y + A[8] * B.Z + A[12] * B.W;
-  Result.Y := A[1] * B.X + A[5] * B.Y + A[9] * B.Z + A[13] * B.W;
-  Result.Z := A[2] * B.X + A[6] * B.Z + A[10] * B.Z + A[14] * B.W;
-  Result.W := A[3] * B.X + A[7] * B.Z + A[11] * B.Z + A[15] * B.W;
-end;*/
-
 Vector3 operator* (Matrix3 a, Vector3 b) {
-    return Vector3(
-        a.coeff[0] * b.x + a.coeff[3] * b.y + a.coeff[6] * b.z,
-        a.coeff[1] * b.x + a.coeff[4] * b.y + a.coeff[7] * b.z,
-        a.coeff[2] * b.x + a.coeff[5] * b.z + a.coeff[8] * b.z
-    );
+    Vector3 result;
+    matrixVectorMult<3>(a.coeff, b.as_array, result.as_array);
 }
 
 Matrix3 operator* (Matrix3 a, Matrix3 b) {
     Matrix3 result;
-    for (int i=0; i < 3; i++) {
-        VectorFloat sum = 0;
-        for (int k=0; k < 3; k++) {
-            sum += a.coeff[i]*b.coeff[k];
-        }
-        result.coeff[i] = sum;
-    }
+    matrixMult<3>(a.coeff, b.coeff, result.coeff);
 }
 
-Matrix3 operator* (Matrix3 a, VectorFloat b);
+Matrix3 operator* (Matrix3 a, VectorFloat b) {
+    Matrix3 result;
+    matrixScalarMult<3>(a.coeff, b, result.coeff);
+}
+
 
 Vector4 operator* (Matrix4 a, Vector4 b) {
-    return Vector4(
-        a.coeff[0] * b.x + a.coeff[4] * b.y + a.coeff[8] * b.z + a.coeff[12] * b.w,
-        a.coeff[1] * b.x + a.coeff[5] * b.y + a.coeff[9] * b.z + a.coeff[13] * b.w,
-        a.coeff[2] * b.x + a.coeff[6] * b.y + a.coeff[10] * b.z + a.coeff[14] * b.w,
-        a.coeff[3] * b.x + a.coeff[7] * b.y + a.coeff[11] * b.z + a.coeff[15] * b.w
-    );
+    Vector4 result;
+    matrixVectorMult<3>(a.coeff, b.as_array, result.as_array);
 }
 
-Matrix4 operator* (Matrix4 a, Matrix4 b);
-Matrix4 operator* (Matrix4 a, VectorFloat b);
+Matrix4 operator* (Matrix4 a, Matrix4 b) {
+    Matrix4 result;
+    matrixMult<4>(a.coeff, b.coeff, result.coeff);
+}
+
+Matrix4 operator* (Matrix4 a, VectorFloat b) {
+    Matrix4 result;
+    matrixScalarMult<4>(a.coeff, b, result.coeff);
+}
 
 }
 }

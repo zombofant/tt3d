@@ -2,10 +2,18 @@
 #include "modules/io/vfs/VFS.hpp"
 #include "modules/io/vfs/MountDirectory.hpp"
 #include "modules/geometry/Vectors.hpp"
+#include "modules/geometry/Matrices.hpp"
+
+template <int A>
+double det(int bla) {
+    return A * bla;
+}
 
 int main(int argc, const char *argv[]) {
     using namespace tt3d::VFS;
     using namespace tt3d::Geometry;
+    
+    
     
     VFS vfs = VFS();
     MountPtr mount(new MountDirectory("/usr/local/share/tt3d"));
@@ -20,5 +28,8 @@ int main(int argc, const char *argv[]) {
     std::cout << v.x << " " << v.y << " " << v.z << std::endl;
     std::cout << v1 * v2 << std::endl;
     std::cout << (v1 + v2).normalized() * v2 << std::endl;
+    
+    std::cout << det<10>(20) << std::endl;
+    
     return 0;
 }
