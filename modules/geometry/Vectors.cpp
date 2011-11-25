@@ -1,9 +1,11 @@
 #include "Vectors.hpp"
 #include <cmath>
 
+#include "VectorTemplates.hpp"
+
 namespace tt3d {
 namespace Geometry {
-    
+
 /* tt3d::Geometry::Vector2 */
 
 Vector2::Vector2() {
@@ -162,39 +164,47 @@ Vector4f Vector4::toVector4f() const {
 /* Vector2 operators */
 
 Vector2 operator+ (Vector2 a, Vector2 b) {
-    return Vector2(a.x + b.x, a.y + b.y);
+    Vector2 result;
+    vectorAdd<2>(a.as_array, b.as_array, result.as_array);
 }
 
 Vector2 operator+ (Vector2 a, VectorFloat b) {
-    return Vector2(a.x + b, a.y + b);
+    Vector2 result;
+    vectorScalarAdd<2>(a.as_array, b, result.as_array);
 }
 
 Vector2 operator+ (VectorFloat a, Vector2 b) {
-    return b + a;
+    Vector2 result;
+    vectorScalarAdd<2>(b.as_array, a, result.as_array);
 }
 
 Vector2 operator- (Vector2 a) {
-    return Vector2(-a.x, -a.y);
+    Vector2 result(a);
+    vectorInvert<2>(a.as_array);
 }
 
 Vector2 operator- (Vector2 a, Vector2 b) {
-    return Vector2(a.x - b.x, a.y - b.y);
+    Vector2 result;
+    vectorSub<2>(a.as_array, b.as_array, result.as_array);
 }
 
 Vector2 operator- (Vector2 a, VectorFloat b) {
-    return Vector2(a.x - b, a.y - b);
+    Vector2 result;
+    vectorScalarSub<2>(a.as_array, b, result.as_array);
 }
 
 VectorFloat operator* (Vector2 a, Vector2 b) {
-    return a.x * b.x + a.y * b.y;
+    return vectorDotProduct<2>(a.as_array, b.as_array);
 }
 
 Vector2 operator* (Vector2 a, VectorFloat b) {
-    return Vector2(a.x * b, a.y * b);
+    Vector2 result;
+    vectorScalarMult<2>(a.as_array, b, result.as_array);
 }
 
 Vector2 operator/ (Vector2 a, VectorFloat b) {
-    return Vector2(a.x / b, a.y / b);
+    Vector2 result;
+    vectorScalarDiv<2>(a.as_array, b, result.as_array);
 }
 
 bool operator== (Vector2 a, Vector2 b) {
@@ -204,35 +214,42 @@ bool operator== (Vector2 a, Vector2 b) {
 /* Vector3 operators */
 
 Vector3 operator+ (Vector3 a, Vector3 b) {
-    return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+    Vector3 result;
+    vectorAdd<3>(a.as_array, b.as_array, result.as_array);
 }
 
 Vector3 operator+ (Vector3 a, VectorFloat b) {
-    return Vector3(a.x + b, a.y + b, a.z + b);
+    Vector3 result;
+    vectorScalarAdd<3>(a.as_array, b, result.as_array);
 }
 
 Vector3 operator+ (VectorFloat a, Vector3 b) {
-    return b + a;
+    Vector3 result;
+    vectorScalarAdd<3>(b.as_array, a, result.as_array);
 }
 
 Vector3 operator- (Vector3 a) {
-    return Vector3(-a.x, -a.y, -a.z);
+    Vector3 result(a);
+    vectorInvert<3>(a.as_array);
 }
 
 Vector3 operator- (Vector3 a, Vector3 b) {
-    return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+    Vector3 result;
+    vectorSub<3>(a.as_array, b.as_array, result.as_array);
 }
 
 Vector3 operator- (Vector3 a, VectorFloat b) {
-    return Vector3(a.x - b, a.y - b, a.z - b);
+    Vector3 result;
+    vectorScalarSub<3>(a.as_array, b, result.as_array);
 }
     
 VectorFloat operator* (Vector3 a, Vector3 b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+    return vectorDotProduct<3>(a.as_array, b.as_array);
 }
 
 Vector3 operator* (Vector3 a, VectorFloat b) {
-    return Vector3(a.x * b, a.y * b, a.z * b);
+    Vector3 result;
+    vectorScalarMult<3>(a.as_array, b, result.as_array);
 }
 
 Vector3 operator% (Vector3 a, Vector3 b) {
@@ -244,7 +261,8 @@ Vector3 operator% (Vector3 a, Vector3 b) {
 }
 
 Vector3 operator/ (Vector3 a, VectorFloat b) {
-    return Vector3(a.x / b, a.y / b, a.z / b);
+    Vector3 result;
+    vectorScalarDiv<3>(a.as_array, b, result.as_array);
 }
 
 bool operator== (Vector3 a, Vector3 b) {
@@ -254,39 +272,47 @@ bool operator== (Vector3 a, Vector3 b) {
 /* Vector4 operators */
 
 Vector4 operator+ (Vector4 a, Vector4 b) {
-    return Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+    Vector4 result;
+    vectorAdd<4>(a.as_array, b.as_array, result.as_array);
 }
 
 Vector4 operator+ (Vector4 a, VectorFloat b) {
-    return Vector4(a.x + b, a.y + b, a.z + b, a.w + b);
+    Vector4 result;
+    vectorScalarAdd<4>(a.as_array, b, result.as_array);
 }
 
 Vector4 operator+ (VectorFloat a, Vector4 b) {
-    return b + a;
+    Vector4 result;
+    vectorScalarAdd<4>(b.as_array, a, result.as_array);
 }
 
 Vector4 operator- (Vector4 a) {
-    return Vector4(-a.x, -a.y, -a.z, -a.w);
+    Vector4 result(a);
+    vectorInvert<4>(a.as_array);
 }
 
 Vector4 operator- (Vector4 a, Vector4 b) {
-    return Vector4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+    Vector4 result;
+    vectorSub<4>(a.as_array, b.as_array, result.as_array);
 }
     
 Vector4 operator- (Vector4 a, VectorFloat b) {
-    return Vector4(a.x - b, a.y - b, a.z - b, a.w - b);
+    Vector4 result;
+    vectorScalarSub<4>(a.as_array, b, result.as_array);
 }
 
 VectorFloat operator* (Vector4 a, Vector4 b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+    return vectorDotProduct<4>(a.as_array, b.as_array);
 }
     
 Vector4 operator* (Vector4 a, VectorFloat b) {
-    return Vector4(a.x * b, a.y * b, a.z * b, a.w * b);
+    Vector4 result;
+    vectorScalarMult<4>(a.as_array, b, result.as_array);
 }
 
 Vector4 operator/ (Vector4 a, VectorFloat b) {
-    return Vector4(a.x / b, a.y / b, a.z / b, a.w / b);
+    Vector4 result;
+    vectorScalarDiv<4>(a.as_array, b, result.as_array);
 }
 
 bool operator== (Vector4 a, Vector4 b) {
