@@ -13,7 +13,12 @@ Vector2::Vector2() {
     y = 0.;
 }
 
-Vector2::Vector2(double X, double Y) {
+Vector2::Vector2(const Vector2 &vec2) {
+    x = vec2.x;
+    y = vec2.y;
+}
+
+Vector2::Vector2(VectorFloat X, VectorFloat Y) {
     x = X;
     y = Y;
 }
@@ -21,6 +26,11 @@ Vector2::Vector2(double X, double Y) {
 Vector2::Vector2(Vector2f vec2f) {
     x = vec2f.x;
     y = vec2f.y;
+}
+
+Vector2::Vector2(VectorFloat angle) {
+    x = cos(angle);
+    y = sin(angle);
 }
 
 VectorFloat Vector2::length() const {
@@ -51,6 +61,11 @@ Vector2 &Vector2::operator+= (const Vector2 b) {
     return *this;
 }
 
+Vector2 &Vector2::operator/=(const VectorFloat b) {
+    vectorScalarDiv<2>(as_array, b, as_array);
+    return *this;
+}
+
 /* tt3d::Geometry::Vector3 */
 
 Vector3::Vector3() {
@@ -77,6 +92,10 @@ Vector3::Vector3(Vector3f vec3f) {
     z = vec3f.z;
 }
 
+Vector2 Vector3::vec2() const {
+    return Vector2(x, y);
+}
+
 VectorFloat Vector3::length() const {
     return sqrt(x * x + y * y + z * z);
 }
@@ -100,6 +119,16 @@ Vector3f Vector3::toVector3f() const {
     result.y = y;
     result.z = z;
     return result;
+}
+
+Vector3 &Vector3::operator+=(const Vector3 b) {
+    vectorAdd<3>(as_array, b.as_array, as_array);
+    return *this;
+}
+
+Vector3 &Vector3::operator/=(const VectorFloat b) {
+    vectorScalarDiv<3>(as_array, b, as_array);
+    return *this;
 }
 
 /* tt3d::Geometry::Vector4 */
@@ -137,6 +166,14 @@ Vector4::Vector4(Vector4f vec4f) {
     y = vec4f.y;
     z = vec4f.z;
     w = vec4f.w;
+}
+
+Vector2 Vector4::vec2() const {
+    return Vector2(x, y);
+}
+
+Vector3 Vector4::vec3() const {
+    return Vector3(x, y, z);
 }
 
 VectorFloat Vector4::length() const {

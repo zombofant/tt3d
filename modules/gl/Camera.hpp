@@ -1,3 +1,6 @@
+#ifndef _TT3D_GL_CAMERA_H
+#define _TT3D_GL_CAMERA_H
+
 #include "Viewport.hpp"
 #include "modules/geometry/Vectors.hpp"
 #include "modules/geometry/Matrices.hpp"
@@ -10,11 +13,10 @@ using namespace tt3d::Geometry;
 class Camera {
     public:
         Camera();
-        ~Camera();
     private:
         bool modelViewInvalidated, projectionInvalidated;
     protected:
-        Matrix4f modelView, projection;
+        Matrix4 modelView, projection;
         const Viewport *viewport;
     protected:
         void deinvalidateModelView();
@@ -26,7 +28,7 @@ class Camera {
         virtual void recalculateModelView();
         virtual void recalculateProjection();
     public:
-        Matrix4f getOneMatrix();
+        Matrix4 getOneMatrix();
         void load();
         void loadAsOne();
         void mult();
@@ -41,7 +43,7 @@ class Camera {
 class CameraPerspective: public Camera {
     public:
         CameraPerspective();
-    private:
+    protected:
         VectorFloat fov, nearZ, farZ;
     protected:
         virtual void doViewportChanged();
@@ -58,9 +60,9 @@ class CameraPerspective: public Camera {
 class CameraFree: public CameraPerspective {
     public:
         CameraFree();
-    private:
-        Matrix4 modelViewHD, invModelViewHD;
-        Vector3 position, rotation;
+    protected:
+        Vector3 position;
+        Vector2 rotation;
         VectorFloat zoom;
         Vector3 right, up, front, flatRight, flatFront;
         Vector3 transformedPos;
@@ -74,15 +76,19 @@ class CameraFree: public CameraPerspective {
         void recalculateModelView();
         void recalculateTransformedPos();
     public:
-        Vector3 getFlatRight();
         Vector3 getFlatFront();
+        Vector3 getFlatRight();
         Vector3 getFront() { return front; }
         Vector3 getPosition() { return position; }
         Vector3 getRight() { return right; }
-        Vector3 getRotation() { return rotation; }
+        Vector2 getRotation() { return rotation; }
         Vector3 getTransformedPos();
         Vector3 getUp() { return up; }
         VectorFloat getZoom() { return zoom; }
+        
+        void setPosition(const Vector3 &aValue);
+        void setRotation(const Vector2 &aValue);
+        void setZoom(const VectorFloat &aValue);
 };
 
 class CameraFreeSmooth: public CameraFree {
@@ -101,9 +107,9 @@ class CameraFreeSmooth: public CameraFree {
         void addAccelZoom(const VectorFloat by) { zoomAccel += by; };
         void issueMoveTo(const Vector2 target);
         void issueRotTo(const Vector2 target);
-        void stopMove(const bool resetAcceleration);
-        void stopRot(const bool resetAcceleration);
-        void stopZoom(const bool resetAcceleration);
+        void stopMove(const bool resetAccel);
+        void stopRot(const bool resetAccel);
+        void stopZoom(const bool resetAccel);
         void update(const double interval);
     public:
         Vector2 getAccel() { return accel; }
@@ -123,3 +129,5 @@ class CameraFreeSmooth: public CameraFree {
 
 }
 }
+
+#endif

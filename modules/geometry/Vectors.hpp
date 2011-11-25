@@ -35,8 +35,10 @@ struct Vector2 {
         };
         
         Vector2();
-        Vector2(double X, double Y);
+        Vector2(const Vector2 &vec2);
+        Vector2(VectorFloat X, VectorFloat Y);
         Vector2(Vector2f vec2f);
+        Vector2(VectorFloat angle);
         
         VectorFloat length() const;
         Vector2 normalized() const;
@@ -44,6 +46,7 @@ struct Vector2 {
         Vector2f toVector2f() const;
         
         Vector2 &operator+= (const Vector2 b);
+        Vector2 &operator/= (const VectorFloat b);
 };
 
 struct Vector3 {
@@ -71,10 +74,15 @@ struct Vector3 {
         Vector3(Vector2 vec2, double Z = 0.);
         Vector3(Vector3f vec3f);
         
+        Vector2 vec2() const;
+        
         VectorFloat length() const;
         Vector3 normalized() const;
         void normalize();
         Vector3f toVector3f() const;
+        
+        Vector3 &operator+= (const Vector3 b);
+        Vector3 &operator/= (const VectorFloat b);
 };
 
 struct Vector4 {
@@ -106,6 +114,9 @@ struct Vector4 {
         Vector4(Vector2 vec2, double Z = 0., double W = 0.);
         Vector4(Vector3 vec3, double W = 0.);
         Vector4(Vector4f vec4f);
+        
+        Vector2 vec2() const;
+        Vector3 vec3() const;
         
         VectorFloat length() const;
         Vector4 normalized() const;

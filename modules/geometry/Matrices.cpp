@@ -17,6 +17,12 @@ Matrix3::Matrix3() {
     matrixIdentity<3>(coeff);
 }
 
+Matrix3::Matrix3(const Matrix3f &mat) {
+    for (int i=0; i<9; i++) {
+        coeff[i] = mat.coeff[i];
+    }
+}
+
 Matrix3f Matrix3::toMatrix3f() {
     Matrix3f result;
     for (int i=0; i<9; i++) {
@@ -58,6 +64,12 @@ Matrix4::Matrix4() {
     matrixIdentity<4>(coeff);
 }
 
+Matrix4::Matrix4(const Matrix4f &mat) {
+    for (int i=0; i<16; i++) {
+        coeff[i] = mat.coeff[i];
+    }
+}
+
 Matrix4f Matrix4::toMatrix4f() {
     Matrix4f result;
     for (int i=0; i<16; i++) {
@@ -82,6 +94,42 @@ Matrix4 Matrix4::Rotation(const Matrix3 m3) {
     result.coeff[8] = m3.coeff[6];
     result.coeff[9] = m3.coeff[7];
     result.coeff[10] = m3.coeff[8];
+}
+
+Matrix4 Matrix4::RotationX(const VectorFloat angle) {
+    const VectorFloat Sin = sin(angle);
+    const VectorFloat Cos = cos(angle);
+    
+    Matrix4 result;
+    result.coeff[5] = Cos;
+    result.coeff[6] = Sin;
+    result.coeff[9] = -Sin;
+    result.coeff[10] = Cos;
+    return result;
+}
+
+Matrix4 Matrix4::RotationY(const VectorFloat angle) {
+    const VectorFloat Sin = sin(angle);
+    const VectorFloat Cos = cos(angle);
+    
+    Matrix4 result;
+    result.coeff[0] = Cos;
+    result.coeff[2] = -Sin;
+    result.coeff[8] = Sin;
+    result.coeff[10] = Cos;
+    return result;
+}
+
+Matrix4 Matrix4::RotationZ(const VectorFloat angle) {
+    const VectorFloat Sin = sin(angle);
+    const VectorFloat Cos = cos(angle);
+    
+    Matrix4 result;
+    result.coeff[0] = Cos;
+    result.coeff[1] = Sin;
+    result.coeff[4] = -Sin;
+    result.coeff[5] = Cos;
+    return result;
 }
 
 /* matrix operations */

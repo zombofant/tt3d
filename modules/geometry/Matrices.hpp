@@ -14,6 +14,7 @@ struct Matrix3 {
     double coeff[9];
     
     Matrix3();
+    Matrix3(const Matrix3f &mat);
     
     Matrix3f toMatrix3f();
     
@@ -28,11 +29,15 @@ struct Matrix4 {
     double coeff[16];
     
     Matrix4();
+    Matrix4(const Matrix4f &mat);
     
     Matrix4f toMatrix4f();
     
     static Matrix4 Rotation(const Vector3 axis, const VectorFloat angle);
     static Matrix4 Rotation(const Matrix3 m3);
+    static Matrix4 RotationX(const VectorFloat angle);
+    static Matrix4 RotationY(const VectorFloat angle);
+    static Matrix4 RotationZ(const VectorFloat angle);
     static Matrix4 Translation(const Vector3 by);
     static Matrix4 Scale(const Vector3 by);
 };
