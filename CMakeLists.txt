@@ -14,5 +14,5 @@ set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY
 add_subdirectory("modules")
 
 add_executable(tt3d tt3d.cpp)
-add_dependencies(tt3d tt3d_io)
-target_link_libraries(tt3d ${LIBS} tt3d_io)
+add_dependencies(tt3d tt3d_io tt3d_geometry)
+target_link_libraries(tt3d ${LIBS} tt3d_io tt3d_geometry)
