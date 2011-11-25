@@ -1,4 +1,5 @@
 #include "Geometry.hpp"
+#include <cmath>
 
 namespace tt3d {
 namespace Geometry {
@@ -13,6 +14,22 @@ Vector2::Vector2() {
 Vector2::Vector2(double X, double Y) {
     x = X;
     y = Y;
+}
+
+VectorFloat Vector2::length() {
+    return sqrt(x * x + y * y);
+}
+
+Vector2 Vector2::normalized() {
+    return *this / length();
+}
+
+void Vector2::normalize() {
+    VectorFloat len = length();
+    if (len == 0.)
+        return;
+    x = x / len;
+    y = y / len;
 }
 
 /* tt3d::Geometry::Vector3 */
@@ -33,6 +50,23 @@ Vector3::Vector3(Vector2 vec2, double Z) {
     x = vec2.x;
     y = vec2.y;
     z = Z;
+}
+
+VectorFloat Vector3::length() {
+    return sqrt(x * x + y * y + z * z);
+}
+
+Vector3 Vector3::normalized() {
+    return *this / length();
+}
+
+void Vector3::normalize() {
+    VectorFloat len = length();
+    if (len == 0.)
+        return;
+    x = x / len;
+    y = y / len;
+    z = z / len;
 }
 
 /* tt3d::Geometry::Vector4 */
@@ -63,6 +97,24 @@ Vector4::Vector4(Vector3 vec3, double W) {
     y = vec3.y;
     z = vec3.z;
     w = W;
+}
+
+VectorFloat Vector4::length() {
+    return sqrt(x * x + y * y + z * z + w * w);
+}
+
+Vector4 Vector4::normalized() {
+    return *this / length();
+}
+
+void Vector4::normalize() {
+    VectorFloat len = length();
+    if (len == 0.)
+        return;
+    x = x / len;
+    y = y / len;
+    z = z / len;
+    w = w / len;
 }
 
 /* Vector2 operators */

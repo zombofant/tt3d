@@ -15,8 +15,10 @@ int main(int argc, const char *argv[]) {
     vfs.dumpMounts();
     std::cout << vfs.fileExists("/data/tt3d") << std::endl;
     
-    Vector2 v1(1, 0), v2(0, 1), v;
-    v = v1 + v2;
-    std::cout << v.x << " " << v.y << std::endl;
+    Vector3 v1(1, 0, 0), v2(0, 1, 0), v3(0, 0, 1), v;
+    v = v1 % v2;
+    std::cout << v.x << " " << v.y << " " << v.z << std::endl;
+    std::cout << v1 * v2 << std::endl;
+    std::cout << (v1 + v2).normalized() * v2 << std::endl;
     return 0;
 }
