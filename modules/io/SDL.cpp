@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace tt3d {
-namespace SDL {
+namespace IO {
     
 /* free functions */
 

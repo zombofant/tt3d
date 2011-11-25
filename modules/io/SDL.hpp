@@ -2,7 +2,7 @@
 #include <ctime>
 
 namespace tt3d {
-namespace SDL {
+namespace IO {
     
 typedef enum {
     KM_PRESS,
