@@ -1,3 +1,6 @@
+#ifndef _TT3D_GEOMETRY_VECTOR_TEMPLATES_H
+#define _TT3D_GEOMETRY_VECTOR_TEMPLATES_H
+
 #include "Vectors.hpp"
 
 namespace tt3d {
@@ -100,3 +103,5 @@ static inline void vectorNormalize(VectorFloat vec[n])
 
 }
 }
+
+#endif
