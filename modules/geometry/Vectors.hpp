@@ -42,6 +42,8 @@ struct Vector2 {
         Vector2 normalized() const;
         void normalize();
         Vector2f toVector2f() const;
+        
+        Vector2 &operator+= (const Vector2 b);
 };
 
 struct Vector3 {

@@ -46,6 +46,11 @@ Vector2f Vector2::toVector2f() const {
     return result;
 }
 
+Vector2 &Vector2::operator+= (const Vector2 b) {
+    vectorAdd<2>(as_array, b.as_array, as_array);
+    return *this;
+}
+
 /* tt3d::Geometry::Vector3 */
 
 Vector3::Vector3() {

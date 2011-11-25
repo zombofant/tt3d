@@ -4,21 +4,23 @@
 
 namespace tt3d {
 namespace GL {
+    
+using namespace tt3d::Geometry;
 
-class GLCamera {
+class Camera {
     public:
-        GLCamera();
-        ~GLCamera();
+        Camera();
+        ~Camera();
     private:
         bool modelViewInvalidated, projectionInvalidated;
     protected:
         Matrix4f modelView, projection;
-        const GLViewport *viewport;
+        const Viewport *viewport;
     protected:
         void deinvalidateModelView();
         void deinvalidateProjection();
         void doMoved();
-        virtual doViewportChanged();
+        virtual void doViewportChanged();
         void invalidateModelView();
         void invalidateProjection();
         virtual void recalculateModelView();
@@ -32,13 +34,13 @@ class GLCamera {
         virtual void update(const double interval);
         void validate();
     public:
-        const GLViewport *getViewport();
-        void setViewport(const GLViewport *viewport);
+        const Viewport *getViewport();
+        void setViewport(const Viewport *viewport);
 };
 
-class GLCameraPerspective: public GLCamera {
+class CameraPerspective: public Camera {
     public:
-        GLCameraPerspective();
+        CameraPerspective();
     private:
         VectorFloat fov, nearZ, farZ;
     protected:
@@ -53,9 +55,9 @@ class GLCameraPerspective: public GLCamera {
         void setNearZ(const VectorFloat aNearZ);
 };
 
-class GLCameraFree: public GLCameraPerspective {
+class CameraFree: public CameraPerspective {
     public:
-        GLCameraFree();
+        CameraFree();
     private:
         Matrix4 modelViewHD, invModelViewHD;
         Vector3 position, rotation;
@@ -81,11 +83,11 @@ class GLCameraFree: public GLCameraPerspective {
         Vector3 getTransformedPos();
         Vector3 getUp() { return up; }
         VectorFloat getZoom() { return zoom; }
-}
+};
 
-class GLCameraFreeSmooth: public GLCameraFree {
+class CameraFreeSmooth: public CameraFree {
     public:
-        GLCameraFreeSmooth();
+        CameraFreeSmooth();
     private:
         Vector2 accel, rotAccel;
         Vector2 velocity, rotVelocity;
@@ -94,9 +96,9 @@ class GLCameraFreeSmooth: public GLCameraFree {
         bool moving, rotating;
         Vector2 posTarget, rotTarget;
     public:
-        void accel(const Vector2 by) { accel += by; };
-        void accelRot(const Vector2 by) { rotAccel += by; };
-        void accelZoom(const VectorFloat by) { zoomAccel += by; };
+        void addAccel(const Vector2 by) { accel += by; };
+        void addAccelRot(const Vector2 by) { rotAccel += by; };
+        void addAccelZoom(const VectorFloat by) { zoomAccel += by; };
         void issueMoveTo(const Vector2 target);
         void issueRotTo(const Vector2 target);
         void stopMove(const bool resetAcceleration);
@@ -112,12 +114,12 @@ class GLCameraFreeSmooth: public GLCameraFree {
         VectorFloat getZoomVelocity() { return zoomVelocity; }
         
         void setAccel(const Vector2 aValue) { accel = aValue; };
-        void setVelocity(const Vector2 aValue) { vel = aValue; };
+        void setVelocity(const Vector2 aValue) { velocity = aValue; };
         void setRotAccel(const Vector2 aValue) { rotAccel = aValue; };
         void setRotVelocity(const Vector2 aValue) { rotVelocity = aValue; };
         void setZoomAccel(const VectorFloat aValue) { zoomAccel = aValue; };
         void setZoomVelocity(const VectorFloat aValue) { zoomVelocity = aValue; };
-}
+};
 
 }
 }
