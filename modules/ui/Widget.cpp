@@ -4,6 +4,7 @@ namespace tt3d {
 namespace UI {
 
 using namespace tt3d;
+using namespace tt3d::Geometry;
 
 
 /* tt3d::UI::Widget */
@@ -50,7 +51,7 @@ void Widget::doAlign() {
     
 }
 
-WidgetHandle Widget::doHitTest(const Geometry::Point &aPoint) {
+WidgetHandle Widget::doHitTest(const Point &aPoint) {
     WidgetHandle hit;
     if (!_absRect.contains(aPoint)) {
         return hit;
@@ -121,7 +122,7 @@ void Widget::removeChild(WidgetHandle aWidget) {
     }
 }
 
-void Widget::setAbsRect(const Geometry::Rect rect) {
+void Widget::setAbsRect(const Rect rect) {
     if (rect == _absRect)
         return;
     _absRect = rect;
@@ -141,12 +142,24 @@ void Widget::unlinkParent(WidgetHandle aParent) {
     aParent->removeChild(me);
 }
 
-Geometry::Point Widget::clientToAbsolute(const Geometry::Point &point) {
-    return Geometry::Point(point.x + _absRect.x, point.y + _absRect.y);
+void Widget::updateFlexSum() {
+    uint32_t flexSum = 0;
+    for (WidgetHandles::iterator it = _children->begin();
+        it != _children->end();
+        it++)
+    {
+        const WidgetHandle handle = *it;
+        flexSum += handle->getFlex();
+    }
+    _flexSum = flexSum;
 }
 
-Geometry::Point Widget::clientToParent(const Geometry::Point &point) {
-    return Geometry::Point(point.x + _rect.x, point.y + _rect.y);
+Point Widget::clientToAbsolute(const Point &point) {
+    return Point(point.x + _absRect.x, point.y + _absRect.y);
+}
+
+Point Widget::clientToParent(const Point &point) {
+    return Point(point.x + _rect.x, point.y + _rect.y);
 }
 
 void Widget::deleteChildren() {
