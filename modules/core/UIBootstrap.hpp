@@ -1,3 +1,6 @@
+#ifndef _TT3D_CORE_UI_BOOTSTRAP_H
+#define _TT3D_CORE_UI_BOOTSTRAP_H
+
 #include <SDL/SDL.h>
 #include "modules/io/SDL.hpp"
 #include "modules/io/vfs/VFS.hpp"
@@ -37,3 +40,5 @@ class TT3D: public IO::Application {
 
 }
 }
+
+#endif
