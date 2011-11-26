@@ -39,6 +39,7 @@ void Application::handleKeypress(const SDL_keysym &sym, const SDL_KeyActionMode 
             if (sym.mod & KMOD_CTRL) 
                 handleQuit();
             break;
+        default:;
     }
 }
 

@@ -28,6 +28,7 @@ Matrix3f Matrix3::toMatrix3f() {
     for (int i=0; i<9; i++) {
         result.coeff[i] = coeff[i];
     }
+    return result;
 }
 
 Matrix3 Matrix3::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
@@ -75,6 +76,7 @@ Matrix4f Matrix4::toMatrix4f() {
     for (int i=0; i<16; i++) {
         result.coeff[i] = coeff[i];
     }
+    return result;
 }
 
 Matrix4 Matrix4::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
@@ -94,6 +96,7 @@ Matrix4 Matrix4::Rotation(const Matrix3 m3) {
     result.coeff[8] = m3.coeff[6];
     result.coeff[9] = m3.coeff[7];
     result.coeff[10] = m3.coeff[8];
+    return result;
 }
 
 Matrix4 Matrix4::RotationX(const VectorFloat angle) {
@@ -137,32 +140,38 @@ Matrix4 Matrix4::RotationZ(const VectorFloat angle) {
 Vector3 operator* (Matrix3 a, Vector3 b) {
     Vector3 result;
     matrixVectorMult<3>(a.coeff, b.as_array, result.as_array);
+    return result;
 }
 
 Matrix3 operator* (Matrix3 a, Matrix3 b) {
     Matrix3 result;
     matrixMult<3>(a.coeff, b.coeff, result.coeff);
+    return result;
 }
 
 Matrix3 operator* (Matrix3 a, VectorFloat b) {
     Matrix3 result;
     matrixScalarMult<3>(a.coeff, b, result.coeff);
+    return result;
 }
 
 
 Vector4 operator* (Matrix4 a, Vector4 b) {
     Vector4 result;
     matrixVectorMult<3>(a.coeff, b.as_array, result.as_array);
+    return result;
 }
 
 Matrix4 operator* (Matrix4 a, Matrix4 b) {
     Matrix4 result;
     matrixMult<4>(a.coeff, b.coeff, result.coeff);
+    return result;
 }
 
 Matrix4 operator* (Matrix4 a, VectorFloat b) {
     Matrix4 result;
     matrixScalarMult<4>(a.coeff, b, result.coeff);
+    return result;
 }
 
 }

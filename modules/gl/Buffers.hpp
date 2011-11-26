@@ -149,6 +149,7 @@ class GeometryBuffer: public GenericBuffer {
             advance(until, count);
             VertexIndexList result;
             result.splice(result.begin(), freeVertices, freeVertices.begin(), until);
+            return result;
         }
         
         void gc() {

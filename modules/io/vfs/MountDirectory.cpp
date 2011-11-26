@@ -15,10 +15,10 @@ MountDirectory::MountDirectory(const std::string aRootPath):
 
 std::ios_base::openmode MountDirectory::writeModeToOpenMode(WriteMode writeMode) {
     switch (writeMode) {
-        WM_OVERWRITE:
-        WM_IGNORE: return (std::ios_base::out | std::ios_base::trunc);
+        case WM_OVERWRITE:
+        case WM_IGNORE: return (std::ios_base::out | std::ios_base::trunc);
         
-        WM_APPEND: return (std::ios_base::out | std::ios_base::app);
+        case WM_APPEND: return (std::ios_base::out | std::ios_base::app);
         
         default: return (std::ios_base::out | std::ios_base::trunc);
     }

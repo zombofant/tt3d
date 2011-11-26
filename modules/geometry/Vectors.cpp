@@ -208,31 +208,37 @@ Vector4f Vector4::toVector4f() const {
 Vector2 operator+ (Vector2 a, Vector2 b) {
     Vector2 result;
     vectorAdd<2>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
 
 Vector2 operator+ (Vector2 a, VectorFloat b) {
     Vector2 result;
     vectorScalarAdd<2>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector2 operator+ (VectorFloat a, Vector2 b) {
     Vector2 result;
     vectorScalarAdd<2>(b.as_array, a, result.as_array);
+    return result;
 }
 
 Vector2 operator- (Vector2 a) {
     Vector2 result(a);
     vectorInvert<2>(a.as_array);
+    return result;
 }
 
 Vector2 operator- (Vector2 a, Vector2 b) {
     Vector2 result;
     vectorSub<2>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
 
 Vector2 operator- (Vector2 a, VectorFloat b) {
     Vector2 result;
     vectorScalarSub<2>(a.as_array, b, result.as_array);
+    return result;
 }
 
 VectorFloat operator* (Vector2 a, Vector2 b) {
@@ -242,11 +248,13 @@ VectorFloat operator* (Vector2 a, Vector2 b) {
 Vector2 operator* (Vector2 a, VectorFloat b) {
     Vector2 result;
     vectorScalarMult<2>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector2 operator/ (Vector2 a, VectorFloat b) {
     Vector2 result;
     vectorScalarDiv<2>(a.as_array, b, result.as_array);
+    return result;
 }
 
 bool operator== (Vector2 a, Vector2 b) {
@@ -258,31 +266,37 @@ bool operator== (Vector2 a, Vector2 b) {
 Vector3 operator+ (Vector3 a, Vector3 b) {
     Vector3 result;
     vectorAdd<3>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
 
 Vector3 operator+ (Vector3 a, VectorFloat b) {
     Vector3 result;
     vectorScalarAdd<3>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector3 operator+ (VectorFloat a, Vector3 b) {
     Vector3 result;
     vectorScalarAdd<3>(b.as_array, a, result.as_array);
+    return result;
 }
 
 Vector3 operator- (Vector3 a) {
     Vector3 result(a);
     vectorInvert<3>(a.as_array);
+    return result;
 }
 
 Vector3 operator- (Vector3 a, Vector3 b) {
     Vector3 result;
     vectorSub<3>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
 
 Vector3 operator- (Vector3 a, VectorFloat b) {
     Vector3 result;
     vectorScalarSub<3>(a.as_array, b, result.as_array);
+    return result;
 }
     
 VectorFloat operator* (Vector3 a, Vector3 b) {
@@ -292,6 +306,7 @@ VectorFloat operator* (Vector3 a, Vector3 b) {
 Vector3 operator* (Vector3 a, VectorFloat b) {
     Vector3 result;
     vectorScalarMult<3>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector3 operator% (Vector3 a, Vector3 b) {
@@ -305,6 +320,7 @@ Vector3 operator% (Vector3 a, Vector3 b) {
 Vector3 operator/ (Vector3 a, VectorFloat b) {
     Vector3 result;
     vectorScalarDiv<3>(a.as_array, b, result.as_array);
+    return result;
 }
 
 bool operator== (Vector3 a, Vector3 b) {
@@ -316,31 +332,37 @@ bool operator== (Vector3 a, Vector3 b) {
 Vector4 operator+ (Vector4 a, Vector4 b) {
     Vector4 result;
     vectorAdd<4>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
 
 Vector4 operator+ (Vector4 a, VectorFloat b) {
     Vector4 result;
     vectorScalarAdd<4>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector4 operator+ (VectorFloat a, Vector4 b) {
     Vector4 result;
     vectorScalarAdd<4>(b.as_array, a, result.as_array);
+    return result;
 }
 
 Vector4 operator- (Vector4 a) {
     Vector4 result(a);
     vectorInvert<4>(a.as_array);
+    return result;
 }
 
 Vector4 operator- (Vector4 a, Vector4 b) {
     Vector4 result;
     vectorSub<4>(a.as_array, b.as_array, result.as_array);
+    return result;
 }
     
 Vector4 operator- (Vector4 a, VectorFloat b) {
     Vector4 result;
     vectorScalarSub<4>(a.as_array, b, result.as_array);
+    return result;
 }
 
 VectorFloat operator* (Vector4 a, Vector4 b) {
@@ -350,11 +372,13 @@ VectorFloat operator* (Vector4 a, Vector4 b) {
 Vector4 operator* (Vector4 a, VectorFloat b) {
     Vector4 result;
     vectorScalarMult<4>(a.as_array, b, result.as_array);
+    return result;
 }
 
 Vector4 operator/ (Vector4 a, VectorFloat b) {
     Vector4 result;
     vectorScalarDiv<4>(a.as_array, b, result.as_array);
+    return result;
 }
 
 bool operator== (Vector4 a, Vector4 b) {

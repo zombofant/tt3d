@@ -70,6 +70,7 @@ static inline VectorFloat vectorDotProduct(const VectorFloat a[n],
     for (int i=0; i<n; i++) {
         result += a[i] * b[i];
     }
+    return result;
 }
 
 template <int n>
