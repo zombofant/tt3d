@@ -3,7 +3,8 @@
 #include "modules/io/vfs/VFS.hpp"
 #include "modules/io/vfs/MountDirectory.hpp"
 #include "modules/gl/Viewport.hpp"
-#include "modules/gl/Buffers.hpp"
+#include "modules/gl/GeometryBuffer.hpp"
+#include "modules/gl/IndexBuffer.hpp"
 
 namespace tt3d {
 namespace Core {

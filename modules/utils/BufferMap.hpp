@@ -1,3 +1,6 @@
+#ifndef _TT3D_UTILS_BUFFER_MAP_H
+#define _TT3D_UTILS_BUFFER_MAP_H
+
 #include <cstddef>
 
 namespace tt3d {
@@ -10,3 +13,5 @@ class BufferMap {
 
 }
 }
+
+#endif

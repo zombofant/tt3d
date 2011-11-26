@@ -1,5 +1,5 @@
-#ifndef _TT3D_GL_BUFFERS_H
-#define _TT3D_GL_BUFFERS_H
+#ifndef _TT3D_GL_GEOMETRY_BUFFERS_H
+#define _TT3D_GL_GEOMETRY_BUFFERS_H
 
 #include <GL/glew.h>
 #include "Base.hpp"
@@ -11,7 +11,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "modules/utils/BufferMap.hpp"
-#include <iostream>
+#include "GenericBuffer.hpp"
 
 namespace tt3d {
 namespace GL {
@@ -22,46 +22,6 @@ typedef GLsizei VertexIndex;
 typedef std::list<VertexIndex> VertexIndexList;
 typedef boost::shared_ptr<VertexIndexList> VertexIndexListHandle;
 typedef std::vector<VertexIndexListHandle> VertexIndexListHandleList;
-
-struct IndexEntry {
-    VertexIndex start;
-    const VertexIndexListHandle vertices;
-    const VertexIndex count;
-    
-    IndexEntry(const VertexIndex aStart, const VertexIndexListHandle aVertices);
-};
-typedef boost::shared_ptr<IndexEntry> IndexEntryHandle;
-typedef std::list<IndexEntryHandle> IndexEntryHandles;
-
-class GenericBuffer: public Class {
-    public:
-        GenericBuffer(const GLsizei aItemSize, const GLenum aKind, const GLenum aPurpose);
-        virtual ~GenericBuffer();
-    protected:
-        GLsizei capacity;
-        unsigned char *data;
-    protected:
-        const GLenum bufferPurpose;
-        const GLenum bufferKind;
-        const GLsizei itemSize;
-    protected:
-        virtual void doExpand(const GLsizei oldCapacity, const GLsizei newCapacity);
-        void expand();
-        void flushRange(const GLsizei minItem, const GLsizei count);
-        virtual void freeBuffer();
-        virtual void initBuffer();
-        virtual bool needsFlush() const { return false; };
-        void rangeCheck(const GLsizei index);
-        virtual void requireBuffer();
-    public:
-        virtual void bind();
-        virtual void flush();
-        void readBack();
-        virtual void unbind();
-    public:
-        GLsizei getCapacity() const { return capacity; }
-        GLsizei getItemSize() const { return itemSize; }
-};
 
 template <
     class T, 
@@ -417,40 +377,6 @@ class GeometryBuffer: public GenericBuffer {
             }
             GenericBuffer::unbind();
         }
-};
-
-class GenericIndexBuffer: public GenericBuffer {
-    public:
-        GenericIndexBuffer(const GLenum aPurpose);
-    protected:
-        GLsizei count;
-    public:
-        virtual void clear();
-        void draw(const GLenum mode);
-        void drawUnbound(const GLenum mode);
-        void dump();
-};
-
-class StreamIndexBuffer: public GenericIndexBuffer {
-    public:
-        StreamIndexBuffer(const GLenum aPurpose = GL_STREAM_DRAW);
-    public:
-        void add(const VertexIndexListHandle vertices);
-};
-
-class StaticIndexBuffer: public GenericIndexBuffer {
-    public:
-        StaticIndexBuffer(const GLenum aPurpose = GL_DYNAMIC_DRAW);
-    private:
-        IndexEntryHandles *handles;
-    protected:
-        void compress();
-        void updateHandles(const IndexEntryHandles::iterator startAt, const VertexIndex offset);
-    public:
-        const IndexEntryHandle add(const VertexIndexListHandle vertices);
-        virtual void clear();
-        void gc();
-        void remove(const IndexEntryHandle handle, const bool autoCompress = true);
 };
 
 }
