@@ -1,4 +1,4 @@
-#include "modules/core/coreUIBootstrap.hpp"
+#include "modules/core/UIBootstrap.hpp"
 #include "modules/gl/Buffers.hpp"
 
 using namespace tt3d;

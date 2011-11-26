@@ -2,6 +2,7 @@
 #include <exception>
 #include <stdexcept>
 #include <cstddef>
+#include <iostream>
 
 namespace tt3d {
 namespace GL {
@@ -21,17 +22,24 @@ IndexEntry::IndexEntry(const VertexIndex aStart, const VertexIndexListHandle aVe
 /* tt3d::GL::GenericBuffer */
 
 GenericBuffer::GenericBuffer(const GLsizei aItemSize, const GLenum aKind, const GLenum aPurpose):
+    Class(),
+    capacity(0),
+    data(0),
     bufferPurpose(aPurpose),
     bufferKind(aKind),
     itemSize(aItemSize)
 {
-    initBuffer();
+    
 }
 
 GenericBuffer::~GenericBuffer() {
     if (glID != 0) {
         freeBuffer();
     }
+}
+
+void GenericBuffer::doExpand(const GLsizei oldCapacity, const GLsizei newCapacity) {
+    
 }
 
 void GenericBuffer::expand() {
@@ -46,6 +54,10 @@ void GenericBuffer::expand() {
         glBufferData(bufferKind, newSize, 0, bufferPurpose);
         glBufferSubData(bufferKind, 0, oldSize, data);
     }
+    
+    const GLsizei oldCapacity = capacity;
+    capacity = newCapacity;
+    doExpand(oldCapacity, newCapacity);
 }
 
 void GenericBuffer::flushRange(const GLsizei minItem, const GLsizei count) {
@@ -55,6 +67,20 @@ void GenericBuffer::flushRange(const GLsizei minItem, const GLsizei count) {
     bind();
     glBufferSubData(bufferKind, minItem * itemSize, count * itemSize, data);
 }
+    
+void GenericBuffer::freeBuffer() {
+    glDeleteBuffers(1, &glID);
+    glID = 0;
+}
+
+void GenericBuffer::initBuffer() {
+    glGenBuffers(1, &glID);
+    std::cout << "initialized buffer " << glID << " capacity is currently " << capacity << std::endl;
+    if (capacity > 0) {
+        glBindBuffer(bufferKind, glID);
+        glBufferData(bufferKind, capacity * itemSize, data, bufferPurpose);
+    }
+}
 
 void GenericBuffer::rangeCheck(const GLsizei index) {
     if ((index < 0) || (index >= capacity)) {
@@ -62,7 +88,17 @@ void GenericBuffer::rangeCheck(const GLsizei index) {
     }
 }
 
+void GenericBuffer::requireBuffer() {
+    if (glID == 0) {
+        initBuffer();
+    }
+    if (glID == 0) {
+        throw 0;
+    }
+}
+
 void GenericBuffer::bind() {
+    requireBuffer();
     glBindBuffer(bufferKind, glID);
 }
 
@@ -75,6 +111,7 @@ void GenericBuffer::flush() {
 }
 
 void GenericBuffer::readBack() {
+    requireBuffer();
     if (glID == 0) {
         return;
     }
@@ -101,6 +138,20 @@ void GenericIndexBuffer::clear() {
 
 void GenericIndexBuffer::draw(const GLenum mode) {
     glDrawElements(mode, count, GL_UNSIGNED_INT, 0);
+    std::cout << count << std::endl;
+}
+
+void GenericIndexBuffer::drawUnbound(const GLenum mode) {
+    glDrawElements(mode, count, GL_UNSIGNED_INT, data);
+    std::cout << count << std::endl;
+}
+
+void GenericIndexBuffer::dump() {
+    GLuint *dataptr = (GLuint *)data;
+    for (int i = 0; i < count; i++) {
+        std::cout << dataptr[i] << " ";
+    }
+    std::cout << std::endl;
 }
 
 /* tt3d::GL::StreamIndexBuffer */
