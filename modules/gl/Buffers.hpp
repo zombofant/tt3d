@@ -89,17 +89,17 @@ class GeometryBuffer: public GenericBuffer {
         std::set<VertexIndex> dirtyVertices;
     private:
         static const GLsizei posOffset = 0;
-        static const GLsizei colourOffset = sizeof(T) * nPos;
-        static const GLsizei texCoord0Offset = colourOffset + sizeof(T) * (nColour);
-        static const GLsizei texCoord1Offset = texCoord0Offset + sizeof(T) * (nTexCoord0);
-        static const GLsizei texCoord2Offset = texCoord1Offset + sizeof(T) * (nTexCoord1);
-        static const GLsizei texCoord3Offset = texCoord2Offset + sizeof(T) * (nTexCoord2);
-        static const GLsizei normalOffset = texCoord3Offset + sizeof(T) * (nTexCoord3);
-        static const GLsizei vertexParam0Offset = normalOffset + sizeof(T) * 3;
-        static const GLsizei vertexParam1Offset = vertexParam0Offset + sizeof(T) * (nVertexParam0);
-        static const GLsizei vertexParam2Offset = vertexParam1Offset + sizeof(T) * (nVertexParam1);
-        static const GLsizei vertexParam3Offset = vertexParam2Offset + sizeof(T) * (nVertexParam2);
-        static const GLsizei vertexSize = vertexParam3Offset + sizeof(T) * (nVertexParam3);
+        static const GLsizei colourOffset = nPos;
+        static const GLsizei texCoord0Offset = colourOffset + (nColour);
+        static const GLsizei texCoord1Offset = texCoord0Offset + (nTexCoord0);
+        static const GLsizei texCoord2Offset = texCoord1Offset + (nTexCoord1);
+        static const GLsizei texCoord3Offset = texCoord2Offset + (nTexCoord2);
+        static const GLsizei normalOffset = texCoord3Offset + (nTexCoord3);
+        static const GLsizei vertexParam0Offset = normalOffset + 3;
+        static const GLsizei vertexParam1Offset = vertexParam0Offset + (nVertexParam0);
+        static const GLsizei vertexParam2Offset = vertexParam1Offset + (nVertexParam1);
+        static const GLsizei vertexParam3Offset = vertexParam2Offset + (nVertexParam2);
+        static const GLsizei vertexSize = vertexParam3Offset + (nVertexParam3);
         
         boost::shared_ptr<Utils::BufferMap> bufferMap;
     protected:
@@ -135,6 +135,7 @@ class GeometryBuffer: public GenericBuffer {
         
         void set(const GLsizei index, const T *value, const GLsizei n) {
             memcpy(data + (index * itemSize), value, n * sizeof(T));
+            dirtyVertices.insert(index);
         }
     public:
         VertexIndexList allocateVertices(const GLsizei count) {
@@ -178,42 +179,52 @@ class GeometryBuffer: public GenericBuffer {
         
         void getColour(const GLsizei index, T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
+            get(map(index) + colourOffset, value, nPos);
         }
         
         void getTexCoord0(const GLsizei index, T value[nTexCoord0]) {
             BOOST_STATIC_ASSERT(nTexCoord0 > 0);
+            get(map(index) + texCoord0Offset, value, nPos);
         }
         
         void getTexCoord1(const GLsizei index, T value[nTexCoord1]) {
             BOOST_STATIC_ASSERT(nTexCoord1 > 0);
+            get(map(index) + texCoord1Offset, value, nPos);
         }
         
         void getTexCoord2(const GLsizei index, T value[nTexCoord2]) {
             BOOST_STATIC_ASSERT(nTexCoord2 > 0);
+            get(map(index) + texCoord2Offset, value, nPos);
         }
         
         void getTexCoord3(const GLsizei index, T value[nTexCoord3]) {
             BOOST_STATIC_ASSERT(nTexCoord3 > 0);
+            get(map(index) + texCoord3Offset, value, nPos);
         }
         
         void getNormal(const GLsizei index, T value[3]) {
             BOOST_STATIC_ASSERT(normal);
+            get(map(index) + normalOffset, value, nPos);
         }
         
         void getVertexParam0(const GLsizei index, T value[nVertexParam0]) {
             BOOST_STATIC_ASSERT(nVertexParam0 > 0);
+            get(map(index) + vertexParam0Offset, value, nPos);
         }
         
         void getVertexParam1(const GLsizei index, T value[nVertexParam1]) {
             BOOST_STATIC_ASSERT(nVertexParam1 > 0);
+            get(map(index) + vertexParam1Offset, value, nPos);
         }
         
         void getVertexParam2(const GLsizei index, T value[nVertexParam2]) {
             BOOST_STATIC_ASSERT(nVertexParam2 > 0);
+            get(map(index) + vertexParam2Offset, value, nPos);
         }
         
         void getVertexParam3(const GLsizei index, T value[nVertexParam3]) {
             BOOST_STATIC_ASSERT(nVertexParam3 > 0);
+            get(map(index) + vertexParam3Offset, value, nPos);
         }
         
         boost::shared_ptr<Utils::BufferMap> getMap() {
@@ -221,48 +232,80 @@ class GeometryBuffer: public GenericBuffer {
         }
         
         
+        virtual void flush() {
+            GLsizei min, max;
+            std::set<VertexIndex>::iterator it = dirtyVertices.begin();
+            min = *it;
+            max = *it;
+            
+            for (it++;
+                it != dirtyVertices.end();
+                it++) 
+            {
+                if (min > *it) {
+                    min = *it;
+                }
+                if (max < *it) {
+                    max = *it;
+                }
+            }
+            flushRange(min, (max - min) + 1);
+        }
+        
+        
         void setPosition(const GLsizei index, const T value[nPos]) {
             BOOST_STATIC_ASSERT(nPos > 0);
+            set(map(index) + posOffset, value, nPos);
         }
         
         void setColour(const GLsizei index, const T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
+            set(map(index) + colourOffset, value, nPos);
         }
         
         void setTexCoord0(const GLsizei index, const T value[nTexCoord0]) {
             BOOST_STATIC_ASSERT(nTexCoord0 > 0);
+            set(map(index) + texCoord0Offset, value, nPos);
         }
         
         void setTexCoord1(const GLsizei index, const T value[nTexCoord1]) {
             BOOST_STATIC_ASSERT(nTexCoord1 > 0);
+            set(map(index) + texCoord1Offset, value, nPos);
         }
         
         void setTexCoord2(const GLsizei index, const T value[nTexCoord2]) {
             BOOST_STATIC_ASSERT(nTexCoord2 > 0);
+            set(map(index) + texCoord2Offset, value, nPos);
         }
         
         void setTexCoord3(const GLsizei index, const T value[nTexCoord3]) {
             BOOST_STATIC_ASSERT(nTexCoord3 > 0);
+            set(map(index) + texCoord3Offset, value, nPos);
         }
         
         void setNormal(const GLsizei index, const T value[3]) {
             BOOST_STATIC_ASSERT(normal);
+            set(map(index) + normalOffset, value, nPos);
         }
         
         void setVertexParam0(const GLsizei index, const T value[nVertexParam0]) {
             BOOST_STATIC_ASSERT(nVertexParam0 > 0);
+            set(map(index) + vertexParam0Offset, value, nPos);
         }
         
         void setVertexParam1(const GLsizei index, const T value[nVertexParam1]) {
             BOOST_STATIC_ASSERT(nVertexParam1 > 0);
+            set(map(index) + vertexParam1Offset, value, nPos);
         }
         
         void setVertexParam2(const GLsizei index, const T value[nVertexParam2]) {
             BOOST_STATIC_ASSERT(nVertexParam2 > 0);
+            set(map(index) + vertexParam2Offset, value, nPos);
         }
         
         void setVertexParam3(const GLsizei index, const T value[nVertexParam3]) {
             BOOST_STATIC_ASSERT(nVertexParam3 > 0);
+            set(map(index) + vertexParam3Offset, value, nPos);
         }
         
         void setMap(boost::shared_ptr<Utils::BufferMap> aValue) {
