@@ -21,6 +21,7 @@ class Material: public Struct {
         StaticIndexBufferHandle getStaticIndexBuffer() const { return _staticIndexBuffer; }
         StreamIndexBufferHandle getStreamIndexBuffer() const { return _streamIndexBuffer; }
     public:
+        virtual void bind();
         virtual void bind(const bool useStream);
         void render(const GLenum mode);
         virtual void unbind();

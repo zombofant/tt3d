@@ -11,6 +11,11 @@ Material::Material(GenericGeometryBufferHandle geometryBuffer):
     
 }
 
+void Material::bind() {
+    bind(false);
+}
+
+
 void Material::bind(const bool useStream) {
     _boundAsStream = useStream;
     _geometryBuffer->bind();
