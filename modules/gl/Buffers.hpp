@@ -375,6 +375,48 @@ class GeometryBuffer: public GenericBuffer {
         void setMap(boost::shared_ptr<Utils::BufferMap> aValue) {
             bufferMap = aValue;
         }
+        
+        
+        virtual void unbind() {
+            if (nPos > 0) {
+                glDisableClientState(GL_VERTEX_ARRAY);
+            }
+            if (nColour > 0) {
+                glDisableClientState(GL_COLOR_ARRAY);
+            }
+            if (nTexCoord0 > 0) {
+                glClientActiveTexture(GL_TEXTURE0);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            }
+            if (nTexCoord1 > 0) {
+                glClientActiveTexture(GL_TEXTURE1);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            }
+            if (nTexCoord2 > 0) {
+                glClientActiveTexture(GL_TEXTURE2);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            }
+            if (nTexCoord3 > 0) {
+                glClientActiveTexture(GL_TEXTURE3);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            }
+            if (normal) {
+                glDisableClientState(GL_NORMAL_ARRAY);
+            }
+            if (nVertexAttrib0 > 0) {
+                glVertexAttribPointer(0, 0, glType, GL_FALSE, 0, 0);
+            }
+            if (nVertexAttrib1 > 0) {
+                glVertexAttribPointer(1, 0, glType, GL_FALSE, 0, 0);
+            }
+            if (nVertexAttrib2 > 0) {
+                glVertexAttribPointer(2, 0, glType, GL_FALSE, 0, 0);
+            }
+            if (nVertexAttrib3 > 0) {
+                glVertexAttribPointer(3, 0, glType, GL_FALSE, 0, 0);
+            }
+            GenericBuffer::unbind();
+        }
 };
 
 class GenericIndexBuffer: public GenericBuffer {
