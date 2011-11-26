@@ -1,1 +1,1 @@
-add_library(tt3d_geometry Vectors.cpp Matrices.cpp)
+add_library(tt3d_geometry Vectors.cpp Matrices.cpp Rect.cpp)
