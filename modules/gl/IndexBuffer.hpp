@@ -46,6 +46,7 @@ class StreamIndexBuffer: public GenericIndexBuffer {
     public:
         void add(const VertexIndexListHandle vertices);
 };
+typedef boost::shared_ptr<StreamIndexBuffer> StreamIndexBufferHandle;
 
 class StaticIndexBuffer: public GenericIndexBuffer {
     public:
@@ -58,10 +59,23 @@ class StaticIndexBuffer: public GenericIndexBuffer {
     public:
         const IndexEntryHandle add(const VertexIndexListHandle vertices);
         virtual void clear();
+        void drawHandle(const IndexEntryHandle handle, const GLenum mode);
         void gc();
         void remove(const IndexEntryHandle handle, const bool autoCompress = true);
+        const VertexIndexListHandle resolveIndexEntry(const IndexEntryHandle handle) const;
 };
+typedef boost::shared_ptr<StaticIndexBuffer> StaticIndexBufferHandle;
 
+class IndexBufferMap: public Utils::BufferMap {
+    public:
+        IndexBufferMap(const StaticIndexBufferHandle indexBuffer, const IndexEntryHandle handle);
+    private:
+        const VertexIndexListHandle _vertices;
+    protected:
+        void rangeCheck(const size_t index);
+    public:
+        virtual size_t map(const size_t index);
+};
 
 }
 }

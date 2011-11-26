@@ -16,12 +16,6 @@ namespace tt3d {
 namespace GL {
     
 using namespace tt3d;
-    
-typedef GLsizei VertexIndex;
-typedef std::list<VertexIndex> VertexIndexList;
-typedef boost::shared_ptr<VertexIndexList> VertexIndexListHandle;
-typedef std::vector<VertexIndexListHandle> VertexIndexListHandleList;
-
 
 class GenericBuffer: public Class {
     public:

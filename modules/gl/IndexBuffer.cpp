@@ -153,6 +153,16 @@ void StaticIndexBuffer::clear() {
     handles->clear();
 }
 
+void StaticIndexBuffer::drawHandle(const IndexEntryHandle handle, const GLenum mode) {
+    IndexEntryHandles::iterator it = find(handles->begin(), handles->end(), handle);
+    if (it == handles->end())
+        return;
+    IndexEntry *entry = handle.get();
+    GLuint *dataptr = (GLuint *)data;
+    dataptr += entry->start;
+    glDrawElements(mode, entry->count, GL_UNSIGNED_INT, (const GLvoid*)dataptr);
+}
+
 void StaticIndexBuffer::gc() {
     bool changed = true;
     bool globalChanged = false;
@@ -189,6 +199,30 @@ void StaticIndexBuffer::remove(const IndexEntryHandle handle, const bool autoCom
     if (autoCompress) {
         compress();
     }
+}
+
+const VertexIndexListHandle StaticIndexBuffer::resolveIndexEntry(const IndexEntryHandle handle) const {
+    return handle->vertices;
+}
+
+/* tt3d::GL::IndexBufferMap */
+
+IndexBufferMap::IndexBufferMap(const StaticIndexBufferHandle indexBuffer, const IndexEntryHandle handle):
+    _vertices(indexBuffer->resolveIndexEntry(handle))
+{
+    
+}
+
+void IndexBufferMap::rangeCheck(const size_t index) {
+    if ((index < 0) || (index >= _vertices->size())) {
+        throw 0;
+    }
+}
+
+size_t IndexBufferMap::map(const size_t index) {
+    rangeCheck(index);
+    const VertexIndexList *list = _vertices.get();
+    return (*list)[index];
 }
 
 }
