@@ -1,12 +1,26 @@
 #include <cstddef>
+#include "Base.hpp"
 
 namespace tt3d {
 namespace GL {
 
-class Viewport {
+class Viewport: public Struct {
+    private:
+        GLint left, top;
+        GLsizei width, height;
     public:
-        uint32_t getWidth() const;
-        uint32_t getHeight() const;
+        void bind();
+        void unbind();
+    public:
+        GLint getLeft() const { return left; };
+        GLsizei getHeight() const { return height; }
+        GLint getTop() const { return top; };
+        GLsizei getWidth() const { return width; }
+        
+        void setLeft(const GLint aValue) { left = aValue; };
+        void setHeight(const GLsizei aValue) { height = aValue; };
+        void setTop(const GLint aValue) { top = aValue; };
+        void setWidth(const GLsizei aValue) { width = aValue; };
 };
 
 }

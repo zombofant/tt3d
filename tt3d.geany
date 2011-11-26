@@ -18,11 +18,26 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
-FILE_NAME_0=55;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/tt3d.cpp;0;4
+current_page=8
+FILE_NAME_0=162;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/tt3d.cpp;0;4
+FILE_NAME_1=19;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/io/SDL.hpp;0;4
+FILE_NAME_2=111;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/io/SDL.cpp;0;4
+FILE_NAME_3=479;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/core/coreUIBootstrap.hpp;0;4
+FILE_NAME_4=1595;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/core/coreUIBootstrap.cpp;0;4
+FILE_NAME_5=864;CMake;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/CMakeLists.txt;0;4
+FILE_NAME_6=59483;C;0;16;0;1;1;/usr/include/GL/glew.h;0;4
+FILE_NAME_7=2711;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/gl/Camera.hpp;0;4
+FILE_NAME_8=6323;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/gl/Camera.cpp;0;4
+FILE_NAME_9=151;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/gl/Viewport.hpp;0;4
+FILE_NAME_10=803;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/Matrices.hpp;0;4
+FILE_NAME_11=977;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/Vectors.hpp;0;4
+FILE_NAME_12=3059;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/Matrices.cpp;0;4
+FILE_NAME_13=1079;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/Vectors.cpp;0;4
+FILE_NAME_14=0;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/VectorTemplates.hpp;0;4
+FILE_NAME_15=0;C++;0;16;0;1;1;/home/horazont/Projects/c++/tt3d/modules/geometry/MatrixTemplates.hpp;0;4
 
 [VTE]
-last_dir=/var/www/dataroot/horazont/priyomdb
+last_dir=/home/horazont/Projects/c++/tt3d
 
 [build-menu]
 NF_00_LB=_Make
