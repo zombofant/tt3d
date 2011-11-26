@@ -1,3 +1,6 @@
+#ifndef _TT3D_UI_SURFACE_H
+#define _TT3D_UI_SURFACE_H
+
 #include "modules/geometry/Rect.hpp"
 #include "modules/gl/GeometryObject.hpp"
 #include "modules/gl/Material.hpp"
@@ -20,22 +23,18 @@ class Material: public GL::Material {
 };
 typedef boost::shared_ptr<Material> MaterialHandle;
 
-class GeometryObject: public GL::GeometryObject {
-    public:
-        GeometryObject(const GLsizei vertexCount, const MaterialHandle material);
-};
-
-typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
-
 class Surface {
     public:
         Surface(const MaterialHandle material);
-    private:
+    protected:
         const MaterialHandle _material;
     public:
-        virtual void updateGeometry(const Rect rect, GeometryObjectHandle geometry) = 0;
+        const MaterialHandle getMaterial() const { return _material; };
+        virtual void updateGeometry(const Rect rect, GeometryObjectHandle &geometry) = 0;
 };
 typedef boost::shared_ptr<Surface> SurfaceHandle;
 
 }
 }
+
+#endif

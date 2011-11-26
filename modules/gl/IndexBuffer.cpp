@@ -205,25 +205,5 @@ const VertexIndexListHandle StaticIndexBuffer::resolveIndexEntry(const IndexEntr
     return handle->vertices;
 }
 
-/* tt3d::GL::IndexBufferMap */
-
-IndexBufferMap::IndexBufferMap(const StaticIndexBufferHandle indexBuffer, const IndexEntryHandle handle):
-    _vertices(indexBuffer->resolveIndexEntry(handle))
-{
-    
-}
-
-void IndexBufferMap::rangeCheck(const size_t index) {
-    if ((index < 0) || (index >= _vertices->size())) {
-        throw 0;
-    }
-}
-
-size_t IndexBufferMap::map(const size_t index) {
-    rangeCheck(index);
-    const VertexIndexList *list = _vertices.get();
-    return (*list)[index];
-}
-
 }
 }

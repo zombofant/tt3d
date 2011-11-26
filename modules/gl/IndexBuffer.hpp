@@ -10,7 +10,6 @@
 #include <set>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include "modules/utils/BufferMap.hpp"
 #include "GeometryBuffer.hpp"
 
 namespace tt3d {
@@ -65,17 +64,6 @@ class StaticIndexBuffer: public GenericIndexBuffer {
         const VertexIndexListHandle resolveIndexEntry(const IndexEntryHandle handle) const;
 };
 typedef boost::shared_ptr<StaticIndexBuffer> StaticIndexBufferHandle;
-
-class IndexBufferMap: public Utils::BufferMap {
-    public:
-        IndexBufferMap(const StaticIndexBufferHandle indexBuffer, const IndexEntryHandle handle);
-    private:
-        const VertexIndexListHandle _vertices;
-    protected:
-        void rangeCheck(const size_t index);
-    public:
-        virtual size_t map(const size_t index);
-};
 
 }
 }

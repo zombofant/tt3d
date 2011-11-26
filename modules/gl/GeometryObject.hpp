@@ -4,25 +4,63 @@
 #include <GL/glew.h>
 #include "IndexBuffer.hpp"
 #include "Material.hpp"
+#include "modules/utils/BufferMap.hpp"
+
 
 namespace tt3d {
 namespace GL {
+    
+struct VertexAllocation {
+    const VertexIndexListHandle bufferAllocation;
+    VertexIndexListHandle indicies;
+    IndexEntryHandle staticHandle;
+    
+    VertexAllocation(const VertexIndexListHandle aBufferAllocation):
+        bufferAllocation(aBufferAllocation) {};
+};
+    
+typedef boost::shared_ptr<VertexAllocation> VertexAllocationHandle;
+
+class VertexIndexListMap: public Utils::BufferMap {
+    public:
+        VertexIndexListMap(const VertexIndexListHandle vertices);
+    private:
+        const VertexIndexListHandle _vertices;
+    protected:
+        void rangeCheck(const size_t index);
+    public:
+        virtual size_t map(const size_t index);
+};
 
 class GeometryObject {
     public:
-        GeometryObject(const GLsizei vertexCount, const MaterialHandle material);
-    private:
+        GeometryObject(const MaterialHandle material);
+    protected:
         const MaterialHandle _material;
-        VertexIndexListHandle _vertices;
-        IndexEntryHandle _staticHandle;
-        const GLsizei _vertexCount;
+        VertexAllocationHandle _allocation;
+    protected:
+        virtual VertexAllocationHandle allocateVertices() = 0;
+        void requireAllocation();
     public:
         void addToStreamBuffer();
         void addToStreamBuffer(StreamIndexBufferHandle indexBuffer);
         void drawDirect(const GLenum mode);
-    public:
-        GLsizei getCount() { return _vertexCount; }
+        virtual Utils::BufferMapHandle getMap();
 };
+
+class GeometryRaw: public GeometryObject {
+    public:
+        GeometryRaw(const MaterialHandle material, const GLsizei vertexCount);
+    protected:
+        const GLsizei _vertexCount;
+    protected:
+        virtual VertexAllocationHandle allocateVertices();
+    public:
+        GLsizei getVertexCount() { return _vertexCount; }
+};
+
+typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
+
 
 }
 }

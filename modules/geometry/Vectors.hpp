@@ -7,15 +7,30 @@ namespace Geometry {
 typedef double VectorFloat;
 
 struct Vector2f {
-    float x, y;
+    union {
+        struct {
+            float x, y;
+        };
+        float as_array[2];
+    };
 };
 
 struct Vector3f {
-    float x, y, z;
+    union {
+        struct {
+            float x, y, z;
+        };
+        float as_array[3];
+    };
 };
 
 struct Vector4f {
-    float x, y, z, w;
+    union {
+        struct {
+            float x, y, z, w;
+        };
+        float as_array[4];
+    };
 };
     
 struct Vector2 {

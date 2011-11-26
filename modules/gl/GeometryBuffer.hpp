@@ -12,11 +12,14 @@
 #include <boost/shared_ptr.hpp>
 #include "modules/utils/BufferMap.hpp"
 #include "GenericBuffer.hpp"
+#include <string.h>
+#include "modules/geometry/Vectors.hpp"
 
 namespace tt3d {
 namespace GL {
     
 using namespace tt3d;
+using namespace tt3d::Geometry;
     
 typedef GLsizei VertexIndex;
 typedef std::vector<VertexIndex> VertexIndexList;
@@ -41,7 +44,7 @@ class GenericGeometryBuffer: public GenericBuffer {
         std::list<VertexIndex> freeVertices;
         std::set<VertexIndex> dirtyVertices;
         
-        boost::shared_ptr<Utils::BufferMap> bufferMap;
+        Utils::BufferMapHandle bufferMap;
     protected:
         virtual void doExpand(const GLsizei oldCapacity, const GLsizei newCapacity) {
             GenericBuffer::doExpand(oldCapacity, newCapacity);
@@ -254,6 +257,12 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             get(GenericGeometryBuffer<T>::map(index), posOffset, value, nPos);
         }
         
+        void getPosition(const GLsizei index, Vector2 &value) {
+            BOOST_STATIC_ASSERT(nPos == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getPosition(index, value.toVector2f().as_array);
+        }
+        
         void getColour(const GLsizei index, T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
             get(GenericGeometryBuffer<T>::map(index), colourOffset, value, nColour);
@@ -308,6 +317,12 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
         void setPosition(const GLsizei index, const T value[nPos]) {
             BOOST_STATIC_ASSERT(nPos > 0);
             set(GenericGeometryBuffer<T>::map(index), posOffset, value, nPos);
+        }
+        
+        void setPosition(const GLsizei index, const Vector2 value) {
+            BOOST_STATIC_ASSERT(nPos == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setPosition(index, value.toVector2f().as_array);
         }
         
         void setColour(const GLsizei index, const T value[nColour]) {
