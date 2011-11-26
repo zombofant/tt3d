@@ -16,7 +16,7 @@ Error::Error(const std::string aMessage):
 /* tt3d::GL::Class */
 
 Class::Class():
-    id(0)
+    glID(0)
 {
     
 }

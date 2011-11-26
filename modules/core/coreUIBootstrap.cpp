@@ -4,6 +4,8 @@
 
 namespace tt3d {
 namespace Core {
+    
+using namespace tt3d;
 
 /* tt3d::Core::TT3D */
 
@@ -65,11 +67,13 @@ void TT3D::initGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    glViewport(0, 0, 800, 600);
+    globalViewport = new GL::Viewport(0, 0, 800, 600);
+    globalViewport->bind();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, 800, 600, 0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
+    
 }
 
 void TT3D::freeGL() {

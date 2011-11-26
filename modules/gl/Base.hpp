@@ -1,3 +1,6 @@
+#ifndef _TT3D_GL_BASE_H
+#define _TT3D_GL_BASE_H
+
 #include <exception>
 #include <GL/glew.h>
 #include <string>
@@ -27,10 +30,12 @@ class Class: public Struct {
     public:
         Class();
     protected:
-        GLuint id;
+        GLuint glID;
 };
 
 void raiseLastGLError();
 
 }
 }
+
+#endif

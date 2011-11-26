@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(tt3d CXX)
 
+# set(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
+
 set(tt3d_VERSION_MAJOR 0)
 set(tt3d_VERSION_MINOR 0)
 set(tt3d_VERSION_RELEASE 0)
@@ -13,11 +15,12 @@ find_package(SDL REQUIRED)
 # TODO: proper packages for GLEW and rt
 
 include_directories(${PROJECT_SOURCE_DIR} ${OpenGL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GLEW)
+set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GLU GLEW)
 
 add_subdirectory("modules")
 
-set(tt3d_MODULES tt3d_io tt3d_geometry tt3d_gl tt3d_core)
+# why do we need to put the libraries in reversed order?
+set(tt3d_MODULES tt3d_core tt3d_gl tt3d_geometry tt3d_io)
 
 add_executable(tt3d tt3d.cpp)
 add_dependencies(tt3d ${tt3d_MODULES})

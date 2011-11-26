@@ -5,6 +5,11 @@ namespace tt3d {
 namespace GL {
 
 class Viewport: public Struct {
+    public:
+        Viewport(const GLint aLeft, 
+            const GLint aTop, 
+            const GLsizei aWidth, 
+            const GLsizei aHeight);
     private:
         GLint left, top;
         GLsizei width, height;

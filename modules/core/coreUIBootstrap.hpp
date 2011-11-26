@@ -2,6 +2,7 @@
 #include "modules/io/SDL.hpp"
 #include "modules/io/vfs/VFS.hpp"
 #include "modules/io/vfs/MountDirectory.hpp"
+#include "modules/gl/Viewport.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -12,7 +13,9 @@ class TT3D: public IO::Application {
     private:
         SDL_Surface *window;
         
-        VFS::VFS vfs;
+        GL::Viewport *globalViewport;
+        
+        VFS::VFS *vfs;
     protected:
         virtual void initIO();
         virtual void initSDL();
