@@ -1,4 +1,6 @@
+add_subdirectory("utils")
 add_subdirectory("io")
 add_subdirectory("geometry")
 add_subdirectory("gl")
+add_subdirectory("ui")
 add_subdirectory("core")

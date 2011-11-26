@@ -1,14 +1,16 @@
 #ifndef _TT3D_GL_BASE_H
 #define _TT3D_GL_BASE_H
 
-#include <exception>
+#include "modules/utils/Exception.hpp"
 #include <GL/glew.h>
 #include <string>
 
 namespace tt3d {
 namespace GL {
     
-class Error: public std::exception {
+using namespace tt3d;
+    
+class Error: public Utils::Exception {
     public:
         Error(const std::string aMessage);
         ~Error() throw() {};

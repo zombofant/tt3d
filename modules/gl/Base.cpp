@@ -4,11 +4,13 @@
 
 namespace tt3d {
 namespace GL {
+    
+using namespace tt3d;
 
 /* tt3d::GL::Error */
 
 Error::Error(const std::string aMessage):
-    message("OpenGL error: " + aMessage)
+    Utils::Exception("OpenGL error: "+aMessage)
 {
     
 }
