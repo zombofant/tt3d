@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(tt3d CXX)
 
-set(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
+set(CMAKE_CXX_FLAGS "-g -Wall -pedantic -std=c++0x")
 
 set(tt3d_VERSION_MAJOR 0)
 set(tt3d_VERSION_MINOR 0)
