@@ -263,9 +263,33 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             getPosition(index, value.toVector2f().as_array);
         }
         
+        void getPosition(const GLsizei index, Vector3 &value) {
+            BOOST_STATIC_ASSERT(nPos == 3);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getPosition(index, value.toVector3f().as_array);
+        }
+        
         void getColour(const GLsizei index, T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
             get(GenericGeometryBuffer<T>::map(index), colourOffset, value, nColour);
+        }
+        
+        void getColour(const GLsizei index, Vector2 &value) {
+            BOOST_STATIC_ASSERT(nColour == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getColour(index, value.toVector2f().as_array);
+        }
+        
+        void getColour(const GLsizei index, Vector3 &value) {
+            BOOST_STATIC_ASSERT(nColour == 3);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getColour(index, value.toVector3f().as_array);
+        }
+        
+        void getColour(const GLsizei index, Vector4 &value) {
+            BOOST_STATIC_ASSERT(nColour == 4);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getColour(index, value.toVector4f().as_array);
         }
         
         void getTexCoord0(const GLsizei index, T value[nTexCoord0]) {
@@ -325,9 +349,33 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             setPosition(index, value.toVector2f().as_array);
         }
         
+        void setPosition(const GLsizei index, const Vector3 value) {
+            BOOST_STATIC_ASSERT(nPos == 3);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setPosition(index, value.toVector3f().as_array);
+        }
+        
         void setColour(const GLsizei index, const T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
             set(GenericGeometryBuffer<T>::map(index), colourOffset, value, nColour);
+        }
+        
+        void setColour(const GLsizei index, const Vector2 value) {
+            BOOST_STATIC_ASSERT(nColour == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setColour(index, value.toVector2f().as_array);
+        }
+        
+        void setColour(const GLsizei index, const Vector3 value) {
+            BOOST_STATIC_ASSERT(nColour == 3);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setColour(index, value.toVector3f().as_array);
+        }
+        
+        void setColour(const GLsizei index, const Vector4 value) {
+            BOOST_STATIC_ASSERT(nColour == 4);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setColour(index, value.toVector4f().as_array);
         }
         
         void setTexCoord0(const GLsizei index, const T value[nTexCoord0]) {

@@ -46,6 +46,7 @@ class GeometryObject {
         void addToStreamBuffer(StreamIndexBufferHandle indexBuffer);
         void drawDirect(const GLenum mode);
         virtual Utils::BufferMapHandle getMap();
+        const MaterialHandle getMaterial() const { return _material; }
 };
 
 class GeometryRaw: public GeometryObject {
@@ -61,6 +62,12 @@ class GeometryRaw: public GeometryObject {
 
 typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
 
+template <class T>
+void getMappedBuffer(const GeometryObjectHandle handle, 
+    GenericGeometryBufferHandle &bufferHandle, 
+    T *&buffer, 
+    Utils::BufferMapHandle &mapHandle,
+    Utils::BufferMap *&map);
 
 }
 }

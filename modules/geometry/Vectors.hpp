@@ -62,6 +62,7 @@ struct Vector2 {
         
         Vector2 &operator+= (const Vector2 b);
         Vector2 &operator/= (const VectorFloat b);
+        Vector2 &operator*= (const VectorFloat b);
 };
 
 struct Vector3 {

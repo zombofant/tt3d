@@ -77,5 +77,20 @@ VertexAllocationHandle GeometryRaw::allocateVertices() {
     return VertexAllocationHandle(allocation);
 }
 
+/* free functions */
+template <class T>
+void getMappedBuffer(const GeometryObjectHandle handle, 
+    GenericGeometryBufferHandle &bufferHandle, 
+    T *&buffer, 
+    Utils::BufferMapHandle &mapHandle,
+    Utils::BufferMap *&map)
+{
+    bufferHandle = handle->getMaterial()->getGeometryBuffer();
+    buffer = dynamic_cast<T*>(bufferHandle.get());
+    mapHandle = handle->getMap();
+    map = mapHandle.get();
+    buffer->setMap(map);
+}
+
 }
 }

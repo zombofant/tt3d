@@ -19,14 +19,15 @@ void Box::setSpacing(const uint16_t aValue) {
 /* tt3d::UI::HBox */
 
 void HBox::doAlign() {
-    updateFlexSum();
-    int32_t x = _absRect.x;
+    // this will update both the client rect and the flex sum
+    Widget::doAlign();;
+    int32_t x = _absClientRect.x;
     const int32_t childCount = (int32_t)(_children->size());
     if (childCount == 0) {
         return;
     }
     
-    int32_t freeSpace = _absRect.w - (childCount - 1) * _spacing;
+    int32_t freeSpace = _absClientRect.w - (childCount - 1) * _spacing;
     const double spacePerFlex = (double)(freeSpace) / _flexSum;
     
     for (WidgetHandles::iterator it = _children->begin();
@@ -47,14 +48,15 @@ void HBox::doAlign() {
 /* tt3d::UI::VBox */
 
 void VBox::doAlign() {
-    updateFlexSum();
-    int32_t y = _absRect.y;
+    // this will update both the client rect and the flex sum
+    Widget::doAlign(); 
+    int32_t y = _absRect.y + _padding.top;
     const int32_t childCount = (int32_t)(_children->size());
     if (childCount == 0) {
         return;
     }
     
-    int32_t freeSpace = _absRect.h - (childCount - 1) * _spacing;
+    int32_t freeSpace = _absClientRect.h - (childCount - 1) * _spacing;
     const double spacePerFlex = (double)(freeSpace) / _flexSum;
     
     for (WidgetHandles::iterator it = _children->begin();

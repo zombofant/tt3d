@@ -66,6 +66,11 @@ Vector2 &Vector2::operator/=(const VectorFloat b) {
     return *this;
 }
 
+Vector2 &Vector2::operator*=(const VectorFloat b) {
+    vectorScalarMult<2>(as_array, b, as_array);
+    return *this;
+}
+
 /* tt3d::Geometry::Vector3 */
 
 Vector3::Vector3() {

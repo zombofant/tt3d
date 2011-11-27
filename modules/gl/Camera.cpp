@@ -58,7 +58,7 @@ Camera::Camera():
     projectionInvalidated(false),
     modelView(),
     projection(),
-    viewport(0)
+    viewport()
 {
     
 }
@@ -137,6 +137,15 @@ void Camera::validate() {
     if (modelViewInvalidated) {
         recalculateModelView();
     }
+}
+
+void Camera::viewportChanged() {
+    doViewportChanged();
+}
+
+void Camera::setViewport(const ViewportHandle aValue) {
+    viewport = aValue;
+    doViewportChanged();
 }
 
 /* tt3d::GL::CameraPerspective */

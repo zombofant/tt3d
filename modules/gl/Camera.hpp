@@ -4,6 +4,7 @@
 #include "Viewport.hpp"
 #include "modules/geometry/Vectors.hpp"
 #include "modules/geometry/Matrices.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace tt3d {
 namespace GL {
@@ -17,7 +18,7 @@ class Camera {
         bool modelViewInvalidated, projectionInvalidated;
     protected:
         Matrix4 modelView, projection;
-        const Viewport *viewport;
+        ViewportHandle viewport;
     protected:
         void deinvalidateModelView();
         void deinvalidateProjection();
@@ -35,10 +36,13 @@ class Camera {
         void multAsOne();
         virtual void update(const double interval);
         void validate();
+        void viewportChanged();
     public:
-        const Viewport *getViewport();
-        void setViewport(const Viewport *viewport);
+        const ViewportHandle getViewport() const { return viewport; };
+        void setViewport(const ViewportHandle aValue);
 };
+
+typedef boost::shared_ptr<Camera> CameraHandle;
 
 class CameraPerspective: public Camera {
     public:

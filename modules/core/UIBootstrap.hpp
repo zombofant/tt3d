@@ -8,6 +8,9 @@
 #include "modules/gl/Viewport.hpp"
 #include "modules/gl/GeometryBuffer.hpp"
 #include "modules/gl/IndexBuffer.hpp"
+#include "modules/ui/Surface.hpp"
+#include "modules/ui/Widget.hpp"
+#include "modules/core/InGame.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -18,20 +21,26 @@ class TT3D: public IO::Application {
     private:
         SDL_Surface *window;
         
-        GL::Viewport *globalViewport;
-        GL::GeometryBuffer<float, 2, 4> *testGeometry;
-        GL::StaticIndexBuffer *testIndexBuffer;
-        GL::IndexEntryHandle testIndexHandle;
+        GL::ViewportHandle globalViewport;
+        
+        InGame *_rootWidget;
+        UI::WidgetHandle _rootHandle;
+        UI::Material *_uiMaterial;
+        GL::MaterialHandle _uiMaterialHandle;
+        UI::Surface3x3 *_uiBackground;
+        GL::SurfaceHandle _uiBackgroundHandle;
         
         VFS::VFS *vfs;
     protected:
         virtual void initIO();
         virtual void initSDL();
         virtual void initGL();
+        virtual void initUI();
         
         virtual void freeGL();
         virtual void freeSDL();
         virtual void freeIO();
+        virtual void freeUI();
     protected:
         virtual void freeApp();
         virtual void perFrame(const double interval);

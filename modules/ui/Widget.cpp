@@ -12,6 +12,7 @@ using namespace tt3d::Geometry;
 Widget::Widget():
     _absRect(0, 0, 0, 0),
     _rect(0, 0, 0, 0),
+    _absClientRect(0, 0, 0, 0),
     _children(new WidgetHandles()),
     _enabled(true),
     _visible(true),
@@ -20,7 +21,8 @@ Widget::Widget():
     _flexSum(0),
     _name(""),
     _parent(),
-    _animated(false)
+    _animated(false),
+    _padding(0, 0, 0, 0)
 {
     
 }
@@ -31,12 +33,10 @@ void Widget::addChild(const WidgetHandle aWidget) {
     }
     _children->push_back(aWidget);
     _flexSum += aWidget->getFlex();
-    doAlign();
 }
 
 void Widget::doAbsRectChanged() {
     invalidate();
-    doAlign();
 }
 
 bool Widget::doAcceptChild(const WidgetHandle aWidget) {
@@ -48,7 +48,8 @@ bool Widget::doAcceptFocus() {
 }
 
 void Widget::doAlign() {
-    
+    updateFlexSum();
+    updateClientRect();
 }
 
 WidgetHandle Widget::doHitTest(const Point &aPoint) {
@@ -81,8 +82,12 @@ void Widget::doMouseMotion(const SDL_MouseMotionEvent &motion) {
     
 }
 
+void Widget::doPaddingChanged() {
+    invalidate();
+}
+
 void Widget::doRelMetricsChanged() {
-    
+    invalidate();
 }
 
 void Widget::doRenderBackground() {
@@ -142,6 +147,15 @@ void Widget::unlinkParent(WidgetHandle aParent) {
     aParent->removeChild(me);
 }
 
+void Widget::updateClientRect() {
+    _absClientRect = Rect(
+        _absRect.x + _padding.left,
+        _absRect.y + _padding.top,
+        _absRect.w - (_padding.left + _padding.right),
+        _absRect.h - (_padding.top + _padding.bottom)
+    );
+}
+
 void Widget::updateFlexSum() {
     uint32_t flexSum = 0;
     for (WidgetHandles::iterator it = _children->begin();
@@ -166,6 +180,10 @@ void Widget::deleteChildren() {
     _children->clear();
 }
 
+void Widget::realign() {
+    doAlign();
+}
+
 void Widget::render() {
     doRenderBackground();
     doRenderChildren();
@@ -174,8 +192,12 @@ void Widget::render() {
 
 void Widget::update(const double interval) {
     if (_animated) {
+        if (_invalidated) {
+            doAlign();
+        }
         doUpdate(interval);
     } else if (_invalidated) {
+        doAlign();
         doUpdate(0.0);
     }
     _invalidated = false;
@@ -187,6 +209,13 @@ void Widget::update(const double interval) {
         const WidgetHandle handle = *it;
         handle->update(interval);
     }
+}
+
+void Widget::setPadding(const Borders aValue) {
+    if (_padding == aValue)
+        return;
+    _padding = aValue;
+    doPaddingChanged();
 }
 
 void Widget::setParent(const WidgetHandle aValue) {

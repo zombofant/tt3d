@@ -41,5 +41,72 @@ Rect Rect::operator+(const Point &by) const {
     return Rect(x + by.x, y + by.y, w, h);
 }
 
+/* tt3d::UI::Borders */
+
+Borders::Borders():
+    top(0),
+    left(0),
+    right(0),
+    bottom(0)
+{
+    
+}
+
+Borders::Borders(const int32_t all):
+    top(all),
+    left(all),
+    right(all),
+    bottom(all)
+{
+    
+}
+
+Borders::Borders(const int32_t ahoriz, const int32_t avert):
+    top(avert),
+    left(ahoriz),
+    right(ahoriz),
+    bottom(avert)
+{
+    
+}
+
+Borders::Borders(const int32_t atop, const int32_t aleft, const int32_t aright, const int32_t abottom):
+    top(atop),
+    left(aleft),
+    right(aright),
+    bottom(abottom)
+{
+    
+}
+
+void Borders::setAll(const int32_t aValue) {
+    top = aValue;
+    left = aValue;
+    right = aValue;
+    bottom = aValue;
+}
+
+void Borders::setHorizontal(const int32_t aValue) {
+    left = aValue;
+    right = aValue;
+}
+
+void Borders::setVertical(const int32_t aValue) {
+    top = aValue;
+    bottom = aValue;
+}
+
+bool Borders::operator==(const Borders &other) const {
+    return ((left == other.left) && (top == other.top) && (right == other.right) && (bottom == other.bottom));
+}
+
+Borders &Borders::operator=(const Borders &other) {
+    top = other.top;
+    left = other.left;
+    right = other.right;
+    bottom = other.bottom;
+    return *this;
+}
+
 }
 }

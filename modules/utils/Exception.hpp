@@ -1,3 +1,6 @@
+#ifndef _TT3D_UTILS_EXCEPTION_H
+#define _TT3D_UTILS_EXCEPTION_H
+
 #include <exception>
 #include <string>
 
@@ -19,3 +22,5 @@ class Exception: std::exception {
 
 }
 }
+
+#endif

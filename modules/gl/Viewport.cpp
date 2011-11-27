@@ -3,6 +3,8 @@
 
 namespace tt3d {
 namespace GL {
+    
+using namespace tt3d;
 
 /* tt3d::GL::Viewport */
 
@@ -21,6 +23,13 @@ void Viewport::bind() {
 
 void Viewport::unbind() {
     
+}
+
+void Viewport::setRect(const Geometry::Rect &aValue) {
+    left = aValue.x;
+    top = aValue.y;
+    width = aValue.w;
+    height = aValue.h;
 }
 
 }

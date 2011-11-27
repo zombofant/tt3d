@@ -10,6 +10,7 @@
 #include "modules/io/SDL.hpp"
 #include "modules/utils/Exception.hpp"
 #include "modules/geometry/Rect.hpp"
+#include "Surface.hpp"
 
 namespace tt3d {
 namespace UI {
@@ -38,6 +39,7 @@ class Widget {
     protected:
         Rect _absRect;
         Rect _rect;
+        Rect _absClientRect;
         WidgetHandles *_children;
         bool _enabled, _visible, _invalidated;
         uint16_t _flex;
@@ -45,6 +47,7 @@ class Widget {
         std::string _name;
         WidgetWeakHandle _parent;
         bool _animated;
+        Borders _padding;
     protected:
         void addChild(const WidgetHandle aWidget);
         virtual void doAbsRectChanged();
@@ -56,6 +59,7 @@ class Widget {
         virtual void doSurfaceChanged();
         virtual void doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
         virtual void doMouseMotion(const SDL_MouseMotionEvent &motion);
+        virtual void doPaddingChanged();
         virtual void doRelMetricsChanged();
         virtual void doRenderBackground();
         void doRenderChildren();
@@ -64,20 +68,23 @@ class Widget {
         void linkParent(WidgetHandle aParent);
         void removeChild(const WidgetHandle aWidget);
         void unlinkParent(WidgetHandle aParent);
+        void updateClientRect();
         void updateFlexSum();
     public:
         Point clientToAbsolute(const Point &point);
         Point clientToParent(const Point &point);
         void deleteChildren();
         void invalidate() { _invalidated = true; };
+        void realign();
         void render();
-        virtual void update(const double interval);
+        void update(const double interval);
     public:
         const Rect &getAbsRect() const { return _absRect; };
         bool getEnabled() const { return _enabled; };
         uint16_t getFlex() const { return _flex; };
         const std::string getName() const { return _name; };
         uint32_t getHeight() const { return _rect.h; };
+        const Borders &getPadding() const { return _padding; };
         WidgetHandle getParent() const { return _parent.lock(); };
         const Rect &getRect() const { return _rect; };
         bool getVisible() const { return _visible; };
@@ -88,6 +95,7 @@ class Widget {
         void setFlex(const uint16_t aValue) { _flex = aValue; };
         void setHeight(const uint32_t aValue) { _rect.h = aValue; };
         void setName(const std::string aValue) { _name = std::string(aValue); };
+        void setPadding(const Borders aValue);
         void setParent(WidgetHandle aValue);
         void setRelMetrics(const int32_t x, const int32_t y);
         void setVisible(const bool aValue) { _visible = aValue; };
