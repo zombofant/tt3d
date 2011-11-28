@@ -1,3 +1,6 @@
+#ifndef _TT3D_IO_SDL_H
+#define _TT3D_IO_SDL_H
+
 #include <SDL/SDL.h>
 #include <ctime>
 
@@ -43,3 +46,5 @@ class Application {
 
 }
 }
+
+#endif 
