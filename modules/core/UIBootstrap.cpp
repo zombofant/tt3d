@@ -53,20 +53,7 @@ void TT3D::initSDL() {
     SDL_ShowCursor(1);
 }
 
-void TT3D::initGL() {
-    static float positions[4][2] = {
-        {0., 0.},
-        {0., 100.},
-        {100., 100.},
-        {100., 0.}
-    };
-    static float colours[4][4] = {
-        {0., 0., 0., 1.},
-        {1., 0., 0., 1.},
-        {0., 1., 0., 1.},
-        {0., 0., 1., 1.}
-    };
-    
+void TT3D::initGL() {    
     GLenum err = glewInit();
     if (err != GLEW_OK) {
         std::cerr << "glewInit failed." << std::endl;
@@ -81,31 +68,48 @@ void TT3D::initGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    globalViewport = new GL::Viewport(0, 0, 800, 600);
+    globalViewport = ViewportHandle(new GL::Viewport(0, 0, 800, 600));
     globalViewport->bind();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, 800, 600, 0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
+}
+
+void TT3D::initUI() {
+    _uiBuffer = new UI::GeometryBuffer();
+    _uiBufferHandle = GenericGeometryBufferHandle(_uiBuffer);
     
-    testGeometry = new GL::GeometryBuffer<float, 2, 4>(GL_STATIC_DRAW);
-    testIndexBuffer = new GL::StaticIndexBuffer(GL_STATIC_DRAW);
+    _uiMaterial = new UI::Material();
+    _uiMaterialHandle = UI::MaterialHandle(_uiMaterial);
     
-    GL::VertexIndexListHandle vertices = testGeometry->allocateVertices(4);
+    _rootWidget = new InGame();
+    _rootHandle = WidgetHandle(_rootWidget);
     
-    for (int i = 0; i < 4; i++) {
-        testGeometry->setPosition(i, positions[i]);
-        testGeometry->setColour(i, colours[i]);
-    }
+    _uiBackground = new Surface3x3(_uiMaterialHandle);
+    _uiBackgroundHandle = SurfaceHandle(_uiBackground);
     
-    testIndexHandle = testIndexBuffer->add(vertices);
-    testIndexBuffer->unbind();
-    testGeometry->flush();
-    testGeometry->unbind();
+    _rootWidget->setSurface(_uiBackgroundHandle);
+}
+
+void TT3D::handleKeypress(const SDL_keysym &sym, const SDL_KeyActionMode mode) {
+    _rootWidget->deliverKeypress(sym, mode);
+}
+
+void TT3D::handleMouseButton(const SDL_MouseButtonEvent &button, const SDL_KeyActionMode mode) {
+    _rootWidget->deliverMouseButton(button, mode);
+}
+
+void TT3D::handleMouseMotion(const SDL_MouseMotionEvent &motion) {
+    _rootWidget->deliverMouseMotion(motion);
+}
+
+void TT3D::freeUI() {
+    
 }
 
 void TT3D::freeGL() {
-    testIndexHandle.reset();
+    
 }
 
 void TT3D::freeSDL() {
@@ -122,6 +126,12 @@ void TT3D::initApp() {
         initSDL();
         try {
             initGL();
+            try {
+                initUI();
+            } catch (...) {
+                freeGL();
+                throw;
+            }
         } catch (...) {
             freeSDL();
             throw;
@@ -137,45 +147,17 @@ void TT3D::perFrame(const double interval) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     
-    float position[2];
-    float colour[4];
-    
-    glPointSize(2.0);
-    
-    glDisable(GL_BLEND);
-    testGeometry->readBack();
-    testGeometry->unbind();
-    glBegin(GL_QUADS);
-        for (int i = 0; i < 4; i++) {
-            testGeometry->getColour(i, colour);
-            glColor4fv(colour);
-            std::cout << colour[0] << " " << colour[1] << " " << colour[2] << " " << colour[3] << std::endl;
-            testGeometry->getPosition(i, position);
-            std::cout << position[0] << " " << position[1] << std::endl;
-            glVertex2fv(position);
-        }
-    glEnd();
-    
-    glTranslatef(101.0, 0.0, 0.0);
-    
-    glDrawArrays(GL_QUADS, 0, 4);
-    glTranslatef(101.0, 0.0, 0.0);
-    
-    
-    testGeometry->bind();
-    testIndexBuffer->bind();
-    testIndexBuffer->readBack();
-    testIndexBuffer->dump();
-    testIndexBuffer->draw(GL_QUADS);
-    testIndexBuffer->unbind();
-    testGeometry->unbind();
+    _rootWidget->update(interval);
+    _rootWidget->render();
     
     SDL_GL_SwapBuffers();
 }
 
 void TT3D::freeApp() {
+    freeUI();
     freeGL();
     freeSDL();
+    freeIO();
 }
 
 }

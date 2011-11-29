@@ -35,7 +35,6 @@ typedef std::vector<WidgetHandle> WidgetHandles;
 class Widget {
     public:
         Widget();
-        virtual ~Widget();
     protected:
         Rect _absRect;
         Rect _rect;
@@ -51,19 +50,13 @@ class Widget {
     protected:
         void addChild(const WidgetHandle aWidget);
         virtual void doAbsRectChanged();
-        virtual bool doAcceptChild(const WidgetHandle aWidget);
-        virtual bool doAcceptFocus();
         virtual void doAlign();
-        virtual WidgetHandle doHitTest(const Point &aPoint);
-        virtual void doKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled);
-        virtual void doSurfaceChanged();
-        virtual void doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
-        virtual void doMouseMotion(const SDL_MouseMotionEvent &motion);
         virtual void doPaddingChanged();
         virtual void doRelMetricsChanged();
         virtual void doRenderBackground();
         void doRenderChildren();
         virtual void doRenderForeground();
+        virtual void doSurfaceChanged();
         virtual void doUpdate(const double interval);
         void linkParent(WidgetHandle aParent);
         void removeChild(const WidgetHandle aWidget);
@@ -71,9 +64,15 @@ class Widget {
         void updateClientRect();
         void updateFlexSum();
     public:
+        virtual bool acceptsChild(const WidgetHandle aWidget);
+        virtual bool acceptsFocus();
         Point clientToAbsolute(const Point &point);
         Point clientToParent(const Point &point);
         void deleteChildren();
+        virtual void handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled);
+        virtual void handleMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
+        virtual void handleMouseMotion(const SDL_MouseMotionEvent &motion);
+        virtual WidgetHandle hitTest(const Point &aPoint);
         void invalidate() { _invalidated = true; };
         void realign();
         void render();

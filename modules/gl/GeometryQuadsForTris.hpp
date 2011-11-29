@@ -17,8 +17,6 @@ class GeometryQuadsForTris: public GeometryObject {
         const GLsizei _quadCount;
     protected:
         virtual VertexAllocationHandle allocateVertices();
-    public:
-        virtual Utils::BufferMapHandle getMap();
 };
 
 }

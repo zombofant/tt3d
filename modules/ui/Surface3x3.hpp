@@ -16,7 +16,7 @@ class Surface3x3: public Surface {
     public:
         struct QuadInfo {
             Vector4 colours[4];
-            Vector2 texCoords[2];
+            Vector2 texCoords[4];
             
             QuadInfo();
             

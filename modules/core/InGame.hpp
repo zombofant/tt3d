@@ -36,11 +36,12 @@ class InGame: public UI::RootWidget {
         void initGrid();
     protected:
         virtual void doAbsRectChanged();
-        virtual void doKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled);
-        virtual void doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
-        virtual void doMouseMotion(const SDL_MouseMotionEvent &motion);
-        virtual void doRenderBackground();
-        virtual void doUpdate(const double interval);
+        virtual void doRenderCallback();
+        virtual void doUpdateCallback(const double interval);
+    public:
+        virtual void handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled);
+        virtual void handleMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
+        virtual void handleMouseMotion(const SDL_MouseMotionEvent &motion);
 };
     
 }

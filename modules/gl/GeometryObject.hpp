@@ -67,9 +67,15 @@ void getMappedBuffer(const GeometryObjectHandle handle,
     GenericGeometryBufferHandle &bufferHandle, 
     T *&buffer, 
     Utils::BufferMapHandle &mapHandle,
-    Utils::BufferMap *&map);
+    Utils::BufferMap *&map)
+{
+    bufferHandle = handle->getMaterial()->getGeometryBuffer();
+    buffer = dynamic_cast<T*>(bufferHandle.get());
+    mapHandle = handle->getMap();
+    map = mapHandle.get();
+    buffer->setMap(mapHandle);
+}
 
 }
 }
-
 #endif

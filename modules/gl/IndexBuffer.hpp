@@ -37,6 +37,8 @@ class GenericIndexBuffer: public GenericBuffer {
         void draw(const GLenum mode);
         void drawUnbound(const GLenum mode);
         void dump();
+    public:
+        GLsizei getCount() const { return count; };
 };
 
 class StreamIndexBuffer: public GenericIndexBuffer {

@@ -11,24 +11,30 @@
 #include "modules/ui/Surface.hpp"
 #include "modules/ui/Widget.hpp"
 #include "modules/core/InGame.hpp"
+#include "modules/ui/Surface3x3.hpp"
 
 namespace tt3d {
 namespace Core {
 
 using namespace tt3d;
+using namespace tt3d::GL;
+using namespace tt3d::UI;
+using namespace tt3d::IO;
 
 class TT3D: public IO::Application {
     private:
         SDL_Surface *window;
         
-        GL::ViewportHandle globalViewport;
+        ViewportHandle globalViewport;
         
+        UI::GeometryBuffer *_uiBuffer;
+        GenericGeometryBufferHandle _uiBufferHandle;
+        UI::Material *_uiMaterial; // important to mark it as UI material here!
+        UI::MaterialHandle _uiMaterialHandle;
         InGame *_rootWidget;
-        UI::WidgetHandle _rootHandle;
-        UI::Material *_uiMaterial;
-        GL::MaterialHandle _uiMaterialHandle;
-        UI::Surface3x3 *_uiBackground;
-        GL::SurfaceHandle _uiBackgroundHandle;
+        WidgetHandle _rootHandle;
+        Surface3x3 *_uiBackground;
+        SurfaceHandle _uiBackgroundHandle;
         
         VFS::VFS *vfs;
     protected:
@@ -36,6 +42,10 @@ class TT3D: public IO::Application {
         virtual void initSDL();
         virtual void initGL();
         virtual void initUI();
+        
+        virtual void handleKeypress(const SDL_keysym &sym, const SDL_KeyActionMode mode);
+        virtual void handleMouseButton(const SDL_MouseButtonEvent &button, const SDL_KeyActionMode mode);
+        virtual void handleMouseMotion(const SDL_MouseMotionEvent &motion);
         
         virtual void freeGL();
         virtual void freeSDL();

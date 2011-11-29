@@ -33,13 +33,13 @@ struct Matrix4 {
     
     Matrix4f toMatrix4f();
     
-    static Matrix4 Rotation(const Vector3 axis, const VectorFloat angle);
-    static Matrix4 Rotation(const Matrix3 m3);
+    static Matrix4 Rotation(const Vector3 &axis, const VectorFloat angle);
+    static Matrix4 Rotation(const Matrix3 &m3);
     static Matrix4 RotationX(const VectorFloat angle);
     static Matrix4 RotationY(const VectorFloat angle);
     static Matrix4 RotationZ(const VectorFloat angle);
-    static Matrix4 Translation(const Vector3 by);
-    static Matrix4 Scale(const Vector3 by);
+    static Matrix4 Translation(const Vector3 &by);
+    static Matrix4 Scale(const Vector3 &by);
 };
 
 Vector3 operator* (Matrix3 a, Vector3 b);

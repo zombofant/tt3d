@@ -151,9 +151,9 @@ void Camera::setViewport(const ViewportHandle aValue) {
 /* tt3d::GL::CameraPerspective */
 
 CameraPerspective::CameraPerspective():
-    fov(60.),
-    nearZ(1.0),
-    farZ(100.0)
+    _fov(60.),
+    _nearZ(1.0),
+    _farZ(100.0)
 {
     
 }
@@ -163,17 +163,38 @@ void CameraPerspective::doViewportChanged() {
 }
 
 void CameraPerspective::recalculateProjection() {
-    const float f = 1. / tan(fov / 90. * M_PI); // cotan(DegToRad(fov) / 2.)
+    const float f = 1. / tan(_fov / 90. * M_PI); // cotan(DegToRad(fov) / 2.)
     const float aspect = double(viewport->getWidth()) / (viewport->getHeight());
     
     projection = Matrix4();
     projection.coeff[0] = f / aspect;
     projection.coeff[5] = f;
-    projection.coeff[10] = (farZ - nearZ) / (nearZ - farZ);
+    projection.coeff[10] = (_farZ - _nearZ) / (_nearZ - _farZ);
     projection.coeff[11] = -1.0;
-    projection.coeff[14] = (2*farZ*nearZ) / (nearZ - farZ);
+    projection.coeff[14] = (2*_farZ*_nearZ) / (_nearZ - _farZ);
     projection.coeff[15] = 0.;
     deinvalidateProjection();
+}
+
+void CameraPerspective::setFarZ(const VectorFloat aValue) {
+    if (_farZ == aValue)
+        return;
+    _farZ = aValue;
+    invalidateProjection();
+}
+
+void CameraPerspective::setFieldOfView(const VectorFloat aValue) {
+    if (_fov == aValue)
+        return;
+    _fov = aValue;
+    invalidateProjection();
+}
+
+void CameraPerspective::setNearZ(const VectorFloat aValue) {
+    if (_nearZ == aValue)
+        return;
+    _nearZ = aValue;
+    invalidateProjection();
 }
 
 /* tt3d::GL::CameraFree */

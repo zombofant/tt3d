@@ -6,6 +6,19 @@ namespace UI {
 
 /* tt3d::UI::Surface3x3 */
 
+Surface3x3::Surface3x3(const MaterialHandle material):
+    Surface::Surface(material),
+    _quads({QuadInfo(), QuadInfo(), QuadInfo(), 
+            QuadInfo(), QuadInfo(), QuadInfo(),
+            QuadInfo(), QuadInfo(), QuadInfo()}),
+    _leftMargin(0),
+    _topMargin(0),
+    _rightMargin(0),
+    _bottomMargin(0)
+{
+    
+}
+
 void Surface3x3::updateGeometry(const Rect rect, GeometryObjectHandle &geometry) {
     if (!geometry.get()) {
         geometry = GeometryObjectHandle(new GeometryQuadsForTris(9, getMaterial()));
@@ -96,6 +109,23 @@ void Surface3x3::updateGeometry(const Rect rect, GeometryObjectHandle &geometry)
     
     buffer->setMap(Utils::BufferMapHandle());
 }
+
+/* tt3d::UI::Surface3x3::QuadInfo */
+
+Surface3x3::QuadInfo::QuadInfo():
+    colours({Vector4(0., 0., 0., 1.), Vector4(0., 0., 0., 1.), Vector4(0., 0., 0., 1.), Vector4(0., 0., 0., 1.)}),
+    texCoords({Vector2(0., 0.), Vector2(0., 0.), Vector2(0., 0.), Vector2(0., 0.)})
+{
+    
+}
+
+void Surface3x3::QuadInfo::apply(GeometryBuffer *mappedBuffer) const {
+    for (int i = 0; i < 4; i++) {
+        mappedBuffer->setColour(i, colours[i]);
+        mappedBuffer->setTexCoord0(i, texCoords[i]);
+    }
+}
+
 
 }
 }

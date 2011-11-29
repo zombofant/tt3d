@@ -28,7 +28,7 @@ Widget::Widget():
 }
 
 void Widget::addChild(const WidgetHandle aWidget) {
-    if (!doAcceptChild(aWidget)) {
+    if (!acceptsChild(aWidget)) {
         throw Error("Cannot make this a child of that.");
     }
     _children->push_back(aWidget);
@@ -39,47 +39,9 @@ void Widget::doAbsRectChanged() {
     invalidate();
 }
 
-bool Widget::doAcceptChild(const WidgetHandle aWidget) {
-    return true;
-}
-
-bool Widget::doAcceptFocus() {
-    return false;
-}
-
 void Widget::doAlign() {
     updateFlexSum();
     updateClientRect();
-}
-
-WidgetHandle Widget::doHitTest(const Point &aPoint) {
-    WidgetHandle hit;
-    if (!_absRect.contains(aPoint)) {
-        return hit;
-    }
-    
-    for (WidgetHandles::iterator it = _children->begin();
-        it != _children->end();
-        it++)
-    {
-        const WidgetHandle handle = *it;
-        hit = handle->doHitTest(aPoint);
-        if (hit.get())
-            return hit;
-    }
-    return WidgetHandle(this);
-}
-
-void Widget::doKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled) {
-    
-}
-
-void Widget::doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode) {
-    
-}
-
-void Widget::doMouseMotion(const SDL_MouseMotionEvent &motion) {
-    
 }
 
 void Widget::doPaddingChanged() {
@@ -93,6 +55,10 @@ void Widget::doRelMetricsChanged() {
 void Widget::doRenderBackground() {
     
 }
+
+/*void Widget::doRenderCallback() {
+    
+}*/
 
 void Widget::doRenderChildren() {
     for (WidgetHandles::iterator it = _children->begin();
@@ -108,9 +74,17 @@ void Widget::doRenderForeground() {
     
 }
 
+void Widget::doSurfaceChanged() {
+    
+}
+
 void Widget::doUpdate(const double interval) {
     
 }
+
+/*void Widget::doUpdateCallback(const double interval) {
+    
+}*/
 
 void Widget::linkParent(WidgetHandle aParent) {
     
@@ -168,6 +142,14 @@ void Widget::updateFlexSum() {
     _flexSum = flexSum;
 }
 
+bool Widget::acceptsChild(const WidgetHandle aWidget) {
+    return true;
+}
+
+bool Widget::acceptsFocus() {
+    return false;
+}
+
 Point Widget::clientToAbsolute(const Point &point) {
     return Point(point.x + _absRect.x, point.y + _absRect.y);
 }
@@ -178,6 +160,36 @@ Point Widget::clientToParent(const Point &point) {
 
 void Widget::deleteChildren() {
     _children->clear();
+}
+
+void Widget::handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled) {
+    
+}
+
+void Widget::handleMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode) {
+    
+}
+
+void Widget::handleMouseMotion(const SDL_MouseMotionEvent &motion) {
+    
+}
+
+WidgetHandle Widget::hitTest(const Point &aPoint) {
+    WidgetHandle hit;
+    if (!_absRect.contains(aPoint)) {
+        return hit;
+    }
+    
+    for (WidgetHandles::iterator it = _children->begin();
+        it != _children->end();
+        it++)
+    {
+        const WidgetHandle handle = *it;
+        hit = handle->hitTest(aPoint);
+        if (hit.get())
+            return hit;
+    }
+    return WidgetHandle(this);
 }
 
 void Widget::realign() {

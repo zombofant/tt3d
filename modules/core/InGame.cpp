@@ -17,11 +17,9 @@ InGame::InGame():
     _debugMaterial(new GL::Material(_debugBuffer)),
     _axis(new GL::GeometryRaw(_debugMaterial, 6)),
     _grid(new GL::GeometryRaw(_debugMaterial, 84)),
-    _camera(),
+    _camera(new GL::CameraFreeSmooth()),
     _cameraHandle(_camera)
 {
-    _animated = true;
-    
     initCamera();
     initAxis();
     initGrid();
@@ -94,7 +92,31 @@ void InGame::doAbsRectChanged() {
     _camera->viewportChanged();
 }
 
-void InGame::doKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled) {
+void InGame::doRenderCallback() {
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
+    
+    _camera->load();
+    
+    _debugMaterial->bind(false);
+    _debugMaterial->render(GL_LINES);
+    _debugMaterial->unbind();
+    
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_SCISSOR_TEST);
+}
+
+void InGame::doUpdateCallback(const double interval) {
+    _cameraMoved = false;
+    _camera->update(interval);
+}
+
+void InGame::handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled) {
     switch (sym.sym) {
         case SDLK_KP0: {
             if (mode == IO::KM_PRESS) {
@@ -109,7 +131,7 @@ void InGame::doKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode,
     }
 }
 
-void InGame::doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode) {
+void InGame::handleMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode) {
     switch (button.button) {
         case 4: {
             if (mode != IO::KM_PRESS)
@@ -162,7 +184,7 @@ void InGame::doMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_Key
     }
 }
 
-void InGame::doMouseMotion(const SDL_MouseMotionEvent &motion) {
+void InGame::handleMouseMotion(const SDL_MouseMotionEvent &motion) {
     if (((motion.state & SDL_BUTTON(2)) != 0) ||
         (((motion.state & SDL_BUTTON(1)) != 0) && ((motion.state & SDL_BUTTON(3)) != 0))) 
     {
@@ -175,38 +197,10 @@ void InGame::doMouseMotion(const SDL_MouseMotionEvent &motion) {
         accel *= factor;
         _camera->addAccel(accel);
         _camera->stopMove(false);
-    } else if (motion.state & SDL_BUTTON(3) != 0) {
+    } else if ((motion.state & SDL_BUTTON(3)) != 0) {
         _camera->addAccelRot(Vector2(motion.yrel, motion.xrel) * M_PI);
         _camera->stopRot(false);
     }
-}
-
-void InGame::doRenderBackground() {
-    UI::RootWidget::doRenderBackground();
-    
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_SCISSOR_TEST);
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-    glEnable(GL_CULL_FACE);
-    
-    glLoadIdentity();
-    
-    _camera->load();
-    
-    _debugMaterial->bind(false);
-    _debugMaterial->render(GL_LINES);
-    _debugMaterial->unbind();
-    
-    glDisable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_SCISSOR_TEST);
-}
-
-void InGame::doUpdate(const double interval) {
-    _cameraMoved = false;
-    _camera->update(interval);
 }
 
 }

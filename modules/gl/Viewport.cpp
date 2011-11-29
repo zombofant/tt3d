@@ -8,6 +8,15 @@ using namespace tt3d;
 
 /* tt3d::GL::Viewport */
 
+Viewport::Viewport():
+    left(0),
+    top(0),
+    width(0),
+    height(0)
+{
+    
+}
+
 Viewport::Viewport(const GLint aLeft, const GLint aTop,
     const GLsizei aWidth, const GLsizei aHeight):
         left(aLeft),

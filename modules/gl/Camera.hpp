@@ -48,17 +48,17 @@ class CameraPerspective: public Camera {
     public:
         CameraPerspective();
     protected:
-        VectorFloat fov, nearZ, farZ;
+        VectorFloat _fov, _nearZ, _farZ;
     protected:
         virtual void doViewportChanged();
         virtual void recalculateProjection();
     public:
-        VectorFloat getFarZ() { return farZ; };
-        VectorFloat getFieldOfView() { return fov; };
-        VectorFloat getNearZ() { return nearZ; };
-        void setFarZ(const VectorFloat aFarZ);
-        void setFieldOfView(const VectorFloat aFOV);
-        void setNearZ(const VectorFloat aNearZ);
+        VectorFloat getFarZ() { return _farZ; };
+        VectorFloat getFieldOfView() { return _fov; };
+        VectorFloat getNearZ() { return _nearZ; };
+        void setFarZ(const VectorFloat aValue);
+        void setFieldOfView(const VectorFloat aValue);
+        void setNearZ(const VectorFloat aValue);
 };
 
 class CameraFree: public CameraPerspective {

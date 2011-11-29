@@ -79,11 +79,11 @@ Matrix4f Matrix4::toMatrix4f() {
     return result;
 }
 
-Matrix4 Matrix4::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
-    return Matrix4::Rotation(Matrix3::Rotation(rawAxis, angle));
+Matrix4 Matrix4::Rotation(const Vector3 &axis, const VectorFloat angle) {
+    return Matrix4::Rotation(Matrix3::Rotation(axis, angle));
 }
 
-Matrix4 Matrix4::Rotation(const Matrix3 m3) {
+Matrix4 Matrix4::Rotation(const Matrix3 &m3) {
     Matrix4 result;
     result.coeff[0] = m3.coeff[0];
     result.coeff[1] = m3.coeff[1];
@@ -132,6 +132,22 @@ Matrix4 Matrix4::RotationZ(const VectorFloat angle) {
     result.coeff[1] = Sin;
     result.coeff[4] = -Sin;
     result.coeff[5] = Cos;
+    return result;
+}
+
+Matrix4 Matrix4::Translation(const Vector3 &by) {
+    Matrix4 result;
+    result.coeff[12] = by.x;
+    result.coeff[13] = by.y;
+    result.coeff[14] = by.z;
+    return result;
+}
+
+Matrix4 Matrix4::Scale(const Vector3 &by) {
+    Matrix4 result;
+    result.coeff[0] = by.x;
+    result.coeff[5] = by.y;
+    result.coeff[10] = by.z;
     return result;
 }
 

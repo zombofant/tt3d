@@ -257,7 +257,7 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             get(GenericGeometryBuffer<T>::map(index), posOffset, value, nPos);
         }
         
-        void getPosition(const GLsizei index, Vector2 &value) {
+        /*void getPosition(const GLsizei index, Vector2 &value) {
             BOOST_STATIC_ASSERT(nPos == 2);
             BOOST_STATIC_ASSERT(sizeof(T) == 4);
             getPosition(index, value.toVector2f().as_array);
@@ -267,14 +267,14 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             BOOST_STATIC_ASSERT(nPos == 3);
             BOOST_STATIC_ASSERT(sizeof(T) == 4);
             getPosition(index, value.toVector3f().as_array);
-        }
+        }*/
         
         void getColour(const GLsizei index, T value[nColour]) {
             BOOST_STATIC_ASSERT(nColour > 0);
             get(GenericGeometryBuffer<T>::map(index), colourOffset, value, nColour);
         }
         
-        void getColour(const GLsizei index, Vector2 &value) {
+        /*void getColour(const GLsizei index, Vector2 &value) {
             BOOST_STATIC_ASSERT(nColour == 2);
             BOOST_STATIC_ASSERT(sizeof(T) == 4);
             getColour(index, value.toVector2f().as_array);
@@ -290,11 +290,17 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             BOOST_STATIC_ASSERT(nColour == 4);
             BOOST_STATIC_ASSERT(sizeof(T) == 4);
             getColour(index, value.toVector4f().as_array);
-        }
+        }*/
         
         void getTexCoord0(const GLsizei index, T value[nTexCoord0]) {
             BOOST_STATIC_ASSERT(nTexCoord0 > 0);
             get(GenericGeometryBuffer<T>::map(index), texCoord0Offset, value, nTexCoord0);
+        }
+        
+        void getTexCoord2(const GLsizei index, Vector2 &value) {
+            BOOST_STATIC_ASSERT(nTexCoord0 == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            getTexCoord0(index, value.toVector2f().as_array);
         }
         
         void getTexCoord1(const GLsizei index, T value[nTexCoord1]) {
@@ -381,6 +387,12 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
         void setTexCoord0(const GLsizei index, const T value[nTexCoord0]) {
             BOOST_STATIC_ASSERT(nTexCoord0 > 0);
             set(GenericGeometryBuffer<T>::map(index), texCoord0Offset, value, nTexCoord0);
+        }
+        
+        void setTexCoord0(const GLsizei index, const Vector2 value) {
+            BOOST_STATIC_ASSERT(nTexCoord0 == 2);
+            BOOST_STATIC_ASSERT(sizeof(T) == 4);
+            setTexCoord0(index, value.toVector2f().as_array);
         }
         
         void setTexCoord1(const GLsizei index, const T value[nTexCoord1]) {
