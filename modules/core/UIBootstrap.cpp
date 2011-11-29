@@ -83,7 +83,7 @@ void TT3D::initUI() {
     _uiMaterial = new UI::Material();
     _uiMaterialHandle = UI::MaterialHandle(_uiMaterial);
     
-    _rootWidget = new InGame();
+    _rootWidget = new InGame(globalViewport);
     _rootHandle = WidgetHandle(_rootWidget);
     
     _uiBackground = new Surface3x3(_uiMaterialHandle);

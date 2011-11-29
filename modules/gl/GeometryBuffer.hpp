@@ -212,7 +212,6 @@ class GeometryBuffer: public GenericGeometryBuffer<T> {
             if (nColour > 0) {
                 glEnableClientState(GL_COLOR_ARRAY);
                 glColorPointer(nColour, GenericGeometryBuffer<T>::glType, vertexSize, (const void*)(colourOffset * sizeof(T)));
-                std::cout << nColour << " " << colourOffset * sizeof(T) << " " << vertexSize << std::endl;
             }
             if (nTexCoord0 > 0) {
                 glClientActiveTexture(GL_TEXTURE0);

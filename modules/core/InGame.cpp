@@ -10,9 +10,9 @@ namespace Core {
 using namespace tt3d;
 using namespace tt3d::Geometry;
 
-InGame::InGame():
+InGame::InGame(const GL::ViewportHandle viewport):
     UI::RootWidget(),
-    _viewport(new GL::Viewport()),
+    _viewport(viewport),
     _debugBuffer(new DebugGeometryBuffer()),
     _debugMaterial(new GL::Material(_debugBuffer)),
     _axis(new GL::GeometryRaw(_debugMaterial, 6)),
@@ -70,14 +70,14 @@ void InGame::initGrid() {
     
     map->setOffset(0);
     
-    for (int i = -10; i < 10; i++) {
+    for (int i = -10; i <= 10; i++) {
         buffer->setPosition((i + 10)*2,         Vector3(i, -10.0, 0.0));
         buffer->setColour(  (i + 10)*2,         gridColour);
         buffer->setPosition((i + 10)*2+1,       Vector3(i,  10.0, 0.0));
         buffer->setColour(  (i + 10)*2+1,       gridColour);
     }
     
-    for (int i = -10; i < 10; i++) {
+    for (int i = -10; i <= 10; i++) {
         buffer->setPosition((i + 31)*2,         Vector3(-10.0,  i, 0.0));
         buffer->setColour(  (i + 31)*2,         gridColour);
         buffer->setPosition((i + 31)*2+1,       Vector3( 10.0,  i, 0.0));
@@ -93,13 +93,21 @@ void InGame::doAbsRectChanged() {
 }
 
 void InGame::doRenderCallback() {
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     
     _camera->load();
+    
+    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glBegin(GL_QUADS);
+        glVertex3f(-1.0, -1.0, 0.0);
+        glVertex3f(-1.0, 1.0, 0.0);
+        glVertex3f(1.0, 1.0, 0.0);
+        glVertex3f(1.0, -1.0, 0.0);
+    glEnd();
     
     _debugMaterial->bind(false);
     _debugMaterial->render(GL_LINES);

@@ -118,6 +118,8 @@ void RootWidget::deliverMouseButton(const SDL_MouseButtonEvent &button, const SD
         const Rect hitAbs = hit->getAbsRect();
         SDL_MouseButtonEvent transposed = transposedButtonEvent(button, hitAbs);
         hit->handleMouseButton(transposed, mode);
+    } else {
+        handleMouseButton(button, mode);
     }
 }
 
@@ -133,6 +135,8 @@ void RootWidget::deliverMouseMotion(const SDL_MouseMotionEvent &motion) {
             const Rect hitAbs = hit->getAbsRect();
             SDL_MouseMotionEvent transposed = transposedMotionEvent(motion, hitAbs);
             hit->handleMouseMotion(transposed);
+        } else {
+            handleMouseMotion(motion);
         }
     }
 }

@@ -102,10 +102,15 @@ Matrix4 Camera::getOneMatrix() {
 
 void Camera::load() {
     validate();
+    /*projection.dump();
+    modelView.dump();*/
+    const Matrix4f proj = projection.toMatrix4f();
+    const Matrix4f mv = modelView.toMatrix4f();
+    
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixd(projection.coeff);
+    glLoadMatrixf(proj.coeff);
     glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixd(modelView.coeff);
+    glLoadMatrixf(mv.coeff);
 }
 
 void Camera::loadAsOne() {
@@ -163,7 +168,7 @@ void CameraPerspective::doViewportChanged() {
 }
 
 void CameraPerspective::recalculateProjection() {
-    const float f = 1. / tan(_fov / 90. * M_PI); // cotan(DegToRad(fov) / 2.)
+    const float f = 1. / tan(_fov / 360. * M_PI); // cotan(DegToRad(fov) / 2.)
     const float aspect = double(viewport->getWidth()) / (viewport->getHeight());
     
     projection = Matrix4();
@@ -232,18 +237,27 @@ void CameraFree::invalidateTransformedPos() {
 }
 
 void CameraFree::recalculateFlatRightFront() {
+    /*flatRight = Vector2(-(rotation.y + M_PI / 2.));
+    flatFront = rotation.y);*/
+    if (transformedPosInvalidated) {
+        recalculateTransformedPos();
+    }
     flatRight = Vector2(-rotation.y);
-    flatFront = Vector2(-(rotation.y + M_PI / 2.));
+    flatFront = -Vector2(-(rotation.y + M_PI / 2.));
     
     deinvalidateFlatRightFront();
 }
 
 void CameraFree::recalculateModelView() {
+    /*std::cout << zoom << std::endl;
+    position.dump();
+    rotation.dump();*/
     modelView = 
         Matrix4::Translation(Vector3(0., 0., zoom)) * 
         Matrix4::RotationX(rotation.x) *
-        Matrix4::RotationY(rotation.y) *
+        Matrix4::RotationZ(rotation.y) *
         Matrix4::Translation(-position);
+    /*modelView.dump();*/
     
     right = Vector3(modelView.coeff[0], modelView.coeff[4], modelView.coeff[8]);
     up = Vector3(modelView.coeff[1], modelView.coeff[5], modelView.coeff[9]);
@@ -253,12 +267,12 @@ void CameraFree::recalculateModelView() {
 }
 
 void CameraFree::recalculateTransformedPos() {
-    Matrix4 mat = 
+    invModelView = 
         Matrix4::Translation(-position) * 
-        Matrix4::RotationY(rotation.y) *
+        Matrix4::RotationZ(rotation.y) *
         Matrix4::RotationX(rotation.x) *
         Matrix4::Translation(Vector3(0., 0., zoom));
-    transformedPos = (mat * Vector4(0., 0., 0., 1.)).vec3();
+    transformedPos = (invModelView * Vector4(0., 0., 0., 1.)).vec3();
 }
 
 Vector3 CameraFree::getFlatFront() {
@@ -357,6 +371,11 @@ void CameraFreeSmooth::stopZoom(const bool resetAccel) {
 }
 
 void CameraFreeSmooth::update(const double interval) {
+    /*std::cout << "update" << std::endl;
+    
+    std::cout << "rotation accel "; rotAccel.dump();
+    std::cout << "position accel "; accel.dump();*/
+    
     if (moving) {
         const Vector2 d = posTarget - position.vec2();
         const VectorFloat l = d.length();

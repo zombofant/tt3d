@@ -79,6 +79,20 @@ Matrix4f Matrix4::toMatrix4f() {
     return result;
 }
 
+Matrix3 Matrix4::extractRotation() const {
+    Matrix3 result;
+    for (int i = 0; i < 3; i++) {
+        for (int k = 0; k < 3; k++) {
+            result.coeff[i + k*3] = coeff[i + k*4];
+        }
+    }
+    return result;
+}
+
+void Matrix4::dump() {
+    matrixDump<4>(coeff);
+}
+
 Matrix4 Matrix4::Rotation(const Vector3 &axis, const VectorFloat angle) {
     return Matrix4::Rotation(Matrix3::Rotation(axis, angle));
 }

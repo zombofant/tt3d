@@ -32,6 +32,9 @@ struct Matrix4 {
     Matrix4(const Matrix4f &mat);
     
     Matrix4f toMatrix4f();
+    Matrix3 extractRotation() const;
+    
+    void dump();
     
     static Matrix4 Rotation(const Vector3 &axis, const VectorFloat angle);
     static Matrix4 Rotation(const Matrix3 &m3);

@@ -2,6 +2,7 @@
 #define _TT3D_GEOMETRY_VECTOR_TEMPLATES_H
 
 #include "Vectors.hpp"
+#include <iostream>
 
 namespace tt3d {
 namespace Geometry {
@@ -100,6 +101,16 @@ static inline void vectorNormalize(VectorFloat vec[n])
     for (int i = 0; i < n; i++) {
         vec[i] /= len;
     }
+}
+
+template <int n>
+static inline void vectorDump(const VectorFloat vec[n]) 
+{
+    std::cout << "(";
+    for (int i = 0; i < n; i++) {
+        std::cout << " " << vec[i] << " ";
+    }
+    std::cout << ")" << std::endl;
 }
 
 }

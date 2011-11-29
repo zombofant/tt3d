@@ -3,6 +3,7 @@
 
 #include "Vectors.hpp"
 #include "Matrices.hpp"
+#include <iostream>
 
 namespace tt3d {
 namespace Geometry {
@@ -80,6 +81,17 @@ static inline void matrixScalarMult(const VectorFloat matrix[dim*dim],
 {
     for (int i=0; i < dim*dim; i++) {
         result[i] = matrix[i] * factor;
+    }
+}
+
+template <int dim>
+static inline void matrixDump(const VectorFloat matrix[dim*dim]) {
+    for (int i=0; i < dim; i++) {
+        std::cout << "[";
+        for (int j=0; j < dim; j++) {
+            std::cout << " " << matrix[i + j*dim] << " ";
+        }
+        std::cout << "]" << std::endl;
     }
 }
 

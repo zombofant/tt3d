@@ -8,29 +8,39 @@ namespace Geometry {
 
 /* tt3d::Geometry::Vector2 */
 
-Vector2::Vector2() {
-    x = 0.;
-    y = 0.;
+Vector2::Vector2():
+    x(0),
+    y(0)
+{
+    
 }
 
-Vector2::Vector2(const Vector2 &vec2) {
-    x = vec2.x;
-    y = vec2.y;
+Vector2::Vector2(const Vector2 &vec2):
+    x(vec2.x),
+    y(vec2.y)
+{
+    
 }
 
-Vector2::Vector2(VectorFloat X, VectorFloat Y) {
-    x = X;
-    y = Y;
+Vector2::Vector2(const VectorFloat X, const VectorFloat Y):
+    x(X),
+    y(Y)
+{
+    
 }
 
-Vector2::Vector2(Vector2f vec2f) {
-    x = vec2f.x;
-    y = vec2f.y;
+Vector2::Vector2(const Vector2f &vec2f):
+    x(vec2f.x),
+    y(vec2f.y)
+{
+    
 }
 
-Vector2::Vector2(VectorFloat angle) {
-    x = cos(angle);
-    y = sin(angle);
+Vector2::Vector2(const VectorFloat angle):
+    x(cos(angle)),
+    y(sin(angle))
+{
+    
 }
 
 VectorFloat Vector2::length() const {
@@ -54,6 +64,10 @@ Vector2f Vector2::toVector2f() const {
     result.x = x;
     result.y = y;
     return result;
+}
+
+void Vector2::dump() const {
+    vectorDump<2>(as_array);
 }
 
 Vector2 &Vector2::operator+= (const Vector2 b) {
@@ -124,6 +138,10 @@ Vector3f Vector3::toVector3f() const {
     result.y = y;
     result.z = z;
     return result;
+}
+
+void Vector3::dump() const {
+    vectorDump<3>(as_array);
 }
 
 Vector3 &Vector3::operator+=(const Vector3 b) {
@@ -206,6 +224,10 @@ Vector4f Vector4::toVector4f() const {
     result.z = z;
     result.w = w;
     return result;
+}
+
+void Vector4::dump() const {
+    vectorDump<4>(as_array);
 }
 
 /* Vector2 operators */

@@ -65,6 +65,7 @@ class CameraFree: public CameraPerspective {
     public:
         CameraFree();
     protected:
+        Matrix4 invModelView;
         Vector3 position;
         Vector2 rotation;
         VectorFloat zoom;
@@ -99,6 +100,7 @@ class CameraFreeSmooth: public CameraFree {
     public:
         CameraFreeSmooth();
     private:
+    
         Vector2 accel, rotAccel;
         Vector2 velocity, rotVelocity;
         VectorFloat zoomVelocity, zoomAccel;

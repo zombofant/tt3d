@@ -17,7 +17,7 @@ typedef GL::GeometryBuffer<float, 3, 4> DebugGeometryBuffer;
     
 class InGame: public UI::RootWidget {
     public:
-        InGame();
+        InGame(const GL::ViewportHandle viewport);
     private:
         GL::ViewportHandle _viewport;
     
