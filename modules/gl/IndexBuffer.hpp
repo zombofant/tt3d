@@ -52,6 +52,7 @@ typedef boost::shared_ptr<StreamIndexBuffer> StreamIndexBufferHandle;
 class StaticIndexBuffer: public GenericIndexBuffer {
     public:
         StaticIndexBuffer(const GLenum aPurpose = GL_DYNAMIC_DRAW);
+        virtual ~StaticIndexBuffer();
     private:
         IndexEntryHandles *handles;
     protected:

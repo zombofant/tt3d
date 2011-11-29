@@ -148,10 +148,12 @@ void Application::runApp() {
         freeApp();
         throw;
     }
+    std::cout << "freeing app" << std::endl;
     freeApp();
 }
 
 void Application::terminate() {
+    std::cout << "terminating" << std::endl;
     terminated = true;
 }
 

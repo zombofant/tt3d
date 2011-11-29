@@ -2,6 +2,7 @@
 #define _TT3D_UI_SURFACE3X3_H
 
 #include "modules/geometry/Vectors.hpp"
+#include "modules/geometry/Rect.hpp"
 #include "Surface.hpp"
 
 namespace tt3d {
@@ -26,9 +27,10 @@ class Surface3x3: public Surface {
         };
     protected:
         QuadInfo _quads[9];
-        VectorFloat _leftMargin, _topMargin, _rightMargin, _bottomMargin;
+        Borders _margin;
     public:
         QuadInfo &getQuad(const int index) { return _quads[index]; };
+        Borders &getBorders() { return _margin; };
         virtual void updateGeometry(const Rect rect, GeometryObjectHandle &geometry);
 };
 

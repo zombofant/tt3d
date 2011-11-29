@@ -80,6 +80,10 @@ StaticIndexBuffer::StaticIndexBuffer(const GLenum aPurpose):
     
 }
 
+StaticIndexBuffer::~StaticIndexBuffer() {
+    delete handles;
+}
+
 void StaticIndexBuffer::compress() {
     VertexIndex minChange = -1, maxChange = count;
     VertexIndex nextStart = 0;

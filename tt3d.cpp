@@ -3,7 +3,8 @@
 using namespace tt3d;
 
 int main(int argc, const char *argv[]) {
-    Core::TT3D core = Core::TT3D();
-    core.runApp();
+    Core::TT3D *core = new Core::TT3D();
+    core->runApp();
+    delete core;
     return 0;
 }

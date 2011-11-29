@@ -66,7 +66,7 @@ void InGame::initGrid() {
     Utils::BufferMap *map;
     GL::getMappedBuffer<DebugGeometryBuffer>(_grid, bufferHandle, buffer, mapHandle, map);
     
-    const Vector4 gridColour(0.25, 0.25, 0.25, 1.0);
+    const Vector4 gridColour(0.25, 0.25, 0.25, 0.75);
     
     map->setOffset(0);
     
@@ -93,21 +93,13 @@ void InGame::doAbsRectChanged() {
 }
 
 void InGame::doRenderCallback() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     
     _camera->load();
-    
-    glColor4f(1.0, 1.0, 1.0, 1.0);
-    glBegin(GL_QUADS);
-        glVertex3f(-1.0, -1.0, 0.0);
-        glVertex3f(-1.0, 1.0, 0.0);
-        glVertex3f(1.0, 1.0, 0.0);
-        glVertex3f(1.0, -1.0, 0.0);
-    glEnd();
     
     _debugMaterial->bind(false);
     _debugMaterial->render(GL_LINES);
@@ -117,6 +109,12 @@ void InGame::doRenderCallback() {
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_SCISSOR_TEST);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 800, 600, 0, -10.0, 10.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void InGame::doUpdateCallback(const double interval) {

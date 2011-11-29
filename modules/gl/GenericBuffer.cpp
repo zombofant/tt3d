@@ -26,6 +26,9 @@ GenericBuffer::~GenericBuffer() {
     if (glID != 0) {
         freeBuffer();
     }
+    if (data) {
+        free(data);
+    }
 }
 
 void GenericBuffer::doExpand(const GLsizei oldCapacity, const GLsizei newCapacity) {

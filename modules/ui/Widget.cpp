@@ -136,7 +136,7 @@ void Widget::updateFlexSum() {
         it != _children->end();
         it++)
     {
-        const WidgetHandle handle = *it;
+        const WidgetHandle handle(*it);
         flexSum += handle->getFlex();
     }
     _flexSum = flexSum;
@@ -175,7 +175,7 @@ void Widget::handleMouseMotion(const SDL_MouseMotionEvent &motion) {
 }
 
 WidgetHandle Widget::hitTest(const Point &aPoint) {
-    WidgetHandle hit;
+    WidgetHandle hit = WidgetHandle();
     if (!_absRect.contains(aPoint)) {
         return hit;
     }
@@ -184,8 +184,8 @@ WidgetHandle Widget::hitTest(const Point &aPoint) {
         it != _children->end();
         it++)
     {
-        const WidgetHandle handle = *it;
-        hit = handle->hitTest(aPoint);
+        const WidgetHandle handle(*it);
+        hit = WidgetHandle(handle->hitTest(aPoint));
         if (hit.get())
             return hit;
     }
@@ -218,7 +218,7 @@ void Widget::update(const double interval) {
         it != _children->end();
         it++)
     {
-        const WidgetHandle handle = *it;
+        const WidgetHandle handle(*it);
         handle->update(interval);
     }
 }
@@ -231,7 +231,7 @@ void Widget::setPadding(const Borders aValue) {
 }
 
 void Widget::setParent(const WidgetHandle aValue) {
-    WidgetHandle currentParent = _parent.lock();
+    WidgetHandle currentParent(_parent.lock());
     if (currentParent == aValue) {
         return;
     }
