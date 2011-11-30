@@ -5,3 +5,4 @@ Makefile
 *.o
 tt3d
 *.a
+tt3d.geany

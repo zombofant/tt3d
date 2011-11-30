@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(tt3d CXX)
+project(tt3d CXX C)
 
 set(CMAKE_CXX_FLAGS "-g -Wall -pedantic -std=c++0x")
 
@@ -15,7 +15,7 @@ find_package(SDL REQUIRED)
 # TODO: proper packages for GLEW and rt
 
 include_directories(${PROJECT_SOURCE_DIR} ${OpenGL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GLU GLEW)
+set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${SDL_LIBRARY} rt GL GLU GLEW)
 
 add_subdirectory("modules")
 

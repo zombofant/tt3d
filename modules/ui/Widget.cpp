@@ -188,8 +188,12 @@ WidgetHandle Widget::hitTest(const Point &aPoint) {
         hit = WidgetHandle(handle->hitTest(aPoint));
         if (hit.get())
             return hit;
+        else
+            return handle;
     }
-    return WidgetHandle(this);
+    // Appearantly we must not do WidgetHandle(this), as it causes the
+    // widget to get garbage collected.
+    return WidgetHandle();
 }
 
 void Widget::realign() {
