@@ -71,7 +71,9 @@ class GenericGeometryBuffer: public GenericBuffer {
 
         GLsizei map(const GLsizei index) {
             if (bufferMap.get()) {
-                return bufferMap->map(index);
+				const GLsizei mapped = bufferMap->map(index);
+				std::cout << "index " << index << " maps to " << mapped << std::endl;
+                return mapped;
             } else {
                 return index;
             }

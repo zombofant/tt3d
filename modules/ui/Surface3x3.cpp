@@ -121,10 +121,10 @@ Surface3x3::QuadInfo::QuadInfo():
 
 void Surface3x3::QuadInfo::apply(GeometryBuffer *mappedBuffer) const {
     for (int i = 0; i < 4; i++) {
-        /*mappedBuffer->setColour(i, colours[i]);
-        mappedBuffer->setTexCoord0(i, texCoords[i]);*/
-        mappedBuffer->setColour(i, Vector4(0.7, 0.7, 0.7, 0.5));
-        mappedBuffer->setTexCoord0(i, Vector2(0., 0.));
+        mappedBuffer->setColour(i, colours[i]);
+        mappedBuffer->setTexCoord0(i, texCoords[i]);
+        /*mappedBuffer->setColour(i, Vector4(0.7, 0.7, 0.7, 0.5));
+        mappedBuffer->setTexCoord0(i, Vector2(0., 0.));*/
     }
 }
 
