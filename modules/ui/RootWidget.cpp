@@ -130,9 +130,7 @@ void RootWidget::deliverMouseMotion(const SDL_MouseMotionEvent &motion) {
         _mouseGrabber->handleMouseMotion(transposed);
     } else {
         const Point p = Point(motion.x, motion.y);
-        std::cout << "hittest start" << std::endl;
         WidgetHandle hit(hitTest(p));
-        std::cout << "hittest done" << std::endl;
         if (hit.get()) {
             const Rect hitAbs = hit->getAbsRect();
             SDL_MouseMotionEvent transposed = transposedMotionEvent(motion, hitAbs);
@@ -144,7 +142,6 @@ void RootWidget::deliverMouseMotion(const SDL_MouseMotionEvent &motion) {
 }
 
 WidgetHandle RootWidget::hitTest(const Point &point) {
-    std::cout << "hittest" << std::endl;
     if (_invalidated)
         updateClientRect();
     WidgetHandle result(Widget::hitTest(point));

@@ -204,8 +204,12 @@ void InGame::handleMouseMotion(const SDL_MouseMotionEvent &motion) {
         _camera->addAccel(accel);
         _camera->stopMove(false);
     } else if ((motion.state & SDL_BUTTON(3)) != 0) {
-        _camera->addAccelRot(Vector2(motion.yrel, motion.xrel) * M_PI);
-        _camera->stopRot(false);
+		if ((SDL_GetKeyState(0)[SDLK_LCTRL] | SDL_GetKeyState(0)[SDLK_RCTRL]) != 0) {
+			_camera->addAccelZoom(-50. * motion.yrel * _camera->getZoom());
+		} else {
+			_camera->addAccelRot(Vector2(motion.yrel, motion.xrel) * M_PI);
+			_camera->stopRot(false);
+		}
     }
 }
 

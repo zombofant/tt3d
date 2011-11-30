@@ -58,7 +58,7 @@ void GeometryObject::drawDirect(const GLenum mode) {
 
 Utils::BufferMapHandle GeometryObject::getMap() {
     requireAllocation();
-    return Utils::BufferMapHandle(new VertexIndexListMap(_allocation->indicies));
+    return Utils::BufferMapHandle(new VertexIndexListMap(_allocation->bufferAllocation));
 }
 
 /* tt3d::GL::GeometryRaw */

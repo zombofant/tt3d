@@ -69,7 +69,7 @@ void Surface3x3::updateGeometry(const Rect rect, GeometryObjectHandle &geometry)
     map->setOffset(16);
     buffer->setPosition(0, innerTR);
     buffer->setPosition(1, innerBR);
-    buffer->setPosition(2, Vector2(innerTR.x + _margin.right, innerBR.y));
+    buffer->setPosition(2, Vector2(innerBR.x + _margin.right, innerBR.y));
     buffer->setPosition(3, Vector2(innerTR.x + _margin.right, innerTR.y));
     _quads[4].apply(buffer);
     
@@ -121,8 +121,10 @@ Surface3x3::QuadInfo::QuadInfo():
 
 void Surface3x3::QuadInfo::apply(GeometryBuffer *mappedBuffer) const {
     for (int i = 0; i < 4; i++) {
-        mappedBuffer->setColour(i, colours[i]);
-        mappedBuffer->setTexCoord0(i, texCoords[i]);
+        /*mappedBuffer->setColour(i, colours[i]);
+        mappedBuffer->setTexCoord0(i, texCoords[i]);*/
+        mappedBuffer->setColour(i, Vector4(0.7, 0.7, 0.7, 0.5));
+        mappedBuffer->setTexCoord0(i, Vector2(0., 0.));
     }
 }
 

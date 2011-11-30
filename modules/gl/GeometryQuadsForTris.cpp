@@ -19,6 +19,11 @@ VertexAllocationHandle GeometryQuadsForTris::allocateVertices() {
         indicies->push_back((*allocation->bufferAllocation)[allocIdx]);
         indicies->push_back((*allocation->bufferAllocation)[allocIdx+2]);
         indicies->push_back((*allocation->bufferAllocation)[allocIdx+3]);
+        
+        /*indicies->push_back((*allocation->bufferAllocation)[allocIdx]);
+        indicies->push_back((*allocation->bufferAllocation)[allocIdx+1]);
+        indicies->push_back((*allocation->bufferAllocation)[allocIdx+2]);
+        indicies->push_back((*allocation->bufferAllocation)[allocIdx+3]);*/
     }
     allocation->indicies = VertexIndexListHandle(indicies);
     allocation->staticHandle = _material->getStaticIndexBuffer()->add(allocation->indicies);
