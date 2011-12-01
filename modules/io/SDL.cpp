@@ -83,10 +83,10 @@ void Application::runApp() {
     try {
         initApp();
     } catch (std::exception e) {
-        std::cout << e.what() << " during initialization." << std::endl;
+        std::cerr << e.what() << " during initialization." << std::endl;
         throw;
     } catch (...) {
-        std::cout << "unknown exception during initialization." << std::endl;
+        std::cerr << "unknown exception during initialization." << std::endl;
         throw;
     }
     
@@ -140,20 +140,18 @@ void Application::runApp() {
             usleep(1);
         }
     } catch (std::exception e) {
-        std::cout << e.what() << " during runtime." << std::endl;
+        std::cerr << e.what() << " during runtime." << std::endl;
         freeApp();
         throw;
     } catch (...) {
-        std::cout << "unknown exception during runtime." << std::endl;
+        std::cerr << "unknown exception during runtime." << std::endl;
         freeApp();
         throw;
     }
-    std::cout << "freeing app" << std::endl;
     freeApp();
 }
 
 void Application::terminate() {
-    std::cout << "terminating" << std::endl;
     terminated = true;
 }
 

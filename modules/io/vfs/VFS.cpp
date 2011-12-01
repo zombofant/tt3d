@@ -111,7 +111,6 @@ MountPtr VFS::findMount(std::string path) {
         const std::string location = p->getLocation();
         if (location.compare(0, location.length(), path, 0, location.length()) == 0) {
             std::string stripped = path.substr(location.length());
-            std::cout << stripped << std::endl;
             MountPtr result = p->getMount();
             if (result->fileExists(stripped)) {
                 return result;
