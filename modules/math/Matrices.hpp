@@ -4,7 +4,7 @@
 #include "Vectors.hpp"
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
 struct Matrix3f {
     float coeff[9];

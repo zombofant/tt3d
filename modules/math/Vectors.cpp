@@ -4,9 +4,9 @@
 #include "VectorTemplates.hpp"
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
-/* tt3d::Geometry::Vector2 */
+/* tt3d::Math::Vector2 */
 
 Vector2::Vector2():
     x(0),
@@ -85,7 +85,7 @@ Vector2 &Vector2::operator*=(const VectorFloat b) {
     return *this;
 }
 
-/* tt3d::Geometry::Vector3 */
+/* tt3d::Math::Vector3 */
 
 Vector3::Vector3() {
     x = 0.;
@@ -154,7 +154,7 @@ Vector3 &Vector3::operator/=(const VectorFloat b) {
     return *this;
 }
 
-/* tt3d::Geometry::Vector4 */
+/* tt3d::Math::Vector4 */
 
 Vector4::Vector4() {
     x = 0.;

@@ -5,13 +5,13 @@
 #include "MatrixTemplates.hpp"
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
     
 static inline VectorFloat sqr(VectorFloat a) {
     return a * a;
 }
 
-/* tt3d::Geometry::Matrix3 */
+/* tt3d::Math::Matrix3 */
 
 Matrix3::Matrix3() {
     matrixIdentity<3>(coeff);
@@ -59,7 +59,7 @@ Matrix3 Matrix3::Rotation(const Vector3 rawAxis, const VectorFloat angle) {
     return result;
 }
 
-/* tt3d::Geometry::Matrix4 */
+/* tt3d::Math::Matrix4 */
 
 Matrix4::Matrix4() {
     matrixIdentity<4>(coeff);

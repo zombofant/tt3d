@@ -34,7 +34,7 @@ void Viewport::unbind() {
     
 }
 
-void Viewport::setRect(const Geometry::Rect &aValue) {
+void Viewport::setRect(const Math::Rect &aValue) {
     left = aValue.x;
     top = aValue.y;
     width = aValue.w;

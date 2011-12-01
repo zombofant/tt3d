@@ -4,7 +4,7 @@
 #define _TT3D_GEOMETRY_RECT_H
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
 struct Point {
     int32_t x, y;

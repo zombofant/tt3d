@@ -2,7 +2,7 @@
 #include <cmath>
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
 /* free functions */
 Vector3 hsvtorgb(const Vector3 &hsv) {

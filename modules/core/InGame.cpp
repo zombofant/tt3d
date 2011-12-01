@@ -8,7 +8,7 @@ namespace Core {
 /* tt3d::Core::InGame */
 
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 InGame::InGame(const GL::ViewportHandle viewport):
     UI::RootWidget(),

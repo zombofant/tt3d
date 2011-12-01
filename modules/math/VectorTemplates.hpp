@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
     
 template <int n>
 static inline VectorFloat vectorLength(const VectorFloat vec[n]) {

@@ -1,15 +1,15 @@
 #ifndef _TT3D_UI_SURFACE3X3_H
 #define _TT3D_UI_SURFACE3X3_H
 
-#include "modules/geometry/Vectors.hpp"
-#include "modules/geometry/Rect.hpp"
+#include "modules/math/Vectors.hpp"
+#include "modules/math/Rect.hpp"
 #include "Surface.hpp"
 
 namespace tt3d {
 namespace UI {
     
 using namespace tt3d;
-using namespace Geometry;
+using namespace Math;
 
 class Surface3x3: public Surface {
     public:

@@ -5,7 +5,7 @@ namespace tt3d {
 namespace UI {
     
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 using namespace tt3d::IO;
 
 SDL_MouseButtonEvent transposedButtonEvent(const SDL_MouseButtonEvent &button, const Rect &rect) {

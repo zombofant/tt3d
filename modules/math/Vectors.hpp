@@ -2,7 +2,7 @@
 #define _TT3D_GEOMETRY_H
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
     
 typedef double VectorFloat;
 

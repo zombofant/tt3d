@@ -4,7 +4,7 @@
 #include "Vectors.hpp"
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
 Vector3 hsvtorgb(const Vector3 &hsv);
 Vector4 hsvtorgba(const Vector3 &hsv, const VectorFloat alpha);

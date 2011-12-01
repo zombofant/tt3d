@@ -13,13 +13,13 @@
 #include "modules/utils/BufferMap.hpp"
 #include "GenericBuffer.hpp"
 #include <string.h>
-#include "modules/geometry/Vectors.hpp"
+#include "modules/math/Vectors.hpp"
 
 namespace tt3d {
 namespace GL {
     
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
     
 typedef GLsizei VertexIndex;
 typedef std::vector<VertexIndex> VertexIndexList;

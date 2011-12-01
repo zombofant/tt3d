@@ -5,7 +5,7 @@ namespace UI {
 
 using namespace tt3d;
 using namespace tt3d::GL;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 /* tt3d::UI::Material */
 

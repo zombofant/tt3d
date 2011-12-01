@@ -1,11 +1,11 @@
-#include "modules/geometry/Vectors.hpp"
+#include "modules/math/Vectors.hpp"
 #include "Source.hpp"
 
 namespace tt3d {
 namespace Terrain {
     
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 class PerlinNoiseSource: public Source {
     public:
@@ -17,8 +17,10 @@ class PerlinNoiseSource: public Source {
         const Vector3 _offset, _scale;
         const VectorFloat _persistence;
         const unsigned int _octaves;
+    protected:
+        VectorFloat interpolatedNoise(const Vector2 &pos);
     public:
-        virtual VectorFloat getHeight(const VectorFloat x, const VectorFloat y);
+        virtual VectorFloat getHeight(const Vector2 &pos);
         virtual void getMetrics(VectorFloat &width, VectorFloat &height);
 };
 

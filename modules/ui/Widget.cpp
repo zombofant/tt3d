@@ -4,7 +4,7 @@ namespace tt3d {
 namespace UI {
 
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 
 /* tt3d::UI::Widget */

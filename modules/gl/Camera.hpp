@@ -2,14 +2,14 @@
 #define _TT3D_GL_CAMERA_H
 
 #include "Viewport.hpp"
-#include "modules/geometry/Vectors.hpp"
-#include "modules/geometry/Matrices.hpp"
+#include "modules/math/Vectors.hpp"
+#include "modules/math/Matrices.hpp"
 #include <boost/shared_ptr.hpp>
 
 namespace tt3d {
 namespace GL {
     
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 class Camera {
     public:

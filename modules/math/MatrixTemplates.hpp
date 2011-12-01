@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
 /**
  * Write a column-wise n-dimensional identity matrix to the memory 

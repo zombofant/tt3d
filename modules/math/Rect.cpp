@@ -1,9 +1,9 @@
 #include "Rect.hpp"
 
 namespace tt3d {
-namespace Geometry {
+namespace Math {
 
-/* tt3d::UI::Point */
+/* tt3d::Math::Point */
 
 Point::Point(const int32_t ax, const int32_t ay):
     x(ax),
@@ -12,7 +12,7 @@ Point::Point(const int32_t ax, const int32_t ay):
     
 }
 
-/* tt3d::UI::Rect */
+/* tt3d::Math::Rect */
 
 Rect::Rect(const int32_t ax, const int32_t ay, const uint32_t aw, const uint32_t ah):
     x(ax),
@@ -41,7 +41,7 @@ Rect Rect::operator+(const Point &by) const {
     return Rect(x + by.x, y + by.y, w, h);
 }
 
-/* tt3d::UI::Borders */
+/* tt3d::Math::Borders */
 
 Borders::Borders():
     top(0),

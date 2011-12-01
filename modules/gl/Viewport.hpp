@@ -3,7 +3,7 @@
 
 #include <cstddef>
 #include "Base.hpp"
-#include "modules/geometry/Rect.hpp"
+#include "modules/math/Rect.hpp"
 #include <boost/shared_ptr.hpp>
 
 namespace tt3d {
@@ -35,7 +35,7 @@ class Viewport: public Struct {
         void setTop(const GLint aValue) { top = aValue; };
         void setWidth(const GLsizei aValue) { width = aValue; };
         
-        void setRect(const Geometry::Rect &aRect);
+        void setRect(const Math::Rect &aRect);
 };
 
 typedef boost::shared_ptr<Viewport> ViewportHandle;

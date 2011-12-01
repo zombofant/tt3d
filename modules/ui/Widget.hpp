@@ -9,14 +9,14 @@
 #include <SDL/SDL.h>
 #include "modules/io/SDL.hpp"
 #include "modules/utils/Exception.hpp"
-#include "modules/geometry/Rect.hpp"
+#include "modules/math/Rect.hpp"
 #include "Surface.hpp"
 
 namespace tt3d {
 namespace UI {
 
 using namespace tt3d;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 
 class Error: public Utils::Exception {

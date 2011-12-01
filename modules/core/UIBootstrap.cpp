@@ -1,9 +1,9 @@
 #include "UIBootstrap.hpp"
 #include <SDL/SDL.h>
 #include <GL/glew.h>
-#include "modules/geometry/Vectors.hpp"
+#include "modules/math/Vectors.hpp"
 #include <iostream>
-#include "modules/geometry/Colours.hpp"
+#include "modules/math/Colours.hpp"
 #include <cmath>
 
 namespace tt3d {

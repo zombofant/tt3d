@@ -1,7 +1,7 @@
 #ifndef _TT3D_UI_SURFACE_H
 #define _TT3D_UI_SURFACE_H
 
-#include "modules/geometry/Rect.hpp"
+#include "modules/math/Rect.hpp"
 #include "modules/gl/GeometryObject.hpp"
 #include "modules/gl/Material.hpp"
 
@@ -10,7 +10,7 @@ namespace UI {
 
 using namespace tt3d;
 using namespace tt3d::GL;
-using namespace tt3d::Geometry;
+using namespace tt3d::Math;
 
 /*class GeometryBuffer: public GL::GeometryBuffer<float, 2, 4, 2> {
     
