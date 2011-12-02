@@ -252,7 +252,7 @@ Vector2 operator+ (VectorFloat a, Vector2 b) {
 
 Vector2 operator- (Vector2 a) {
     Vector2 result(a);
-    vectorInvert<2>(a.as_array);
+    vectorInvert<2>(result.as_array);
     return result;
 }
 
@@ -310,7 +310,7 @@ Vector3 operator+ (VectorFloat a, Vector3 b) {
 
 Vector3 operator- (Vector3 a) {
     Vector3 result(a);
-    vectorInvert<3>(a.as_array);
+    vectorInvert<3>(result.as_array);
     return result;
 }
 
@@ -376,7 +376,7 @@ Vector4 operator+ (VectorFloat a, Vector4 b) {
 
 Vector4 operator- (Vector4 a) {
     Vector4 result(a);
-    vectorInvert<4>(a.as_array);
+    vectorInvert<4>(result.as_array);
     return result;
 }
 
