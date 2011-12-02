@@ -13,6 +13,21 @@ namespace Math {
  *  s 1  2  s
  *  t south t
  * */
+ 
+enum MeshTreePosition {
+    TP_ROOT = -1,
+    TP_NORTH_WEST = 0,
+    TP_SOUTH_WEST = 1,
+    TP_SOUTH_EAST = 2,
+    TP_NORTH_EAST = 3
+};
+
+enum MeshTreeSibling {
+    TS_NORTH = 0,
+    TS_WEST = 1,
+    TS_SOUTH = 2,
+    TS_EAST = 3
+};
     
 class MeshTree;
 
@@ -42,13 +57,18 @@ class MeshTree {
     public:
         virtual ~MeshTree() {};
     protected:
-        MeshTree(MeshTree *parent);
+        MeshTree();
+        MeshTree(MeshTree *parent, const MeshTreePosition position);
     protected:
         MeshTree *_parent;
+        const MeshTreePosition _position;
         HeightCallback _heightCallback;
+    protected:
+        MeshTree *getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position);
     public:
         HeightCallback getHeightCallback() { return _heightCallback; }
         MeshTree *getParent() { return _parent; }
+        MeshTree *getSibling(const MeshTreeSibling sibling);
         
         virtual bool isLeaf() { return false; }
         
@@ -57,7 +77,7 @@ class MeshTree {
 
 class MeshTreeNode: public MeshTree {
     public:
-        MeshTreeNode(MeshTree *parent, const Vector2 min, const Vector2 max,
+        MeshTreeNode(MeshTree *parent, const MeshTreePosition position, const Vector2 min, const Vector2 max,
             const VectorFloat heights[4]);
         MeshTreeNode(const Vector2 min, const Vector2 max, HeightCallback heightCallback);
         virtual ~MeshTreeNode();
@@ -74,7 +94,7 @@ class MeshTreeNode: public MeshTree {
 
 class MeshTreeFace: public MeshTree {
     public:
-        MeshTreeFace(MeshTree *parent, const Vector2 min, const Vector2 max,
+        MeshTreeFace(MeshTree *parent, const MeshTreePosition position, const Vector2 min, const Vector2 max,
             const VectorFloat heights[4]);
     private:
         Vector3 _vertices[4];

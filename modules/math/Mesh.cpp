@@ -23,20 +23,130 @@ static int childIndicies[4][4] = {
 
 /* tt3d::Math::MeshTree */
 
-MeshTree::MeshTree(MeshTree *parent):
-    _parent(parent)
+MeshTree::MeshTree():
+    _parent(0),
+    _position(TP_ROOT)
+{
+    
+}
+
+MeshTree::MeshTree(MeshTree *parent, const MeshTreePosition position):
+    _parent(parent),
+    _position(position)
 {
     if (_parent) {
         _heightCallback = _parent->getHeightCallback();
     }
 }
 
+MeshTree *MeshTree::getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position) {
+    MeshTree *parentSiblingItem = _parent->getSibling(parentSibling);
+    if ((!parentSiblingItem) || (parentSiblingItem->isLeaf()))
+        return 0;
+    return ((MeshTreeNode*)parentSiblingItem)->getChild(position);
+}
+
+MeshTree *MeshTree::getSibling(const MeshTreeSibling sibling) {
+    /* 0 -> north
+     * 1 -> west
+     * 2 -> south
+     * 3 -> east */
+    if (!_parent)
+        return 0;
+    MeshTreeNode *parent = ((MeshTreeNode*)_parent);
+    switch (_position) {
+        case TP_ROOT:
+            return 0;
+        case TP_NORTH_WEST: {
+            switch (sibling) {
+                case TS_NORTH: {
+                    return getParentSiblingChild(TS_NORTH, TP_SOUTH_WEST);
+                }
+                
+                case TS_WEST: {
+                    return getParentSiblingChild(TS_WEST, TP_NORTH_EAST);
+                }
+                
+                case TS_SOUTH: {
+                    return parent->getChild(TP_SOUTH_WEST);
+                }
+                
+                case TS_EAST: {
+                    return parent->getChild(TP_NORTH_EAST);
+                }
+            }
+            break; /* case TP_NORTH_WEST */
+        }
+        case TP_SOUTH_WEST: {
+            switch (sibling) {
+                case TS_NORTH: {
+                    return parent->getChild(TP_NORTH_WEST);
+                }
+                
+                case TS_WEST: {
+                    return getParentSiblingChild(TS_WEST, TP_SOUTH_EAST);
+                }
+                
+                case TS_SOUTH: {
+                    return getParentSiblingChild(TS_SOUTH, TP_NORTH_WEST);
+                }
+                
+                case TS_EAST: {
+                    return parent->getChild(TP_SOUTH_EAST);
+                }
+            }
+            break; /* case TP_SOUTH_WEST */
+        }
+        case TP_SOUTH_EAST: {
+            switch (sibling) {
+                case TS_NORTH: {
+                    return parent->getChild(TP_NORTH_EAST);
+                }
+                
+                case TS_WEST: {
+                    return parent->getChild(TP_SOUTH_WEST);
+                }
+                
+                case TS_SOUTH: {
+                    return getParentSiblingChild(TS_SOUTH, TP_NORTH_EAST);
+                }
+                
+                case TS_EAST: {
+                    return getParentSiblingChild(TS_EAST, TP_SOUTH_WEST);
+                }
+            }
+            break; /* case TP_SOUTH_EAST */
+        }
+        case TP_NORTH_EAST: {
+            switch (sibling) {
+                case TS_NORTH: {
+                    return getParentSiblingChild(TS_NORTH, TP_SOUTH_EAST);
+                }
+                
+                case TS_WEST: {
+                    return parent->getChild(TP_NORTH_WEST);
+                }
+                
+                case TS_SOUTH: {
+                    return parent->getChild(TP_SOUTH_EAST);
+                }
+                
+                case TS_EAST: {
+                    return getParentSiblingChild(TS_EAST, TP_NORTH_WEST);
+                }
+            }
+            break; /* case TP_SOUTH_EAST */
+        }
+    }
+    return 0;
+}
+
 /* tt3d::Math::MeshTreeNode */
 
-MeshTreeNode::MeshTreeNode(MeshTree *parent, const Vector2 min, const Vector2 max,
+MeshTreeNode::MeshTreeNode(MeshTree *parent, const MeshTreePosition position, const Vector2 min, const Vector2 max,
     const VectorFloat heights[4]):
     
-    MeshTree::MeshTree(parent),
+    MeshTree::MeshTree(parent, position),
     _min(min),
     _max(max)
 {
@@ -44,7 +154,7 @@ MeshTreeNode::MeshTreeNode(MeshTree *parent, const Vector2 min, const Vector2 ma
 }
 
 MeshTreeNode::MeshTreeNode(const Vector2 min, const Vector2 max, HeightCallback heightCallback):
-    MeshTree::MeshTree(0),
+    MeshTree::MeshTree(),
     _min(min),
     _max(max)
 {
@@ -59,6 +169,8 @@ MeshTreeNode::~MeshTreeNode() {
 }
 
 void MeshTreeNode::initChildren(const VectorFloat heights[4]) {
+    /* 0 3 
+     * 1 2 */
     const Vector2 diag = _max - _min;
     const Vector2 positions[9] = {
         _min,
@@ -88,14 +200,14 @@ void MeshTreeNode::initChildren(const VectorFloat heights[4]) {
         allHeights[7] = (heights[0] + heights[3]) / 2.0;
         allHeights[8] = (heights[0] + heights[1] + heights[2] + heights[3]) / 2.0;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = TP_NORTH_WEST; i <= TP_NORTH_EAST; i++) {
         const VectorFloat childHeights[4] = {
             allHeights[childIndicies[i][0]],
             allHeights[childIndicies[i][1]],
             allHeights[childIndicies[i][2]],
             allHeights[childIndicies[i][3]]
         };
-        _children[i] = new MeshTreeFace(this, positions[childIndicies[i][0]], positions[childIndicies[i][2]], childHeights);
+        _children[i] = new MeshTreeFace(this, (MeshTreePosition)i, positions[childIndicies[i][0]], positions[childIndicies[i][2]], childHeights);
     }
 }
 
@@ -133,8 +245,8 @@ void MeshTreeNode::subdivideChild(const int index) {
 
 /* tt3d::Math::MeshTreeFace */
 
-MeshTreeFace::MeshTreeFace(MeshTree *parent, const Vector2 min, const Vector2 max, const VectorFloat heights[4]):
-    MeshTree::MeshTree(parent),
+MeshTreeFace::MeshTreeFace(MeshTree *parent, const MeshTreePosition position, const Vector2 min, const Vector2 max, const VectorFloat heights[4]):
+    MeshTree::MeshTree(parent, position),
     _vertices({
         Vector3(min.x, min.y, heights[0]),
         Vector3(min.x, max.y, heights[1]),
@@ -185,7 +297,7 @@ Vector3 *MeshTreeFace::vertex(const int index) {
 MeshTreeNode *MeshTreeFace::subdivide() {
     MeshTreeNode *node;
     if (_heightCallback.ok()) {
-        node = new MeshTreeNode(_parent, _vertices[0].vec2(), _vertices[2].vec2(), 0);
+        node = new MeshTreeNode(_parent, _position, _vertices[0].vec2(), _vertices[2].vec2(), 0);
     } else {
         const VectorFloat heights[4] = {
             _vertices[0].z,
@@ -194,7 +306,7 @@ MeshTreeNode *MeshTreeFace::subdivide() {
             _vertices[3].z
         };
         
-        node = new MeshTreeNode(_parent, _vertices[0].vec2(), _vertices[2].vec2(), heights);
+        node = new MeshTreeNode(_parent, _position, _vertices[0].vec2(), _vertices[2].vec2(), heights);
     }
     return node;
 }
