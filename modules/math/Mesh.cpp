@@ -144,6 +144,32 @@ MeshTreeFace::MeshTreeFace(MeshTree *parent, const Vector2 min, const Vector2 ma
     
 }
 
+Vector3 MeshTreeFace::getCenter() const {
+    Vector3 result(_vertices[0]);
+    for (int i = 1; i < 4; i++) {
+        result += _vertices[i];
+    }
+    result /= 4.0;
+    return result;
+}
+
+VectorFloat MeshTreeFace::getError() const {
+    const Vector3 origin = _vertices[0];
+    const Vector3 northEdge = _vertices[3] - _vertices[0];
+    const Vector3 westEdge = _vertices[1] - _vertices[0];
+    VectorFloat error = 0.;
+    
+    for (int xi = 0; xi < 3; xi++) {
+        const VectorFloat x = 0.25 + xi * 0.25;
+        for (int yi = 0; yi < 3; yi++) {
+            const VectorFloat y = 0.25 + yi * 0.25;
+            const Vector3 pos = origin + northEdge * x + westEdge * y;
+            error += abs(pos.z - _heightCallback.call(pos.vec2()));
+        }
+    }
+    return error;
+}
+
 MeshTreeNode *MeshTreeFace::subdivide() {
     MeshTreeNode *node;
     if (_heightCallback.ok()) {

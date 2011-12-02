@@ -14,10 +14,13 @@ class TerrainMesh {
             const Vector2 dimensions,
             const VectorFloat epsilon = 0.1);
     private:
+        const SourceHandle _source;
         const Vector2 _dimensions;
-        MeshTree *_mesh;
+        const HeightCallback _callback;
+        MeshTreeNode *_mesh;
     protected:
-        void buildMesh(const SourceHandle source, const VectorFloat epsilon);
+        void buildMesh(const VectorFloat epsilon);
+        void recurseMesh(MeshTreeNode *node, const VectorFloat epsilon);
     public:
         MeshTree *getMesh();
 };

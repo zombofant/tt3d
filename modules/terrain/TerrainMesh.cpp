@@ -1,4 +1,5 @@
 #include "modules/terrain/TerrainMesh.hpp"
+#include <cmath>
 
 namespace tt3d {
 namespace Terrain {
@@ -12,15 +13,32 @@ VectorFloat heightCallback(void *userdata, const Vector2 pos) {
 TerrainMesh::TerrainMesh(const SourceHandle source, 
     const Vector2 dimensions,
     const VectorFloat epsilon):
-    
-    _dimensions(dimensions)
+    _source(source),
+    _dimensions(dimensions),
+    _callback((void*)_source.get(), &heightCallback)
 {
-    buildMesh(source, epsilon);
+    buildMesh(epsilon);
 }
 
-void TerrainMesh::buildMesh(const SourceHandle source, const VectorFloat epsilon) {
-    _mesh = new MeshTreeNode(Vector2(0., 0.), _dimensions, HeightCallback((void*)source.get(), &heightCallback));
-    
+void TerrainMesh::buildMesh(const VectorFloat epsilon) {
+    _mesh = new MeshTreeNode(Vector2(0., 0.), _dimensions, _callback);
+    recurseMesh(_mesh, epsilon);
+}
+
+void TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon) {
+    for (int i = 0; i < 4; i++) {
+        MeshTree *child = item->getChild(i);
+        if (child->isLeaf()) {
+            MeshTreeFace *face = (MeshTreeFace*)(child);
+            if (face->getError() > epsilon) {
+                item->subdivideChild(i);
+                continue;
+            }
+        } else {
+            MeshTreeNode *node = (MeshTreeNode*)(child);
+            recurseMesh(node, epsilon);
+        }
+    }
 }
 
 }

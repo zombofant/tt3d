@@ -30,7 +30,7 @@ struct HeightCallback {
         void *_userdata;
         HeightCallbackPtr *_call;
     public:
-        VectorFloat call(const Vector2 pos) { return _call(_userdata, pos); }
+        VectorFloat call(const Vector2 pos) const { return _call(_userdata, pos); }
         bool ok() { return bool(_call); }
 };
 
@@ -42,10 +42,11 @@ class MeshTree {
     protected:
         MeshTree *_parent;
         HeightCallback _heightCallback;
-        virtual bool isLeaf() { return false; }
     public:
         HeightCallback getHeightCallback() { return _heightCallback; }
         MeshTree *getParent() { return _parent; }
+        
+        virtual bool isLeaf() { return false; }
         
         void setHeightCallback(HeightCallback heightCallback) { _heightCallback = heightCallback; }
 };
@@ -73,12 +74,13 @@ class MeshTreeFace: public MeshTree {
             const VectorFloat heights[4]);
     private:
         Vector3 _vertices[4];
-    protected:
-        virtual bool isLeaf() { return true; }
     public:
-        Vector2 getAbsolute(const Vector2 relPosition) const;
         Vector3 getCenter() const;
         void getEdges(Vector3 &northEdge, Vector3 &westEdge, Vector3 &southEdge, Vector3 &eastEdge);
+        VectorFloat getError() const;
+        
+        virtual bool isLeaf() { return true; }
+        
         Vector3 *vertex(const int index);
     public:
         MeshTreeNode *subdivide();
