@@ -10,7 +10,18 @@
 #include <boost/smart_ptr.hpp>
 
 namespace tt3d {
+
+namespace IO {
+
+typedef boost::shared_ptr<std::ostream> OStreamHandle;
+typedef boost::shared_ptr<std::istream> IStreamHandle;
+typedef boost::shared_ptr<std::iostream> IOStreamHandle;
+
+}
+    
 namespace VFS {
+    
+using namespace IO;
     
 enum MountPriority {
     MP_PRACTICALLY_INEXISTANT = -3,
@@ -50,10 +61,6 @@ enum ProtocolCapability {
     PC_SHARE_MODES = 8
 };
 typedef unsigned int ProtocolCapabilities;
-
-typedef boost::shared_ptr<std::ostream> OStreamHandle;
-typedef boost::shared_ptr<std::istream> IStreamHandle;
-typedef boost::shared_ptr<std::iostream> IOStreamHandle;
 
 /** 
  * Checks whether a path leaves the root node.
