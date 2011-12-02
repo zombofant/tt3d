@@ -19,6 +19,8 @@ class PerlinNoiseSource: public Source {
         const unsigned int _octaves;
     protected:
         VectorFloat interpolatedNoise(const Vector2 &pos);
+        VectorFloat noise(const int x, const int y);
+        VectorFloat smoothedNoise(const int x, const int y);
     public:
         virtual VectorFloat getHeight(const Vector2 &pos);
         virtual void getMetrics(VectorFloat &width, VectorFloat &height);

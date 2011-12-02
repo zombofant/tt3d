@@ -20,7 +20,7 @@ set(LIBS ${LIBS} ${OpenGL_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY
 add_subdirectory("modules")
 
 # why do we need to put the libraries in reversed order?
-set(tt3d_MODULES tt3d_core tt3d_ui tt3d_gl tt3d_terrain tt3d_geometry tt3d_io tt3d_utils)
+set(tt3d_MODULES tt3d_core tt3d_ui tt3d_gl tt3d_terrain tt3d_math tt3d_io tt3d_utils)
 
 add_executable(tt3d tt3d.cpp)
 add_dependencies(tt3d ${tt3d_MODULES})
