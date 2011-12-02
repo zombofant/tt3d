@@ -1,6 +1,8 @@
+
 #include "InGame.hpp"
 #include <cmath>
 #include <GL/glew.h>
+#include "modules/terrain/generators/PerlinNoiseSource.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -23,6 +25,7 @@ InGame::InGame(const GL::ViewportHandle viewport):
     initCamera();
     initAxis();
     initGrid();
+    initTest();
 }
 
 void InGame::initAxis() {
@@ -87,6 +90,16 @@ void InGame::initGrid() {
     buffer->setMap(Utils::BufferMapHandle());
 }
 
+void InGame::initTest() {
+    static int terrainSize = 4096;
+    Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
+        terrainSize, terrainSize, 
+        Vector3(0., 0, 0),
+        Vector3(0.01, 0.01, 1.0),
+        0.8, 15));
+    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 0.01, 100);
+}
+
 void InGame::doAbsRectChanged() {
     _viewport->setRect(_absRect);
     _camera->viewportChanged();
@@ -104,6 +117,15 @@ void InGame::doRenderCallback() {
     _debugMaterial->bind(false);
     _debugMaterial->render(GL_LINES);
     _debugMaterial->unbind();
+    
+    /*glColor4f(1.0, 1.0, 1.0, 1.0);
+    glBegin(GL_QUADS);
+        glVertex3f(0.0, 0.0, 1.0);
+        glVertex3f(0.0, 1.0, 2.0);
+        glVertex3f(1.0, 1.0, 3.0);
+        glVertex3f(1.0, 0.0, 4.0);
+    glEnd();*/
+    _mesh->debugRender();
     
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);

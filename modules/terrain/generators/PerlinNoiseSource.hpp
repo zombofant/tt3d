@@ -1,3 +1,6 @@
+#ifndef _TT3D_TERRAIN_PERLIN_NOISE_H
+#define _TT3D_TERRAIN_PERLIN_NOISE_H
+
 #include "modules/math/Vectors.hpp"
 #include "Source.hpp"
 
@@ -28,3 +31,5 @@ class PerlinNoiseSource: public Source {
 
 }
 }
+
+#endif

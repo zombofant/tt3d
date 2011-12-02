@@ -1,3 +1,6 @@
+#ifndef _TT3D_TERRAIN_SOURCE_H
+#define _TT3D_TERRAIN_SOURCE_H
+
 #include "modules/math/Vectors.hpp"
 #include <boost/smart_ptr/shared_ptr.hpp>
 
@@ -16,3 +19,5 @@ typedef boost::shared_ptr<Source> SourceHandle;
 
 }
 }
+
+#endif

@@ -24,10 +24,11 @@ static int childIndicies[4][4] = {
 /* tt3d::Math::MeshTree */
 
 MeshTree::MeshTree(MeshTree *parent):
-    _parent(parent),
-    _heightCallback(parent->getHeightCallback())
+    _parent(parent)
 {
-    
+    if (_parent) {
+        _heightCallback = _parent->getHeightCallback();
+    }
 }
 
 /* tt3d::Math::MeshTreeNode */
@@ -144,6 +145,12 @@ MeshTreeFace::MeshTreeFace(MeshTree *parent, const Vector2 min, const Vector2 ma
     
 }
 
+void MeshTreeFace::rangeCheck(const int index) { 
+    if ((index < 0) || (index >= 4)) {
+        throw Utils::IndexError(index, 0, 3);
+    }
+}
+
 Vector3 MeshTreeFace::getCenter() const {
     Vector3 result(_vertices[0]);
     for (int i = 1; i < 4; i++) {
@@ -168,6 +175,11 @@ VectorFloat MeshTreeFace::getError() const {
         }
     }
     return error;
+}
+
+Vector3 *MeshTreeFace::vertex(const int index) {
+    rangeCheck(index);
+    return &_vertices[index];
 }
 
 MeshTreeNode *MeshTreeFace::subdivide() {

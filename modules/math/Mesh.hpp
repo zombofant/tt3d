@@ -26,6 +26,10 @@ struct HeightCallback {
         {
             
         }
+        
+        HeightCallback():
+            _userdata(0),
+            _call(0) {};
     private:
         void *_userdata;
         HeightCallbackPtr *_call;
@@ -74,6 +78,8 @@ class MeshTreeFace: public MeshTree {
             const VectorFloat heights[4]);
     private:
         Vector3 _vertices[4];
+    protected:
+        void rangeCheck(const int index);
     public:
         Vector3 getCenter() const;
         void getEdges(Vector3 &northEdge, Vector3 &westEdge, Vector3 &southEdge, Vector3 &eastEdge);

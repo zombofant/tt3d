@@ -25,9 +25,12 @@ PerlinNoiseSource::PerlinNoiseSource(const VectorFloat width, const VectorFloat 
 }
 
 VectorFloat PerlinNoiseSource::interpolatedNoise(const Vector2 &pos) {
-    const int intX = round(pos.x), intY = round(pos.y);
-    const VectorFloat fracX = wrappingAbs(pos.x - intX), 
-        fracY = wrappingAbs(pos.y - intY);
+    const int intX = floor(pos.x), intY = floor(pos.y);
+    const VectorFloat fracX = abs(pos.x - VectorFloat(intX)), 
+        fracY = abs(pos.y - VectorFloat(intY));
+    
+    /*std::cout << pos.x << std::endl;
+    std::cout << intX << " " << fracX << std::endl;*/
     
     const double v[4] = {
         smoothedNoise(intX   ,   intY    ),
@@ -37,10 +40,10 @@ VectorFloat PerlinNoiseSource::interpolatedNoise(const Vector2 &pos) {
     };
     
     const double iv[2] = {
-        interpolateCos(v[0], v[1], fracX),
-        interpolateCos(v[2], v[3], fracX)
+        interpolateCos(v[1], v[0], fracX),
+        interpolateCos(v[3], v[2], fracX)
     };
-    return interpolateCos(iv[0], iv[1], fracY);
+    return interpolateCos(iv[1], iv[0], fracY);
 }
 
 VectorFloat PerlinNoiseSource::noise(const int x, const int y) {
@@ -53,7 +56,7 @@ VectorFloat PerlinNoiseSource::smoothedNoise(const int x, const int y) {
     static int xOffsets[8] = {-1, 1, -1, 1, -1, 1, 0, 0};
     static int yOffsets[8] = {-1, -1, 1, 1, 0, 0, -1, 1};
     double result = 0.;
-    double intermediateResult = 0.;
+    /*double intermediateResult = 0.;
     for (int i = 0; i < 4; i++) {
         intermediateResult += noise(x + xOffsets[i], y + yOffsets[i]);
     }
@@ -63,7 +66,7 @@ VectorFloat PerlinNoiseSource::smoothedNoise(const int x, const int y) {
     for (int i = 4; i < 8; i++) {
         intermediateResult += noise(x + xOffsets[i], y + yOffsets[i]);
     }
-    result += intermediateResult / 8.0;
+    result += intermediateResult / 8.0;*/
     return result + noise(x, y);
 }
 

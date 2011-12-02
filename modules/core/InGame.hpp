@@ -7,6 +7,7 @@
 #include "modules/gl/Material.hpp"
 #include "modules/gl/GeometryObject.hpp"
 #include "modules/gl/Camera.hpp"
+#include "modules/terrain/TerrainMesh.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -30,10 +31,13 @@ class InGame: public UI::RootWidget {
         GL::CameraFreeSmooth *_camera;
         GL::CameraHandle _cameraHandle;
         bool _cameraMoved;
+        
+        Terrain::TerrainMesh *_mesh;
     private:
         void initAxis();
         void initCamera();
         void initGrid();
+        void initTest();
     protected:
         virtual void doAbsRectChanged();
         virtual void doRenderCallback();
