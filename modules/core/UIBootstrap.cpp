@@ -177,6 +177,8 @@ void TT3D::freeIO() {
 }
 
 void TT3D::initApp() {
+    _updateTime = 0.;
+    _updateInterval = 0.01;
     initIO();
     try {
         initSDL();
@@ -198,12 +200,20 @@ void TT3D::initApp() {
     }
 }
 
+void TT3D::doUpdate() {
+    _rootWidget->update(_updateInterval);
+}
+
 void TT3D::perFrame(const IO::TimeFloat interval) {
+    _updateTime += interval;
+    while (_updateTime >= _updateInterval) {
+        _updateTime -= _updateInterval;
+        doUpdate();
+    }
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     
-    _rootWidget->update(interval);
     _rootWidget->render();
     
     SDL_GL_SwapBuffers();

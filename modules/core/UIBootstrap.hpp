@@ -12,6 +12,7 @@
 #include "modules/ui/Widget.hpp"
 #include "modules/core/InGame.hpp"
 #include "modules/ui/Surface3x3.hpp"
+#include "modules/io/Time.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -23,6 +24,7 @@ using namespace tt3d::IO;
 
 class TT3D: public IO::Application {
     private:
+        IO::TimeFloat _updateInterval, _updateTime;
         SDL_Surface *window;
         
         ViewportHandle globalViewport;
@@ -53,6 +55,7 @@ class TT3D: public IO::Application {
         virtual void freeUI();
     protected:
         virtual void freeApp();
+        void doUpdate();
         virtual void perFrame(const IO::TimeFloat interval);
         virtual void initApp();
 };
