@@ -96,10 +96,11 @@ LogXMLFormatter::~LogXMLFormatter() {
 
 void LogXMLFormatter::initOutput() {
     std::ostream &stream = *_stream.get();
-    stream << "<?xml version=\"1.0\"?>" << std::endl << "<log application=\"tt3d\">" << std::endl;
+    stream << "<?xml version=\"1.0\"?>" << std::endl;
     if (_xslPath.length() > 0) {
         stream << "<?xml-stylesheet type=\"text/xsl\" href=\"" << _xslPath << "\"?>" << std::endl;
     }
+    stream << "<log application=\"tt3d\">" << std::endl;
 }
 
 LogTargetBase &LogXMLFormatter::operator<<(const LogStream &logStream) {
