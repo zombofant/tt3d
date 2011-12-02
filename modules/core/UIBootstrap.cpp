@@ -1,3 +1,4 @@
+#include <fstream>
 #include "UIBootstrap.hpp"
 #include <SDL/SDL.h>
 #include <GL/glew.h>
@@ -5,6 +6,7 @@
 #include <iostream>
 #include "modules/math/Colours.hpp"
 #include <cmath>
+#include "modules/io/Log.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -18,7 +20,15 @@ static inline double min(const double a, const double b) {
 /* tt3d::Core::TT3D */
 
 void TT3D::initIO() {
-    
+    IO::OStreamHandle plainLogStream = IO::OStreamHandle(new std::ofstream("log.txt"));
+    IO::OStreamHandle xmlLogStream = IO::OStreamHandle(new std::ofstream("log.xml"));
+    IO::OStreamHandle cout = IO::OStreamHandle(&std::cout);
+    IO::OStreamHandle cerr = IO::OStreamHandle(&std::cerr);
+    IO::log.addLogTarget(new IO::LogOStreamTarget(cout, (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(cerr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(plainLogStream));
+    IO::log.addLogTarget(new IO::LogXMLFormatter(xmlLogStream, "log.xsl"));
+    IO::log << IO::ML_INFO << "IO initialized." << IO::submit;
 }
 
 void TT3D::initSDL() {
@@ -26,6 +36,7 @@ void TT3D::initSDL() {
     
     const SDL_VideoInfo *info = SDL_GetVideoInfo();
     if (info == NULL) {
+        IO::log << IO::ML_ERROR << "Could not get SDL video info." << IO::submit;
         SDL_Quit();
         throw 0;
         return;
@@ -51,6 +62,8 @@ void TT3D::initSDL() {
 
     window = SDL_SetVideoMode(800, 600, 32, flags);
     if (window == NULL) {
+        IO::log << IO::ML_FATAL << "Could not initialize SDL surface: " << SDL_GetError() << IO::submit;
+        IO::log << IO::ML_FATAL << "Check your graphics driver." << IO::submit;
         SDL_Quit();
         throw 0;
         return;
@@ -58,12 +71,14 @@ void TT3D::initSDL() {
 
     SDL_EnableUNICODE(1);
     SDL_ShowCursor(1);
+    
+    IO::log << IO::ML_INFO << "SDL initialized." << IO::submit;
 }
 
 void TT3D::initGL() {    
     GLenum err = glewInit();
     if (err != GLEW_OK) {
-        std::cerr << "glewInit failed." << std::endl;
+        IO::log << IO::ML_FATAL << "Could not initialize glew." << IO::submit;
         throw 0;
         return;
     }
@@ -82,6 +97,8 @@ void TT3D::initGL() {
     glOrtho(0, 800, 600, 0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
+    IO::log << IO::ML_INFO << "OpenGL initialized." << IO::submit;
 }
 
 void TT3D::initUI() {
@@ -125,8 +142,8 @@ void TT3D::initUI() {
     _uiBackground->getBorders().right = 1;
     _uiBackground->getBorders().bottom = 1;
     
-    std::cout << "ui bootstrapped" << std::endl;
     _rootWidget->setSurface(_uiBackgroundHandle);
+    IO::log << IO::ML_INFO << "UI initialized." << IO::submit;
 }
 
 void TT3D::handleKeypress(const SDL_keysym &sym, const SDL_KeyActionMode mode) {

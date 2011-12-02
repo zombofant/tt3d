@@ -49,7 +49,7 @@ class LogTargetBase {
 class LogStreamTarget: public LogTargetBase {
     public:
         LogStreamTarget(const MessageLevels levels);
-    private:
+    protected:
         const MessageLevels _levels;
     public:
         virtual const MessageLevels getMessageLevels() { return _levels; };
@@ -59,7 +59,7 @@ class LogOStreamTarget: public LogStreamTarget {
     public:
         LogOStreamTarget(const OStreamHandle stream, 
             const MessageLevels levels = ML_DEFAULT);
-    private:
+    protected:
         const OStreamHandle _stream;
     public:
         virtual LogTargetBase &operator<< (const LogStream &logStream);
@@ -72,8 +72,11 @@ class LogXMLFormatter: public LogOStreamTarget {
         LogXMLFormatter(const OStreamHandle stream,
             const std::string xslPath, 
             const MessageLevels levels = ML_DEFAULT);
-    private:
+        virtual ~LogXMLFormatter();
+    protected:
         const std::string _xslPath;
+    protected:
+        void initOutput();
     public:
         virtual LogTargetBase &operator<< (const LogStream &logStream);
 };

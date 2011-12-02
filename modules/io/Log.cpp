@@ -66,6 +66,50 @@ LogTargetBase &LogOStreamTarget::operator<<(const LogStream &logStream) {
     std::operator<<(*stream, str);
     std::operator<<(*stream, logStream.str());
     std::endl(*stream);
+    stream->flush();
+    return *this;
+}
+
+/* tt3d::IO::LogXMLFormatter */
+
+LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream, 
+    const MessageLevels levels):
+    LogOStreamTarget::LogOStreamTarget(stream, levels),
+    _xslPath()
+{
+    initOutput();
+}
+
+LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream,
+    const std::string xslPath, 
+    const MessageLevels levels):
+    LogOStreamTarget::LogOStreamTarget(stream, levels),
+    _xslPath(xslPath)
+{
+    initOutput();
+}
+
+LogXMLFormatter::~LogXMLFormatter() {
+    std::ostream &stream = *_stream.get();
+    stream << "</log>" << std::endl;
+}
+
+void LogXMLFormatter::initOutput() {
+    std::ostream &stream = *_stream.get();
+    stream << "<?xml version=\"1.0\"?>" << std::endl << "<log application=\"tt3d\">" << std::endl;
+    if (_xslPath.length() > 0) {
+        stream << "<?xml-stylesheet type=\"text/xsl\" href=\"" << _xslPath << "\"?>" << std::endl;
+    }
+}
+
+LogTargetBase &LogXMLFormatter::operator<<(const LogStream &logStream) {
+    std::ostream &stream = *_stream.get();
+    stream << "  <event level=\"" << messageLevelNames[logStream.getLevel()] << "\">" << std::endl;
+    stream << "    <timestamp>" << logStream.getTimestamp() << "</timestamp>" << std::endl;
+    stream << "    <thread>" << logStream.getThreadID() << "</thread>" << std::endl;
+    stream << "    <call-symbol><![CDATA[" << logStream.getCallSymbol() << "]]></call-symbol>" << std::endl;
+    stream << "    <message><![CDATA[" << logStream.str() << "]]>" << std::endl;
+    stream << "  </event>" << std::endl;
     return *this;
 }
 
@@ -90,13 +134,13 @@ Log::~Log() {
 }
 
 void Log::append(const LogStream &toAppend) {
-    const MessageLevel level = toAppend.getLevel();
+    const MessageLevels mask = 1<<toAppend.getLevel();
     for (LogTargets::iterator it = _targets->begin();
         it != _targets->end();
         it++) 
     {
         LogTargetBase *target = *it;
-        if ((target->getMessageLevels() & level) != 0) {
+        if ((target->getMessageLevels() & mask) != 0) {
             target->operator<<(toAppend);
         }
     }
