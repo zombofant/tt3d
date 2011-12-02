@@ -102,22 +102,28 @@ void TT3D::initUI() {
     _uiBackgroundHandle = SurfaceHandle(_uiBackground);
     
     const Vector4 baseColourHSV2 = Vector4(baseColourHSV.x, 0., baseColourHSV.z, 0.75);
-    const Vector4 darkerColourRGB = hsvtorgba(Vector3(baseColourHSV2.x, 0., min(1.0, baseColourHSV2.z + 0.25)), 0.75);
+    const Vector4 darkerColourRGB = hsvtorgba(Vector3(baseColourHSV2.x, 0., std::max(0.0, baseColourHSV2.z - 0.25)), 0.75);
     const Vector4 baseColourRGB = hsvatorgba(baseColourHSV2);
     
     _uiBackground->getQuad(0).setAllColours(Vector4(0., 0., 0., 0.));
     _uiBackground->getQuad(1).setAllColours(darkerColourRGB);
+    _uiBackground->getQuad(1).colours[2] = baseColourRGB;
     _uiBackground->getQuad(2).setAllColours(baseColourRGB);
     _uiBackground->getQuad(2).colours[0] = darkerColourRGB;
-    _uiBackground->getQuad(2).colours[2] = darkerColourRGB;
+    _uiBackground->getQuad(2).colours[3] = darkerColourRGB;
     _uiBackground->getQuad(3).setAllColours(baseColourRGB);
+    _uiBackground->getQuad(4).setAllColours(baseColourRGB);
+    _uiBackground->getQuad(5).setAllColours(baseColourRGB);
+    _uiBackground->getQuad(6).setAllColours(baseColourRGB);
+    _uiBackground->getQuad(7).setAllColours(baseColourRGB);
     _uiBackground->getQuad(8).setAllColours(baseColourRGB);
     _uiBackground->getQuad(8).colours[0] = darkerColourRGB;
     _uiBackground->getQuad(8).colours[1] = darkerColourRGB;
-    _uiBackground->getQuad(7).setAllColours(baseColourRGB);
     
     _uiBackground->getBorders().top = 17;
     _uiBackground->getBorders().left = 28;
+    _uiBackground->getBorders().right = 1;
+    _uiBackground->getBorders().bottom = 1;
     
     std::cout << "ui bootstrapped" << std::endl;
     _rootWidget->setSurface(_uiBackgroundHandle);
