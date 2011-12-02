@@ -21,6 +21,7 @@ static inline VectorFloat wrappingAbs(const VectorFloat a) {
 
 /* free functions */
 
+VectorFloat interpolateLinear(const VectorFloat a, const VectorFloat b, const VectorFloat factor);
 VectorFloat interpolateCos(const VectorFloat a, const VectorFloat b, const VectorFloat factor);
 
 }
