@@ -237,13 +237,8 @@ void CameraFree::invalidateTransformedPos() {
 }
 
 void CameraFree::recalculateFlatRightFront() {
-    /*flatRight = Vector2(-(rotation.y + M_PI / 2.));
-    flatFront = rotation.y);*/
-    if (transformedPosInvalidated) {
-        recalculateTransformedPos();
-    }
     flatRight = Vector2(-rotation.y);
-    flatFront = -Vector2(-(rotation.y + M_PI / 2.));
+    flatFront = Vector2(-(rotation.y + M_PI / 2.));
     
     deinvalidateFlatRightFront();
 }
