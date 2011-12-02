@@ -181,7 +181,7 @@ void TT3D::initApp() {
     }
 }
 
-void TT3D::perFrame(const double interval) {
+void TT3D::perFrame(const IO::TimeFloat interval) {
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     

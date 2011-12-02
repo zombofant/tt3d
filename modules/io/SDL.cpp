@@ -6,20 +6,6 @@
 namespace tt3d {
 namespace IO {
     
-/* free functions */
-
-timespec nanotime() {
-    timespec result;
-    clock_gettime(CLOCK_MONOTONIC_RAW, &result);
-    return result;
-}
-
-double timeIntervalToDouble(const timespec &prev, const timespec &curr) {
-    double result = (curr.tv_sec - prev.tv_sec);
-    result += double(curr.tv_nsec - prev.tv_nsec) / (1000000000.);
-    return result;
-}
-
 /* tt3d::SDL::Application */
 
 Application::Application():
@@ -71,7 +57,7 @@ void Application::perIteration() {
     
 }
 
-void Application::perFrame(const double interval) {
+void Application::perFrame(const TimeFloat interval) {
     
 }
 
@@ -121,8 +107,8 @@ void Application::runApp() {
             }
             perIteration();
             timespec currentUpdate = nanotime();
-            const double interval = timeIntervalToDouble(lastUpdate, currentUpdate);
-            const double fpsInterval = timeIntervalToDouble(frameCounterStart, currentUpdate);
+            const TimeFloat interval = timeIntervalToDouble(lastUpdate, currentUpdate);
+            const TimeFloat fpsInterval = timeIntervalToDouble(frameCounterStart, currentUpdate);
             
             if (fpsInterval >= 1.0) {
                 currentFPS = (double)(frameCount) / fpsInterval;

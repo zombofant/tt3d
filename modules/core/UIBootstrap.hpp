@@ -53,7 +53,7 @@ class TT3D: public IO::Application {
         virtual void freeUI();
     protected:
         virtual void freeApp();
-        virtual void perFrame(const double interval);
+        virtual void perFrame(const IO::TimeFloat interval);
         virtual void initApp();
 };
 

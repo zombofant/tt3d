@@ -131,7 +131,7 @@ void Camera::multAsOne() {
     glMultMatrixd(getOneMatrix().coeff);
 }
 
-void Camera::update(const double interval) {
+void Camera::update(const TimeFloat interval) {
     
 }
 
@@ -365,7 +365,7 @@ void CameraFreeSmooth::stopZoom(const bool resetAccel) {
     }
 }
 
-void CameraFreeSmooth::update(const double interval) {
+void CameraFreeSmooth::update(const TimeFloat interval) {
     /*std::cout << "update" << std::endl;
     
     std::cout << "rotation accel "; rotAccel.dump();

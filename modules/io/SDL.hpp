@@ -2,7 +2,7 @@
 #define _TT3D_IO_SDL_H
 
 #include <SDL/SDL.h>
-#include <ctime>
+#include "Time.hpp"
 
 namespace tt3d {
 namespace IO {
@@ -11,9 +11,6 @@ typedef enum {
     KM_PRESS,
     KM_RELEASE
 } SDL_KeyActionMode;
-
-timespec nanotime();
-double timeIntervalToDouble(const timespec &prev, const timespec &curr);
 
 class Application {
     public:
@@ -36,7 +33,7 @@ class Application {
         virtual void freeApp();
         virtual void initApp();
         virtual void perIteration();
-        virtual void perFrame(const double interval);
+        virtual void perFrame(const TimeFloat interval);
         virtual void perSkippedFrame();
     
     public:

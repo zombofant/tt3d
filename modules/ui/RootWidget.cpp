@@ -61,7 +61,7 @@ void RootWidget::doRenderCallback() {
     
 }
 
-void RootWidget::doUpdate(const double interval) {
+void RootWidget::doUpdate(const TimeFloat interval) {
     doUpdateCallback(interval);
     doUpdateBackgroundGeometry();
 }
@@ -75,7 +75,7 @@ void RootWidget::doUpdateBackgroundGeometry() {
     }
 }
 
-void RootWidget::doUpdateCallback(const double interval) {
+void RootWidget::doUpdateCallback(const TimeFloat interval) {
     
 }
 

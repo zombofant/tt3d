@@ -78,13 +78,9 @@ void Widget::doSurfaceChanged() {
     
 }
 
-void Widget::doUpdate(const double interval) {
+void Widget::doUpdate(const TimeFloat interval) {
     
 }
-
-/*void Widget::doUpdateCallback(const double interval) {
-    
-}*/
 
 void Widget::linkParent(WidgetHandle aParent) {
     
@@ -206,7 +202,7 @@ void Widget::render() {
     doRenderForeground();
 }
 
-void Widget::update(const double interval) {
+void Widget::update(const TimeFloat interval) {
     if (_animated) {
         if (_invalidated) {
             doAlign();

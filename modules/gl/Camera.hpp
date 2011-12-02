@@ -5,11 +5,13 @@
 #include "modules/math/Vectors.hpp"
 #include "modules/math/Matrices.hpp"
 #include <boost/shared_ptr.hpp>
+#include "modules/io/Time.hpp"
 
 namespace tt3d {
 namespace GL {
     
 using namespace tt3d::Math;
+using namespace tt3d::IO;
 
 class Camera {
     public:
@@ -34,7 +36,7 @@ class Camera {
         void loadAsOne();
         void mult();
         void multAsOne();
-        virtual void update(const double interval);
+        virtual void update(const TimeFloat interval);
         void validate();
         void viewportChanged();
     public:
@@ -116,7 +118,7 @@ class CameraFreeSmooth: public CameraFree {
         void stopMove(const bool resetAccel);
         void stopRot(const bool resetAccel);
         void stopZoom(const bool resetAccel);
-        void update(const double interval);
+        void update(const TimeFloat interval);
     public:
         Vector2 getAccel() { return accel; }
         Vector2 getVelocity() { return velocity; }

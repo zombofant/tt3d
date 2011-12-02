@@ -25,9 +25,9 @@ class RootWidget: public Widget {
         virtual void doRenderBackground();
         void doRenderBackgroundGeometry();
         virtual void doRenderCallback();
-        virtual void doUpdate(const double interval);
+        virtual void doUpdate(const TimeFloat interval);
         void doUpdateBackgroundGeometry();
-        virtual void doUpdateCallback(const double interval);
+        virtual void doUpdateCallback(const TimeFloat interval);
     public:
         virtual bool acceptsChild(const WidgetHandle aWidget);
         void deliverKeypress(const SDL_keysym &sym, const SDL_KeyActionMode mode);

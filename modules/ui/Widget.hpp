@@ -16,7 +16,8 @@ namespace tt3d {
 namespace UI {
 
 using namespace tt3d;
-using namespace tt3d::Math;
+using namespace Math;
+using namespace IO;
 
 
 class Error: public Utils::Exception {
@@ -57,7 +58,7 @@ class Widget {
         void doRenderChildren();
         virtual void doRenderForeground();
         virtual void doSurfaceChanged();
-        virtual void doUpdate(const double interval);
+        virtual void doUpdate(const TimeFloat interval);
         void linkParent(WidgetHandle aParent);
         void removeChild(const WidgetHandle aWidget);
         void unlinkParent(WidgetHandle aParent);
@@ -76,7 +77,7 @@ class Widget {
         void invalidate() { _invalidated = true; };
         void realign();
         void render();
-        void update(const double interval);
+        void update(const TimeFloat interval);
     public:
         const Rect &getAbsRect() const { return _absRect; };
         bool getEnabled() const { return _enabled; };

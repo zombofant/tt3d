@@ -16,11 +16,16 @@ static const char *messageLevelNames[6] = {
     "fatal"
 };
 
+Log log = Log();
+
 /* tt3d::IO::LogStream */
 
-LogStream::LogStream(const std::string initial, Log *submitTo, const MessageLevel level):
-    std::ostringstream(initial, ios_base::app | ios_base::out),
+LogStream::LogStream(const TimeFloat timestamp, const boost::thread::id threadID, const std::string callSymbol, Log *submitTo, const MessageLevel level):
+    std::ostringstream(ios_base::app | ios_base::out),
     _submitTo(submitTo),
+    _timestamp(timestamp),
+    _callSymbol(callSymbol),
+    _threadID(threadID),
     _level(level)
 {
     assert(submitTo);
@@ -36,39 +41,74 @@ void LogStream::submit() {
     submitTo->submitLogStream(this);
 }
 
+/* tt3d::IO::LogStreamTarget */
+
+LogStreamTarget::LogStreamTarget(const MessageLevels levels):
+    _levels(levels)
+{
+    
+}
+
+/* tt3d::IO::LogOStreamTarget */
+
+LogOStreamTarget::LogOStreamTarget(const OStreamHandle stream, 
+    const MessageLevels levels):
+    LogStreamTarget::LogStreamTarget(levels),
+    _stream(stream)
+{
+    
+}
+
+LogTargetBase &LogOStreamTarget::operator<<(const LogStream &logStream) {
+    std::string str = (boost::format("[%12.5f] [tid=%016.16x] [%s] [%s] ") % logStream.getTimestamp() % logStream.getThreadID() % logStream.getCallSymbol() % messageLevelNames[logStream.getLevel()]).str();
+    std::ostream *stream = _stream.get();
+    
+    std::operator<<(*stream, str);
+    std::operator<<(*stream, logStream.str());
+    std::endl(*stream);
+    return *this;
+}
+
 /* tt3d::IO::Log */
 
 Log::Log():
-    _targets(new LogTargets())
+    _targets(new LogTargets()),
+    _startTime(nanotime())
 {
     
 }
 
 Log::~Log() {
-    delete _targets;
-}
-
-void Log::append(const std::string toAppend, const MessageLevel level) {
     for (LogTargets::iterator it = _targets->begin();
         it != _targets->end();
         it++) 
     {
-        LogTarget *target = *it;
-        if ((target->levels & level) != 0) {
-            std::ostream *targetStream = target->targetStream.get();
-            std::operator<<(*targetStream, toAppend);
-            std::endl(*targetStream);
+        LogTargetBase *target = *it;
+        delete target;
+    }
+    delete _targets;
+}
+
+void Log::append(const LogStream &toAppend) {
+    const MessageLevel level = toAppend.getLevel();
+    for (LogTargets::iterator it = _targets->begin();
+        it != _targets->end();
+        it++) 
+    {
+        LogTargetBase *target = *it;
+        if ((target->getMessageLevels() & level) != 0) {
+            target->operator<<(toAppend);
         }
     }
 }
 
 void Log::submitLogStream(LogStream *stream) {
-    append(stream->str(), stream->getLevel());
+    append(*stream);
     delete stream;
 }
 
-void Log::addLogTarget(const OStreamHandle stream, const MessageLevels levels) {
-    _targets->push_back(new LogTarget(stream, levels));
+void Log::addLogTarget(LogTargetBase *target) {
+    _targets->push_back(target);
 }
 
 std::ostream &submit(std::ostream &os) {
@@ -77,13 +117,13 @@ std::ostream &submit(std::ostream &os) {
     return os;
 }
 
-LogStream &operator<<(Log *log, MessageLevel level) {
+LogStream &operator<<(Log &log, MessageLevel level) {
     void *btData[2];
     backtrace(btData, 2);
     char **traced = backtrace_symbols(btData, 2);
-    const std::string initial = (boost::format("[0x%08.8x] [tid=0x%08.8x] [%s] [%s] ") % 0 % 0 % traced[1] % messageLevelNames[level]).str();
+    timespec time = nanotime();
+    LogStream *stream = new LogStream(timeIntervalToDouble(log.getStartTime(), time), boost::this_thread::get_id(), std::string(traced[1]), &log, level);
     free(traced);
-    LogStream *stream = new LogStream(initial, log, level);
     return *stream;
 }
 

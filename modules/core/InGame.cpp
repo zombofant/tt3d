@@ -117,7 +117,7 @@ void InGame::doRenderCallback() {
     glLoadIdentity();
 }
 
-void InGame::doUpdateCallback(const double interval) {
+void InGame::doUpdateCallback(const IO::TimeFloat interval) {
     _cameraMoved = false;
     _camera->update(interval);
 }

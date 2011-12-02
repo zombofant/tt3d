@@ -11,7 +11,7 @@ class Button: public Widget {
         virtual bool doAcceptChild(const WidgetHandle aWidget) { return false; }
         virtual bool doAcceptFocos() { return true; }
         virtual void doRenderBackground();
-        virtual void doUpdate(const double interval);
+        virtual void doUpdate(const TimeFloat interval);
 }
 
 }

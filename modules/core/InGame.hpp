@@ -37,7 +37,7 @@ class InGame: public UI::RootWidget {
     protected:
         virtual void doAbsRectChanged();
         virtual void doRenderCallback();
-        virtual void doUpdateCallback(const double interval);
+        virtual void doUpdateCallback(const IO::TimeFloat interval);
     public:
         virtual void handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode mode, bool &handled);
         virtual void handleMouseButton(const SDL_MouseButtonEvent &button, const IO::SDL_KeyActionMode mode);
