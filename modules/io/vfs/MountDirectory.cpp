@@ -28,24 +28,24 @@ ProtocolCapabilities MountDirectory::getCapabilities() {
     return PC_READ + PC_WRITE;
 }
 
-std::iostream *MountDirectory::openBidirectional(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
-    return NULL;
+IOStreamHandle MountDirectory::openBidirectional(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
+    return IOStreamHandle();
 }
 
-std::istream *MountDirectory::openReadStream(std::string aPath, ShareMode shareMode) {
+IStreamHandle MountDirectory::openReadStream(std::string aPath, ShareMode shareMode) {
     if (!pathValid(aPath)) {
-        return NULL;
+        return IStreamHandle();
     }
     std::string fullPath = rootPath + aPath;
-    return new std::ifstream(fullPath.c_str());
+    return IStreamHandle(new std::ifstream(fullPath.c_str()));
 }
 
-std::ostream *MountDirectory::openWriteStream(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
+OStreamHandle MountDirectory::openWriteStream(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
     if (!pathValid(aPath)) {
-        return NULL;
+        return OStreamHandle();
     }
     std::string fullPath = rootPath + aPath;
-    return new std::ofstream(fullPath.c_str(), writeModeToOpenMode(writeMode));
+    return OStreamHandle(new std::ofstream(fullPath.c_str(), writeModeToOpenMode(writeMode)));
 }
 
 bool MountDirectory::fileExists(std::string aPath) {

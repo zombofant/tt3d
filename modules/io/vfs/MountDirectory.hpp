@@ -20,9 +20,9 @@ class MountDirectory: public Mount {
         MountDirectory(const std::string aRootPath);
         
         ProtocolCapabilities getCapabilities();
-        std::iostream *openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        std::istream *openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        std::ostream *openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        IOStreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        IStreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
+        OStreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         bool fileExists(std::string aPath);
         
         const std::string toString();

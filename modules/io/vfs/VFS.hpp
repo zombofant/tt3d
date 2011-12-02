@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <istream>
+#include <ostream>
 #include <iostream>
 #include <boost/smart_ptr.hpp>
 
@@ -50,6 +51,10 @@ enum ProtocolCapability {
 };
 typedef unsigned int ProtocolCapabilities;
 
+typedef boost::shared_ptr<std::ostream> OStreamHandle;
+typedef boost::shared_ptr<std::istream> IStreamHandle;
+typedef boost::shared_ptr<std::iostream> IOStreamHandle;
+
 /** 
  * Checks whether a path leaves the root node.
  * 
@@ -64,9 +69,9 @@ class Mount {
         virtual void enableMount();
     public:
         virtual ProtocolCapabilities getCapabilities();
-        virtual std::iostream *openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE) = 0;
-        virtual std::istream *openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        virtual std::ostream *openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        virtual IOStreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE) = 0;
+        virtual IStreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
+        virtual OStreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         virtual bool fileExists(std::string aPath) = 0;
         
         virtual const std::string toString();

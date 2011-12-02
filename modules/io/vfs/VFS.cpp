@@ -47,25 +47,25 @@ ProtocolCapabilities Mount::getCapabilities() {
     return PC_NONE;
 }
 
-std::istream *Mount::openReadStream(std::string aPath, 
+IStreamHandle Mount::openReadStream(std::string aPath, 
     ShareMode shareMode) 
 {
     if (getCapabilities() & PC_READ) {
         return openBidirectional(aPath, WM_IGNORE, shareMode);
     } else {
         // TODO: Raise an exception here!
-        return NULL;
+        return IStreamHandle();
     }
 }
 
-std::ostream *Mount::openWriteStream(std::string aPath,
+OStreamHandle Mount::openWriteStream(std::string aPath,
     WriteMode writeMode, ShareMode shareMode)
 {
     if (getCapabilities() & PC_WRITE) {
         return openBidirectional(aPath, writeMode, shareMode);
     } else {
         // TODO: Raise an exception here!
-        return NULL;
+        return OStreamHandle();
     }
 }
 
