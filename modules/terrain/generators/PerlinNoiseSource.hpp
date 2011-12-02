@@ -22,7 +22,7 @@ class PerlinNoiseSource: public Source {
         VectorFloat noise(const int x, const int y);
         VectorFloat smoothedNoise(const int x, const int y);
     public:
-        virtual VectorFloat getHeight(const Vector2 &pos);
+        virtual VectorFloat getHeight(const Vector2 pos);
         virtual void getMetrics(VectorFloat &width, VectorFloat &height);
 };
 

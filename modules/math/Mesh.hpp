@@ -16,24 +16,51 @@ namespace Math {
     
 class MeshTree;
 
+typedef VectorFloat (HeightCallbackPtr)(void *userdata, const Vector2 pos);
+
+struct HeightCallback {
+    public:
+        HeightCallback(void *aUserdata, HeightCallbackPtr *aCall):
+            _userdata(aUserdata),
+            _call(aCall) 
+        {
+            
+        }
+    private:
+        void *_userdata;
+        HeightCallbackPtr *_call;
+    public:
+        VectorFloat call(const Vector2 pos) { return _call(_userdata, pos); }
+        bool ok() { return bool(_call); }
+};
+
 class MeshTree {
+    public:
+        virtual ~MeshTree() {};
     protected:
         MeshTree(MeshTree *parent);
     protected:
         MeshTree *_parent;
+        HeightCallback _heightCallback;
         virtual bool isLeaf() { return false; }
     public:
+        HeightCallback getHeightCallback() { return _heightCallback; }
         MeshTree *getParent() { return _parent; }
+        
+        void setHeightCallback(HeightCallback heightCallback) { _heightCallback = heightCallback; }
 };
 
 class MeshTreeNode: public MeshTree {
     public:
         MeshTreeNode(MeshTree *parent, const Vector2 min, const Vector2 max,
             const VectorFloat heights[4]);
+        MeshTreeNode(const Vector2 min, const Vector2 max, HeightCallback heightCallback);
+        virtual ~MeshTreeNode();
     private:
         const Vector2 _min, _max;
         MeshTree *_children[4];
     protected:
+        void initChildren(const VectorFloat heights[4]);
         void rangeCheck(const int index);
     public:
         MeshTree *getChild(const int index);
