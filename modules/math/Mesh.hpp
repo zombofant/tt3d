@@ -70,7 +70,7 @@ class MeshTree {
         MeshTree *getParent() { return _parent; }
         MeshTree *getSibling(const MeshTreeSibling sibling);
         
-        virtual bool isLeaf() { return false; }
+        virtual bool isLeaf() const { return false; }
         
         void setHeightCallback(HeightCallback heightCallback) { _heightCallback = heightCallback; }
 };
@@ -90,6 +90,7 @@ class MeshTreeNode: public MeshTree {
     public:
         MeshTree *getChild(const int index);
         void subdivideChild(const int index);
+        void traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, Vector3List &target);
 };
 
 class MeshTreeFace: public MeshTree {
@@ -101,11 +102,12 @@ class MeshTreeFace: public MeshTree {
     protected:
         void rangeCheck(const int index);
     public:
+        void getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, Vector3List &target);
         Vector3 getCenter() const;
         void getEdges(Vector3 &northEdge, Vector3 &westEdge, Vector3 &southEdge, Vector3 &eastEdge);
         VectorFloat getError() const;
         
-        virtual bool isLeaf() { return true; }
+        virtual bool isLeaf() const { return true; }
         
         Vector3 *vertex(const int index);
     public:

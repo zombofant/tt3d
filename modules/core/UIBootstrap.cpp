@@ -60,7 +60,7 @@ void TT3D::initSDL() {
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    window = SDL_SetVideoMode(800, 600, 32, flags);
+    window = SDL_SetVideoMode(1024, 768, 32, flags);
     if (window == NULL) {
         IO::log << IO::ML_FATAL << "Could not initialize SDL surface: " << SDL_GetError() << IO::submit;
         IO::log << IO::ML_FATAL << "Check your graphics driver." << IO::submit;
@@ -90,7 +90,7 @@ void TT3D::initGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    globalViewport = ViewportHandle(new GL::Viewport(0, 0, 800, 600));
+    globalViewport = ViewportHandle(new GL::Viewport(0, 0, 1024, 768));
     globalViewport->bind();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -112,7 +112,7 @@ void TT3D::initUI() {
     _uiMaterialHandle = UI::MaterialHandle(_uiMaterial);
     
     _rootWidget = new InGame(globalViewport);
-    _rootWidget->setAbsRect(Rect(0, 0, 800, 600));
+    _rootWidget->setAbsRect(Rect(0, 0, 1024, 768));
     _rootHandle = WidgetHandle(_rootWidget);
     
     _uiBackground = new Surface3x3(_uiMaterialHandle);

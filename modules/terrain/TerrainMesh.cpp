@@ -39,15 +39,74 @@ void TerrainMesh::buildMesh(const VectorFloat epsilon, const unsigned int maxLOD
 void TerrainMesh::debugRenderRecurse(MeshTree *node) {
     if (node->isLeaf()) {
         MeshTreeFace *face = (MeshTreeFace*)(node);
-        glBegin(GL_LINE_LOOP);
+        
+        Vector3List *list = new Vector3List();
+        Vector3 center = face->getCenter();
+        VectorFloat centerZ = center.z / 20.0 + 0.5;
+        list->push_back(&center);
+        face->getAdditionalSiblingVertices(TS_EAST, *list);
+        face->getAdditionalSiblingVertices(TS_SOUTH, *list);
+        face->getAdditionalSiblingVertices(TS_WEST, *list);
+        face->getAdditionalSiblingVertices(TS_NORTH, *list);
+        if (list->size() == 5) {
+            glBegin(GL_QUADS);
+                for (unsigned int i = 1; i < list->size(); i++) {
+                    /*glColor4f(centerZ, centerZ, centerZ, 1.0);
+                    glVertex3dv(center.as_array);*/
+                    Vector3 *vert = (*list)[i];
+                    const VectorFloat z = vert->z / 20.0 + 0.5;
+                    glColor4f(z, z, z, 1.0);
+                    glVertex3dv(vert->as_array);
+                }
+            glEnd();
+        } else {
+            glBegin(GL_TRIANGLE_FAN);
+                Vector3 *prev = 0;
+                for (unsigned int i = 0; i < list->size(); i++) {
+                    Vector3 *vert = (*list)[i];
+                    if (vert == prev) {
+                        continue;
+                    }
+                    const VectorFloat z = vert->z / 20.0 + 0.5;
+                    glColor4f(z, z, z, 1.0);
+                    glVertex3dv(vert->as_array);
+                    prev = vert;
+                }
+                const Vector3 *vert = (*list)[1];
+                const VectorFloat z = vert->z / 20.0 + 0.5;
+                glColor4f(z, z, z, 1.0);
+                glVertex3dv(vert->as_array);
+            glEnd();
+            /*glPointSize(4.0);
+            glLineWidth(1.5);
+            glBegin(GL_LINES);Vector3 *prev = 0;
+                for (unsigned int i = 1; i < list->size(); i++) {
+                    glColor4f(centerZ, centerZ, centerZ, 1.0);
+                    glVertex3dv(center.as_array);
+                    Vector3 *vert = (*list)[i];
+                    if (vert == prev) {
+                        continue;
+                    }
+                    const VectorFloat z = vert->z / 20.0 + 0.5;
+                    glColor4f(z, z, z, 1.0);
+                    glVertex3dv(vert->as_array);
+                    prev = vert;
+                }
+            glEnd();*/
+        }
+        delete list;
+        
+        //glLineWidth(1.0);
+        /*glBegin(GL_LINE_LOOP);
         for (int i = 0; i < 4; i++) {
             const Vector3 *vert = face->vertex(i);
-            const VectorFloat z = vert->z / 10.0;
+            const VectorFloat z = vert->z / 20.0 + 0.5;
             const Vector3f vertf = vert->toVector3f();
             glColor4f(z, z, z, 1.0);
             glVertex3dv(vert->as_array);
         }
-        glEnd();
+        glEnd();*/
+        // MeshTree *siblings[4];
     } else {
         MeshTreeNode *next = (MeshTreeNode*)(node);
         for (int i = 0; i < 4; i++) {
@@ -66,9 +125,17 @@ bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, con
         if (child->isLeaf()) {
             MeshTreeFace *face = (MeshTreeFace*)(child);
             const VectorFloat error = face->getError();
-            if (error > epsilon) {
+            const MeshTree *north = face->getSibling(TS_NORTH), 
+                *south = face->getSibling(TS_SOUTH), 
+                *east = face->getSibling(TS_EAST), 
+                *west = face->getSibling(TS_WEST);
+            if (error > epsilon || 
+                ((!north || !north->isLeaf()) &&
+                 (!south || !south->isLeaf()) &&
+                 (!east || !east->isLeaf()) &&
+                 (!west || !west->isLeaf()))
+            ) {
                 item->subdivideChild(i);
-                
                 changed = true;
                 continue;
             }

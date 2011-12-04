@@ -1,4 +1,5 @@
 
+#include "modules/io/Log.hpp"
 #include "InGame.hpp"
 #include <cmath>
 #include <GL/glew.h>
@@ -91,13 +92,16 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 4096;
+    static int terrainSize = 256;
+    IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
-        Vector3(0., 0, 0),
-        Vector3(0.01, 0.01, 1.0),
-        0.8, 15));
-    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 0.01, 100);
+        Vector3(terrainSize, terrainSize, -6.0),
+        Vector3(1., 1., 12.0),
+        0.6, 8));
+    IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
+    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1e-6, 8);
+    IO::log << IO::ML_INFO << "Terrain generated." << IO::submit;
 }
 
 void InGame::doAbsRectChanged() {
@@ -134,7 +138,7 @@ void InGame::doRenderCallback() {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, 800, 600, 0, -10.0, 10.0);
+    glOrtho(0, 1024, 768, 0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }

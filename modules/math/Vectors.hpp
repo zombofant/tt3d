@@ -1,6 +1,8 @@
 #ifndef _TT3D_GEOMETRY_H
 #define _TT3D_GEOMETRY_H
 
+#include <vector>
+
 namespace tt3d {
 namespace Math {
     
@@ -104,6 +106,8 @@ struct Vector3 {
         Vector3 &operator+= (const Vector3 b);
         Vector3 &operator/= (const VectorFloat b);
 };
+
+typedef std::vector<Vector3*> Vector3List;
 
 struct Vector4 {
     public:

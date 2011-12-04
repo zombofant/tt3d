@@ -71,7 +71,7 @@ VectorFloat PerlinNoiseSource::smoothedNoise(const int x, const int y) {
 }
 
 VectorFloat PerlinNoiseSource::getHeight(const Vector2 pos) {
-    VectorFloat result = 0.0, frequency = 1.0, amplitude = 1.0;
+    VectorFloat result = 0.0, frequency = 1./pow(2., _octaves), amplitude = _scale.z;
     Vector2 position(pos);
     position.x *= _scale.x;
     position.y *= _scale.y;
@@ -80,7 +80,7 @@ VectorFloat PerlinNoiseSource::getHeight(const Vector2 pos) {
     
     for (unsigned int level = 0; level < _octaves; level++) {
         const Vector2 currPos(position * frequency);
-        result += interpolatedNoise(position);
+        result += interpolatedNoise(currPos) * amplitude;
         frequency *= 2.0;
         amplitude *= _persistence;
     }

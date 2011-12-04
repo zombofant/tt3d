@@ -243,6 +243,28 @@ void MeshTreeNode::subdivideChild(const int index) {
     delete face;
 }
 
+
+void MeshTreeNode::traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, Vector3List &target) {
+    MeshTree *childA = getChild(posA);
+    MeshTree *childB = getChild(posB);
+    
+    if (childA->isLeaf()) {
+        MeshTreeFace *faceA = (MeshTreeFace*)childA;
+        //target.push_back(faceA->vertex(posA));
+        target.push_back(faceA->vertex(posB));
+    } else {
+        ((MeshTreeNode*)childA)->traceSiblingVertices(posA, posB, target);
+    }
+    
+    if (childB->isLeaf()) {
+        MeshTreeFace *faceB = (MeshTreeFace*)childB;
+        //target.push_back(faceB->vertex(posA));
+        target.push_back(faceB->vertex(posB));
+    } else {
+        ((MeshTreeNode*)childB)->traceSiblingVertices(posA, posB, target);
+    }
+}
+
 /* tt3d::Math::MeshTreeFace */
 
 MeshTreeFace::MeshTreeFace(MeshTree *parent, const MeshTreePosition position, const Vector2 min, const Vector2 max, const VectorFloat heights[4]):
@@ -263,12 +285,66 @@ void MeshTreeFace::rangeCheck(const int index) {
     }
 }
 
+void MeshTreeFace::getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, Vector3List &target) {
+    MeshTree *sibling = getSibling(siblingPosition);
+    if (!sibling || sibling->isLeaf()) {
+        MeshTreePosition thisChild;
+        switch (siblingPosition) {
+            case TS_NORTH: {
+                thisChild = TP_NORTH_EAST;
+                break;
+            }
+            case TS_WEST: {
+                thisChild = TP_NORTH_WEST;
+                break;
+            }
+            case TS_SOUTH: {
+                thisChild = TP_SOUTH_WEST;
+                break;
+            }
+            case TS_EAST: {
+                thisChild = TP_SOUTH_EAST;
+                break;
+            }
+        }
+        target.push_back(&_vertices[thisChild]);
+        return;
+    }
+    MeshTreeNode *node = (MeshTreeNode*)(sibling);
+    MeshTreePosition childA, childB;
+    switch (siblingPosition) {
+        case TS_NORTH: {
+            childA = TP_SOUTH_WEST;
+            childB = TP_SOUTH_EAST;
+            break;
+        };
+        case TS_WEST: {
+            childA = TP_SOUTH_EAST;
+            childB = TP_NORTH_EAST;
+            break;
+        };
+        case TS_SOUTH: {
+            childA = TP_NORTH_EAST;
+            childB = TP_NORTH_WEST;
+            break;
+        };
+        case TS_EAST: {
+            childA = TP_NORTH_WEST;
+            childB = TP_SOUTH_WEST;
+            break;
+        };
+    }
+    
+    node->traceSiblingVertices(childA, childB, target);
+}
+
 Vector3 MeshTreeFace::getCenter() const {
     Vector3 result(_vertices[0]);
     for (int i = 1; i < 4; i++) {
         result += _vertices[i];
     }
     result /= 4.0;
+    
     return result;
 }
 
