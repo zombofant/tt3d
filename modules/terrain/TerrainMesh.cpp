@@ -1,3 +1,28 @@
+/**********************************************************************
+File name: TerrainMesh.cpp
+This file is part of: tt3d — Freeform transport simulation
+
+LICENSE
+
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in
+compliance with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS IS"
+basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+License for the specific language governing rights and limitations under
+the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public license (the  "GPL License"), in which case  the
+provisions of GPL License are applicable instead of those above.
+
+FEEDBACK & QUESTIONS
+
+For feedback and questions about tt3d please e-mail one of the authors
+named in the AUTHORS file.
+**********************************************************************/
 #include "modules/terrain/TerrainMesh.hpp"
 #include <cmath>
 #include <GL/glew.h>
@@ -40,7 +65,7 @@ void TerrainMesh::debugRenderRecurse(MeshTree *node) {
     if (node->isLeaf()) {
         MeshTreeFace *face = (MeshTreeFace*)(node);
         
-        Vector3List *list = new Vector3List();
+        /*Vector3List *list = new Vector3List();
         Vector3 center = face->getCenter();
         VectorFloat centerZ = center.z / 20.0 + 0.5;
         list->push_back(&center);
@@ -51,8 +76,6 @@ void TerrainMesh::debugRenderRecurse(MeshTree *node) {
         if (list->size() == 5) {
             glBegin(GL_QUADS);
                 for (unsigned int i = 1; i < list->size(); i++) {
-                    /*glColor4f(centerZ, centerZ, centerZ, 1.0);
-                    glVertex3dv(center.as_array);*/
                     Vector3 *vert = (*list)[i];
                     const VectorFloat z = vert->z / 20.0 + 0.5;
                     glColor4f(z, z, z, 1.0);
@@ -77,27 +100,11 @@ void TerrainMesh::debugRenderRecurse(MeshTree *node) {
                 glColor4f(z, z, z, 1.0);
                 glVertex3dv(vert->as_array);
             glEnd();
-            /*glPointSize(4.0);
-            glLineWidth(1.5);
-            glBegin(GL_LINES);Vector3 *prev = 0;
-                for (unsigned int i = 1; i < list->size(); i++) {
-                    glColor4f(centerZ, centerZ, centerZ, 1.0);
-                    glVertex3dv(center.as_array);
-                    Vector3 *vert = (*list)[i];
-                    if (vert == prev) {
-                        continue;
-                    }
-                    const VectorFloat z = vert->z / 20.0 + 0.5;
-                    glColor4f(z, z, z, 1.0);
-                    glVertex3dv(vert->as_array);
-                    prev = vert;
-                }
-            glEnd();*/
         }
-        delete list;
+        delete list;*/
         
         //glLineWidth(1.0);
-        /*glBegin(GL_LINE_LOOP);
+        glBegin(GL_LINE_LOOP);
         for (int i = 0; i < 4; i++) {
             const Vector3 *vert = face->vertex(i);
             const VectorFloat z = vert->z / 20.0 + 0.5;
@@ -105,7 +112,7 @@ void TerrainMesh::debugRenderRecurse(MeshTree *node) {
             glColor4f(z, z, z, 1.0);
             glVertex3dv(vert->as_array);
         }
-        glEnd();*/
+        glEnd();
         // MeshTree *siblings[4];
     } else {
         MeshTreeNode *next = (MeshTreeNode*)(node);
