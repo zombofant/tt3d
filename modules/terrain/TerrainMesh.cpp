@@ -61,67 +61,6 @@ void TerrainMesh::buildMesh(const VectorFloat epsilon, const unsigned int maxLOD
     }
 }
 
-void TerrainMesh::debugRenderRecurse(MeshTree *node) {
-    if (node->isLeaf()) {
-        MeshTreeFace *face = (MeshTreeFace*)(node);
-        
-        /*Vector3List *list = new Vector3List();
-        Vector3 center = face->getCenter();
-        VectorFloat centerZ = center.z / 20.0 + 0.5;
-        list->push_back(&center);
-        face->getAdditionalSiblingVertices(TS_EAST, *list);
-        face->getAdditionalSiblingVertices(TS_SOUTH, *list);
-        face->getAdditionalSiblingVertices(TS_WEST, *list);
-        face->getAdditionalSiblingVertices(TS_NORTH, *list);
-        if (list->size() == 5) {
-            glBegin(GL_QUADS);
-                for (unsigned int i = 1; i < list->size(); i++) {
-                    Vector3 *vert = (*list)[i];
-                    const VectorFloat z = vert->z / 20.0 + 0.5;
-                    glColor4f(z, z, z, 1.0);
-                    glVertex3dv(vert->as_array);
-                }
-            glEnd();
-        } else {
-            glBegin(GL_TRIANGLE_FAN);
-                Vector3 *prev = 0;
-                for (unsigned int i = 0; i < list->size(); i++) {
-                    Vector3 *vert = (*list)[i];
-                    if (vert == prev) {
-                        continue;
-                    }
-                    const VectorFloat z = vert->z / 20.0 + 0.5;
-                    glColor4f(z, z, z, 1.0);
-                    glVertex3dv(vert->as_array);
-                    prev = vert;
-                }
-                const Vector3 *vert = (*list)[1];
-                const VectorFloat z = vert->z / 20.0 + 0.5;
-                glColor4f(z, z, z, 1.0);
-                glVertex3dv(vert->as_array);
-            glEnd();
-        }
-        delete list;*/
-        
-        //glLineWidth(1.0);
-        glBegin(GL_LINE_LOOP);
-        for (int i = 0; i < 4; i++) {
-            const Vector3 *vert = face->vertex(i);
-            const VectorFloat z = vert->z / 20.0 + 0.5;
-            const Vector3f vertf = vert->toVector3f();
-            glColor4f(z, z, z, 1.0);
-            glVertex3dv(vert->as_array);
-        }
-        glEnd();
-        // MeshTree *siblings[4];
-    } else {
-        MeshTreeNode *next = (MeshTreeNode*)(node);
-        for (int i = 0; i < 4; i++) {
-            debugRenderRecurse(next->getChild(i));
-        }
-    }
-}
-
 bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, const unsigned int currLOD, const unsigned int maxLOD) {
     if (currLOD > maxLOD) {
         return false;
@@ -156,10 +95,47 @@ bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, con
 }
 
 void TerrainMesh::debugRender() {
+    std::list<Triangle*> *triangles = new std::list<Triangle*>();
+    /*_mesh->selectTriangles(Vector2(0, 0), Vector2(64, 64), triangles);
+    _mesh->selectTriangles(Vector2(64, 0), Vector2(128, 64), triangles);
+    _mesh->selectTriangles(Vector2(0, 64), Vector2(64, 128), triangles);
+    _mesh->selectTriangles(Vector2(64, 64), Vector2(128, 128), triangles);*/
+    _mesh->selectTriangles(Vector2(0, 0), _dimensions, triangles);
+    glEnable(GL_CULL_FACE);
+    glBegin(GL_TRIANGLES);
+        Vector4f colour;
+        for (std::list<Triangle*>::iterator it = triangles->begin();
+            it != triangles->end();
+            it++)
+        {
+            Triangle *triangle = *it;
+            
+            for (unsigned int i = 0; i < 3; i++) {
+                Vector3 *vertex = &triangle->vertices[i];
+                const VectorFloat z = vertex->z / 24.0 + 0.5;
+                colour.x = z;
+                colour.y = z;
+                colour.z = z;
+                colour.w = 1.0;
+                
+                glColor4fv(&colour.x);
+                glVertex3dv(vertex->as_array);
+            }
+            
+            delete triangle;
+        }
+    glEnd();
     //glBegin(GL_QUADS);
-        debugRenderRecurse(_mesh);
+    //    debugRenderRecurse(_mesh);
     //glEnd();
     raiseLastGLError();
+    delete triangles;
+}
+
+void TerrainMesh::writeToGeometryBuffer(TerrainGeometryBufferHandle buffer,
+    const Vector2 min, const Vector2 max) const
+{
+    
 }
 
 }

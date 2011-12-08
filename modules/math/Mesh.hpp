@@ -23,9 +23,13 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
+#ifndef _TT3D_MATH_MESH_H
+#define _TT3D_MATH_MESH_H
 #include "Vectors.hpp"
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/weak_ptr.hpp>
+#include "ModelGeometry.hpp"
+#include <list>
 
 namespace tt3d {
 namespace Math {
@@ -75,7 +79,7 @@ struct HeightCallback {
         HeightCallbackPtr *_call;
     public:
         VectorFloat call(const Vector2 pos) const { return _call(_userdata, pos); }
-        bool ok() { return bool(_call); }
+        bool ok() const { return bool(_call); }
 };
 
 class MeshTree {
@@ -89,14 +93,15 @@ class MeshTree {
         const MeshTreePosition _position;
         HeightCallback _heightCallback;
     protected:
-        MeshTree *getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position);
+        MeshTree *getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position) const;
     public:
         HeightCallback getHeightCallback() { return _heightCallback; }
         MeshTree *getParent() { return _parent; }
-        MeshTree *getSibling(const MeshTreeSibling sibling);
+        MeshTree *getSibling(const MeshTreeSibling sibling) const;
         
         virtual bool isLeaf() const { return false; }
-        
+
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles) const = 0;
         void setHeightCallback(HeightCallback heightCallback) { _heightCallback = heightCallback; }
 };
 
@@ -111,11 +116,13 @@ class MeshTreeNode: public MeshTree {
         MeshTree *_children[4];
     protected:
         void initChildren(const VectorFloat heights[4]);
-        void rangeCheck(const int index);
+        void rangeCheck(const int index) const;
     public:
         MeshTree *getChild(const int index);
+        const MeshTree *getChild(const int index) const;
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles) const;
         void subdivideChild(const int index);
-        void traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, Vector3List &target);
+        void traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, std::vector<const Vector3*> &target) const;
 };
 
 class MeshTreeFace: public MeshTree {
@@ -127,7 +134,7 @@ class MeshTreeFace: public MeshTree {
     protected:
         void rangeCheck(const int index);
     public:
-        void getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, Vector3List &target);
+        void getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, std::vector<const Vector3*> &target) const;
         Vector3 getCenter() const;
         void getEdges(Vector3 &northEdge, Vector3 &westEdge, Vector3 &southEdge, Vector3 &eastEdge);
         VectorFloat getError() const;
@@ -136,6 +143,7 @@ class MeshTreeFace: public MeshTree {
         
         Vector3 *vertex(const int index);
     public:
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles) const;
         MeshTreeNode *subdivide();
         
     friend class MeshTreeNode;
@@ -145,3 +153,4 @@ typedef boost::shared_ptr<MeshTree> MeshTreeHandle;
 
 }
 }
+#endif

@@ -64,14 +64,15 @@ MeshTree::MeshTree(MeshTree *parent, const MeshTreePosition position):
     }
 }
 
-MeshTree *MeshTree::getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position) {
+MeshTree *MeshTree::getParentSiblingChild(const MeshTreeSibling parentSibling, const MeshTreePosition position) const 
+{
     MeshTree *parentSiblingItem = _parent->getSibling(parentSibling);
     if ((!parentSiblingItem) || (parentSiblingItem->isLeaf()))
         return 0;
     return ((MeshTreeNode*)parentSiblingItem)->getChild(position);
 }
 
-MeshTree *MeshTree::getSibling(const MeshTreeSibling sibling) {
+MeshTree *MeshTree::getSibling(const MeshTreeSibling sibling) const {
     /* 0 -> north
      * 1 -> west
      * 2 -> south
@@ -236,13 +237,18 @@ void MeshTreeNode::initChildren(const VectorFloat heights[4]) {
     }
 }
 
-void MeshTreeNode::rangeCheck(const int index) {
+void MeshTreeNode::rangeCheck(const int index) const {
     if ((index < 0) || (index >= 4)) {
         throw Utils::IndexError(index, 0, 3);
     }
 }
 
 MeshTree *MeshTreeNode::getChild(const int index) {
+    rangeCheck(index);
+    return _children[index];
+}
+
+const MeshTree *MeshTreeNode::getChild(const int index) const {
     rangeCheck(index);
     return _children[index];
 }
@@ -258,6 +264,17 @@ MeshTree *MeshTreeNode::getChild(const int index) {
     delete face;
 }*/
 
+void MeshTreeNode::selectTriangles(const Vector2 min, const Vector2 max,
+    std::list<Triangle*> *triangles) const
+{
+    if (_min.x > max.x || _min.y > max.y || _max.x < min.x || _max.y < min.y) {
+        return;
+    }
+    for (unsigned int i = 0; i < 4; i++) {
+        _children[i]->selectTriangles(min, max, triangles);
+    }
+}
+
 void MeshTreeNode::subdivideChild(const int index) {
     rangeCheck(index);
     MeshTreeFace *face = dynamic_cast<MeshTreeFace*>(_children[index]);
@@ -269,9 +286,9 @@ void MeshTreeNode::subdivideChild(const int index) {
 }
 
 
-void MeshTreeNode::traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, Vector3List &target) {
-    MeshTree *childA = getChild(posA);
-    MeshTree *childB = getChild(posB);
+void MeshTreeNode::traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, std::vector<const Vector3*> &target) const {
+    const MeshTree *childA = getChild(posA);
+    const MeshTree *childB = getChild(posB);
     
     if (childA->isLeaf()) {
         MeshTreeFace *faceA = (MeshTreeFace*)childA;
@@ -310,7 +327,8 @@ void MeshTreeFace::rangeCheck(const int index) {
     }
 }
 
-void MeshTreeFace::getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, Vector3List &target) {
+void MeshTreeFace::getAdditionalSiblingVertices(const MeshTreeSibling siblingPosition, std::vector<const Vector3*> &target) const 
+{
     MeshTree *sibling = getSibling(siblingPosition);
     if (!sibling || sibling->isLeaf()) {
         MeshTreePosition thisChild;
@@ -393,6 +411,71 @@ VectorFloat MeshTreeFace::getError() const {
 Vector3 *MeshTreeFace::vertex(const int index) {
     rangeCheck(index);
     return &_vertices[index];
+}
+
+void MeshTreeFace::selectTriangles(const Vector2 min, const Vector2 max,
+    std::list<Triangle*> *triangles) const
+{
+    if (_vertices[0].x > max.x || _vertices[0].y > max.y || _vertices[2].x < min.x || _vertices[2].y < min.y) {
+        return;
+    }
+    std::vector<const Vector3*> *list = new std::vector<const Vector3*>();
+    Vector3 center = getCenter();
+    if (_heightCallback.ok()) {
+        center.z = _heightCallback.call(center.vec2());
+    }
+    getAdditionalSiblingVertices(TS_EAST, *list);
+    getAdditionalSiblingVertices(TS_SOUTH, *list);
+    getAdditionalSiblingVertices(TS_WEST, *list);
+    getAdditionalSiblingVertices(TS_NORTH, *list);
+    
+    if (list->size() == 4) {
+        triangles->push_back(new Triangle((*list)[0], (*list)[1], (*list)[2]));
+        triangles->push_back(new Triangle((*list)[0], (*list)[2], (*list)[3]));
+    } else {
+        for (unsigned int i = 1; i < list->size(); i++) {
+            triangles->push_back(new Triangle(&center, (*list)[i-1], (*list)[i]));
+        }
+        triangles->push_back(new Triangle(&center, (*list)[list->size()-1], (*list)[0]));
+    }
+    /*        Vector3List *list = new Vector3List();
+        Vector3 center = face->getCenter();
+        VectorFloat centerZ = center.z / 20.0 + 0.5;
+        list->push_back(&center);
+        face->getAdditionalSiblingVertices(TS_EAST, *list);
+        face->getAdditionalSiblingVertices(TS_SOUTH, *list);
+        face->getAdditionalSiblingVertices(TS_WEST, *list);
+        face->getAdditionalSiblingVertices(TS_NORTH, *list);
+        if (list->size() == 5) {
+            glBegin(GL_QUADS);
+                for (unsigned int i = 1; i < list->size(); i++) {
+                    Vector3 *vert = (*list)[i];
+                    const VectorFloat z = vert->z / 20.0 + 0.5;
+                    glColor4f(z, z, z, 1.0);
+                    glVertex3dv(vert->as_array);
+                }
+            glEnd();
+        } else {
+            glBegin(GL_TRIANGLE_FAN);
+                Vector3 *prev = 0;
+                for (unsigned int i = 0; i < list->size(); i++) {
+                    Vector3 *vert = (*list)[i];
+                    if (vert == prev) {
+                        continue;
+                    }
+                    const VectorFloat z = vert->z / 20.0 + 0.5;
+                    glColor4f(z, z, z, 1.0);
+                    glVertex3dv(vert->as_array);
+                    prev = vert;
+                }
+                const Vector3 *vert = (*list)[1];
+                const VectorFloat z = vert->z / 20.0 + 0.5;
+                glColor4f(z, z, z, 1.0);
+                glVertex3dv(vert->as_array);
+            glEnd();
+        }
+        delete list;
+*/
 }
 
 MeshTreeNode *MeshTreeFace::subdivide() {
