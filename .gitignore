@@ -6,3 +6,4 @@ Makefile
 tt3d
 *.a
 tt3d.geany
+update-license-headers.sh
