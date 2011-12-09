@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #include "modules/math/Mesh.hpp"
 #include "modules/math/ModelGeometry.hpp"
 #include "modules/gl/GeometryBuffer.hpp"
+#include "modules/gl/Material.hpp"
 #include "generators/Source.hpp"
 #include "boost/shared_ptr.hpp"
 
@@ -37,7 +38,7 @@ using namespace tt3d;
 using namespace tt3d::Math;
 using namespace tt3d::GL;
 
-typedef GeometryBuffer<float, 3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
+typedef GeometryBuffer<3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
 typedef boost::shared_ptr<TerrainGeometryBuffer> TerrainGeometryBufferHandle;
 
 class TerrainMesh {
@@ -58,8 +59,7 @@ class TerrainMesh {
     public:
         void debugRender();
         void selectTriangles(const Vector2 min, const Vector2 max, std::vector<Triangle> *triangles) const;
-        void writeToGeometryBuffer(TerrainGeometryBufferHandle buffer, 
-            const Vector2 min, const Vector2 max) const;
+        //template<class GeometryBufferHandle> GeometryRawHandle createGeometryObject(MaterialHandle material, const Vector2 min, const Vector2 max) const;
     public:
         MeshTree *getMesh();
 };

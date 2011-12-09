@@ -39,14 +39,15 @@ namespace Core {
     
 using namespace tt3d;
 
-typedef GL::GeometryBuffer<float, 3, 4> DebugGeometryBuffer;
+typedef GL::GeometryBuffer<3, 4> DebugGeometryBuffer;
     
 class InGame: public UI::RootWidget {
     public:
         InGame(const GL::ViewportHandle viewport);
     private:
         GL::ViewportHandle _viewport;
-    
+        
+        GL::VertexFormatHandle _debugVertexFormatHandle;
         GL::GenericGeometryBufferHandle _debugBuffer;
         GL::MaterialHandle _debugMaterial;
         

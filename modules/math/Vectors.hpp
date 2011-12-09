@@ -34,6 +34,7 @@ namespace Math {
 typedef double VectorFloat;
 
 struct Vector2f {
+    static const unsigned int dimension = 2;
     union {
         struct {
             float x, y;
@@ -43,6 +44,7 @@ struct Vector2f {
 };
 
 struct Vector3f {
+    static const unsigned int dimension = 3;
     union {
         struct {
             float x, y, z;
@@ -52,6 +54,7 @@ struct Vector3f {
 };
 
 struct Vector4f {
+    static const unsigned int dimension = 4;
     union {
         struct {
             float x, y, z, w;

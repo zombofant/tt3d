@@ -94,12 +94,13 @@ bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, con
     return changed;
 }
 
+/** 
+ * debug renderer for a TerrainMesh. Use this only to verify that the
+ * mesh has been created correctly and any issues with the display are
+ * not coming from the GeometryBuffer implementation. This is utterly
+ * slow. And I mean it. */
 void TerrainMesh::debugRender() {
     std::list<Triangle*> *triangles = new std::list<Triangle*>();
-    /*_mesh->selectTriangles(Vector2(0, 0), Vector2(64, 64), triangles);
-    _mesh->selectTriangles(Vector2(64, 0), Vector2(128, 64), triangles);
-    _mesh->selectTriangles(Vector2(0, 64), Vector2(64, 128), triangles);
-    _mesh->selectTriangles(Vector2(64, 64), Vector2(128, 128), triangles);*/
     _mesh->selectTriangles(Vector2(0, 0), _dimensions, triangles);
     glEnable(GL_CULL_FACE);
     glBegin(GL_TRIANGLES);
@@ -125,18 +126,26 @@ void TerrainMesh::debugRender() {
             delete triangle;
         }
     glEnd();
-    //glBegin(GL_QUADS);
-    //    debugRenderRecurse(_mesh);
-    //glEnd();
     raiseLastGLError();
     delete triangles;
 }
 
-void TerrainMesh::writeToGeometryBuffer(TerrainGeometryBufferHandle buffer,
-    const Vector2 min, const Vector2 max) const
+/*template<class GeometryBufferHandle> GeometryRawHandle createGeometryObject(GeometryBufferHandle buffer, 
+    MaterialHandle material, const Vector2 min, const Vector2 max) const
 {
+    std::list<Triangle*> *triangles = new std::list<Triangle*>();
+    _mesh->selectTriangles(min, max);
     
-}
+    GeometryRaw *raw = new GeometryRaw(material, triangles->size());
+    for (std::list<Triangle*>::iterator it = triangles->begin();
+        it != triangles->end();
+        it++)
+    {
+        Triangle *triangle = *it;
+        
+        delete triangle;
+    }
+}*/
 
 }
 }

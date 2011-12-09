@@ -41,6 +41,7 @@ using namespace tt3d::Math;
 InGame::InGame(const GL::ViewportHandle viewport):
     UI::RootWidget(),
     _viewport(viewport),
+    _debugVertexFormatHandle(new GL::VertexFormat(3, 4)),
     _debugBuffer(new DebugGeometryBuffer()),
     _debugMaterial(new GL::Material(_debugBuffer)),
     _axis(new GL::GeometryRaw(_debugMaterial, 6)),
@@ -56,29 +57,30 @@ InGame::InGame(const GL::ViewportHandle viewport):
 
 void InGame::initAxis() {
     GL::GenericGeometryBufferHandle bufferHandle;
-    DebugGeometryBuffer *buffer;
     Utils::BufferMapHandle mapHandle;
     Utils::BufferMap *map;
-    GL::getMappedBuffer<DebugGeometryBuffer>(_axis, bufferHandle, buffer, mapHandle, map);
+    GL::GeometryBufferDriverHandle driverHandle;
+    GL::getMappedBufferDriver(_debugVertexFormatHandle, _axis, bufferHandle, mapHandle, map, driverHandle);
+    GL::GeometryBufferDriver *driver = driverHandle.get();
     
     map->setOffset(0);
     
-    buffer->setPosition(0, Vector3(-0.1, 0.0, 0.0));
-    buffer->setColour(0, Vector4(0.1, 0.0, 0.0, 1.0));
-    buffer->setPosition(1, Vector3(1.0, 0.0, 0.0));
-    buffer->setColour(1, Vector4(1.0, 0.0, 0.0, 1.0));
+    driver->setPosition(0, Vector3(-0.1, 0.0, 0.0));
+    driver->setColour(0, Vector4(0.1, 0.0, 0.0, 1.0));
+    driver->setPosition(1, Vector3(1.0, 0.0, 0.0));
+    driver->setColour(1, Vector4(1.0, 0.0, 0.0, 1.0));
 
-    buffer->setPosition(2, Vector3(0.0, -0.1, 0.0));
-    buffer->setColour(2, Vector4(0.0, 0.1, 0.0, 1.0));
-    buffer->setPosition(3, Vector3(0.0, 1.0, 0.0));
-    buffer->setColour(3, Vector4(0.0, 1.0, 0.0, 1.0));
+    driver->setPosition(2, Vector3(0.0, -0.1, 0.0));
+    driver->setColour(2, Vector4(0.0, 0.1, 0.0, 1.0));
+    driver->setPosition(3, Vector3(0.0, 1.0, 0.0));
+    driver->setColour(3, Vector4(0.0, 1.0, 0.0, 1.0));
 
-    buffer->setPosition(4, Vector3(0.0, 0.0, -0.1));
-    buffer->setColour(4, Vector4(0.0, 0.0, 0.1, 1.0));
-    buffer->setPosition(5, Vector3(0.0, 0.0, 1.0));
-    buffer->setColour(5, Vector4(0.0, 0.0, 1.0, 1.0));
+    driver->setPosition(4, Vector3(0.0, 0.0, -0.1));
+    driver->setColour(4, Vector4(0.0, 0.0, 0.1, 1.0));
+    driver->setPosition(5, Vector3(0.0, 0.0, 1.0));
+    driver->setColour(5, Vector4(0.0, 0.0, 1.0, 1.0));
     
-    buffer->setMap(Utils::BufferMapHandle());
+    bufferHandle->setMap(Utils::BufferMapHandle());
 }
 
 void InGame::initCamera() {
@@ -90,34 +92,35 @@ void InGame::initCamera() {
 
 void InGame::initGrid() {
     GL::GenericGeometryBufferHandle bufferHandle;
-    DebugGeometryBuffer *buffer;
     Utils::BufferMapHandle mapHandle;
     Utils::BufferMap *map;
-    GL::getMappedBuffer<DebugGeometryBuffer>(_grid, bufferHandle, buffer, mapHandle, map);
+    GL::GeometryBufferDriverHandle driverHandle;
+    GL::getMappedBufferDriver(_debugVertexFormatHandle, _axis, bufferHandle, mapHandle, map, driverHandle);
+    GL::GeometryBufferDriver *driver = driverHandle.get();
     
     const Vector4 gridColour(0.25, 0.25, 0.25, 0.75);
     
     map->setOffset(0);
     
     for (int i = -10; i <= 10; i++) {
-        buffer->setPosition((i + 10)*2,         Vector3(i, -10.0, 0.0));
-        buffer->setColour(  (i + 10)*2,         gridColour);
-        buffer->setPosition((i + 10)*2+1,       Vector3(i,  10.0, 0.0));
-        buffer->setColour(  (i + 10)*2+1,       gridColour);
+        driver->setPosition((i + 10)*2,         Vector3(i, -10.0, 0.0));
+        driver->setColour(  (i + 10)*2,         gridColour);
+        driver->setPosition((i + 10)*2+1,       Vector3(i,  10.0, 0.0));
+        driver->setColour(  (i + 10)*2+1,       gridColour);
     }
     
     for (int i = -10; i <= 10; i++) {
-        buffer->setPosition((i + 31)*2,         Vector3(-10.0,  i, 0.0));
-        buffer->setColour(  (i + 31)*2,         gridColour);
-        buffer->setPosition((i + 31)*2+1,       Vector3( 10.0,  i, 0.0));
-        buffer->setColour(  (i + 31)*2+1,       gridColour);
+        driver->setPosition((i + 31)*2,         Vector3(-10.0,  i, 0.0));
+        driver->setColour(  (i + 31)*2,         gridColour);
+        driver->setPosition((i + 31)*2+1,       Vector3( 10.0,  i, 0.0));
+        driver->setColour(  (i + 31)*2+1,       gridColour);
     }
     
-    buffer->setMap(Utils::BufferMapHandle());
+    bufferHandle->setMap(Utils::BufferMapHandle());
 }
 
 void InGame::initTest() {
-    static int terrainSize = 1024;
+    static int terrainSize = 256;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 

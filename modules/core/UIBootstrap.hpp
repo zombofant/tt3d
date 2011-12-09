@@ -54,7 +54,7 @@ class TT3D: public IO::Application {
         
         ViewportHandle globalViewport;
         
-        UI::GeometryBuffer *_uiBuffer;
+        SurfaceGeometryBuffer *_uiBuffer;
         GenericGeometryBufferHandle _uiBufferHandle;
         UI::Material *_uiMaterial; // important to mark it as UI material here!
         UI::MaterialHandle _uiMaterialHandle;

@@ -42,6 +42,7 @@ using namespace tt3d::Math;
 };*/
 
 extern const VertexFormatHandle surfaceVertexFormat;
+typedef GeometryBuffer<2, 4, 2> SurfaceGeometryBuffer;
 
 class Material: public GL::Material {
     public:

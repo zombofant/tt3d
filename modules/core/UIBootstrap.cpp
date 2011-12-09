@@ -134,10 +134,10 @@ void TT3D::initUI() {
     const Vector4 baseColourHSV(M_PI*4/3, 0.5, 0.5, 1.0);
     const Vector4 activeColourHSV(M_PI*2/3, 0.5, 0.5, 1.0);
     
-    _uiBuffer = new UI::GeometryBuffer();
+    _uiBuffer = new SurfaceGeometryBuffer();
     _uiBufferHandle = GenericGeometryBufferHandle(_uiBuffer);
     
-    _uiMaterial = new UI::Material();
+    _uiMaterial = new UI::Material(_uiBufferHandle);
     _uiMaterialHandle = UI::MaterialHandle(_uiMaterial);
     
     _rootWidget = new InGame(globalViewport);

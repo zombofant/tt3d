@@ -162,10 +162,10 @@ void GenericGeometryBuffer::gc() {
     }
 }
 
-GeometryBufferDriverHandle GenericGeometryBuffer::createDriver(const VertexFormatHandle handle) 
+/*GeometryBufferDriverHandle GenericGeometryBuffer::createDriver(const VertexFormatHandle handle) 
 {
     return createDriver(*handle);
-}
+}*/
 
 Utils::BufferMapHandle GenericGeometryBuffer::getMap() 
 {

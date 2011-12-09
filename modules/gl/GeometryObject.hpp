@@ -90,19 +90,12 @@ typedef boost::shared_ptr<GeometryRaw> GeometryRawHandle;
 
 
 
-template <class T>
-void getMappedBuffer(const GeometryObjectHandle handle, 
-    GenericGeometryBufferHandle &bufferHandle, 
-    T *&buffer, 
+void getMappedBufferDriver(const VertexFormatHandle vertexFormat,
+    const GeometryObjectHandle handle, 
+    GenericGeometryBufferHandle &bufferHandle,
     Utils::BufferMapHandle &mapHandle,
-    Utils::BufferMap *&map)
-{
-    bufferHandle = handle->getMaterial()->getGeometryBuffer();
-    buffer = dynamic_cast<T*>(bufferHandle.get());
-    mapHandle = handle->getMap();
-    map = mapHandle.get();
-    buffer->setMap(mapHandle);
-}
+    Utils::BufferMap *&map,
+    GeometryBufferDriverHandle &driverHandle);
 
 }
 }

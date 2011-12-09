@@ -102,5 +102,20 @@ VertexAllocationHandle GeometryRaw::allocateVertices() {
     return VertexAllocationHandle(allocation);
 }
 
+/* free functions */
+void getMappedBufferDriver(const VertexFormatHandle vertexFormat,
+    const GeometryObjectHandle handle,
+    GenericGeometryBufferHandle &bufferHandle, 
+    Utils::BufferMapHandle &mapHandle,
+    Utils::BufferMap *&map,
+    GeometryBufferDriverHandle &driverHandle)
+{
+    bufferHandle = handle->getMaterial()->getGeometryBuffer();
+    mapHandle = handle->getMap();
+    map = mapHandle.get();
+    bufferHandle->setMap(mapHandle);
+    driverHandle = GeometryBufferDriver::create(bufferHandle, vertexFormat);
+}
+
 }
 }

@@ -119,8 +119,8 @@ class GenericGeometryBuffer: public GenericBuffer {
         VertexIndexListHandle allocateVertices(const GLsizei count);
         void gc();
     public:
-        virtual GeometryBufferDriverHandle createDriver(const VertexFormat &format) = 0;
-        GeometryBufferDriverHandle createDriver(const VertexFormatHandle format);
+        // virtual GeometryBufferDriverHandle createDriver(const VertexFormat &format) = 0;
+        // GeometryBufferDriverHandle createDriver(const VertexFormatHandle format);
         const VertexFormatHandle getFormat() const { return _vertexFormat; }
         Utils::BufferMapHandle getMap();
         virtual void flush();
@@ -146,7 +146,7 @@ template <
 class GeometryBuffer: public GenericGeometryBuffer {
     public:
         GeometryBuffer(const GLenum aPurpose = GL_DYNAMIC_DRAW):
-            GenericGeometryBuffer(vertexSize, aPurpose)
+            GenericGeometryBuffer(VertexFormatHandle(new VertexFormat(nPos, nColour, nTexCoord0, nTexCoord1, nTexCoord2, nTexCoord3, normal, nVertexAttrib0, nVertexAttrib1, nVertexAttrib2, nVertexAttrib3)), aPurpose)
         {
             
         };
@@ -225,183 +225,6 @@ class GeometryBuffer: public GenericGeometryBuffer {
                 glVertexAttribPointer(3, nVertexAttrib3, glType, GL_FALSE, vertexSize, (const void*)vertexAttrib3Offset);
             }
         }
-    
-        void getPosition(const GLsizei index, GLVertexFloat value[nPos]) {
-            BOOST_STATIC_ASSERT(nPos > 0);
-            get(GenericGeometryBuffer::map(index), posOffset, value, nPos);
-        }
-        
-        /*void getPosition(const GLsizei index, Vector2 &value) {
-            BOOST_STATIC_ASSERT(nPos == 2);
-            BOOST_STATIC_ASSERT(sizeof(T) == 4);
-            getPosition(index, value.toVector2f().as_array);
-        }
-        
-        void getPosition(const GLsizei index, Vector3 &value) {
-            BOOST_STATIC_ASSERT(nPos == 3);
-            BOOST_STATIC_ASSERT(sizeof(T) == 4);
-            getPosition(index, value.toVector3f().as_array);
-        }*/
-        
-        void getColour(const GLsizei index, GLVertexFloat value[nColour]) {
-            BOOST_STATIC_ASSERT(nColour > 0);
-            get(GenericGeometryBuffer::map(index), colourOffset, value, nColour);
-        }
-        
-        /*void getColour(const GLsizei index, Vector2 &value) {
-            BOOST_STATIC_ASSERT(nColour == 2);
-            BOOST_STATIC_ASSERT(sizeof(T) == 4);
-            getColour(index, value.toVector2f().as_array);
-        }
-        
-        void getColour(const GLsizei index, Vector3 &value) {
-            BOOST_STATIC_ASSERT(nColour == 3);
-            BOOST_STATIC_ASSERT(sizeof(T) == 4);
-            getColour(index, value.toVector3f().as_array);
-        }
-        
-        void getColour(const GLsizei index, Vector4 &value) {
-            BOOST_STATIC_ASSERT(nColour == 4);
-            BOOST_STATIC_ASSERT(sizeof(T) == 4);
-            getColour(index, value.toVector4f().as_array);
-        }*/
-        
-        void getTexCoord0(const GLsizei index, GLVertexFloat value[nTexCoord0]) {
-            BOOST_STATIC_ASSERT(nTexCoord0 > 0);
-            get(GenericGeometryBuffer::map(index), texCoord0Offset, value, nTexCoord0);
-        }
-        
-        void getTexCoord2(const GLsizei index, Vector2 &value) {
-            BOOST_STATIC_ASSERT(nTexCoord0 == 2);
-            getTexCoord0(index, value.toVector2f().as_array);
-        }
-        
-        void getTexCoord1(const GLsizei index, GLVertexFloat value[nTexCoord1]) {
-            BOOST_STATIC_ASSERT(nTexCoord1 > 0);
-            get(GenericGeometryBuffer::map(index), texCoord1Offset, value, nTexCoord1);
-        }
-        
-        void getTexCoord2(const GLsizei index, GLVertexFloat value[nTexCoord2]) {
-            BOOST_STATIC_ASSERT(nTexCoord2 > 0);
-            get(GenericGeometryBuffer::map(index), texCoord2Offset, value, nTexCoord2);
-        }
-        
-        void getTexCoord3(const GLsizei index, GLVertexFloat value[nTexCoord3]) {
-            BOOST_STATIC_ASSERT(nTexCoord3 > 0);
-            get(GenericGeometryBuffer::map(index), texCoord3Offset, value, nTexCoord3);
-        }
-        
-        void getNormal(const GLsizei index, GLVertexFloat value[3]) {
-            BOOST_STATIC_ASSERT(normal);
-            get(GenericGeometryBuffer::map(index), normalOffset, value, 3);
-        }
-        
-        void getVertexAttrib0(const GLsizei index, GLVertexFloat value[nVertexAttrib0]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib0 > 0);
-            get(GenericGeometryBuffer::map(index), vertexAttrib0Offset, value, nVertexAttrib0);
-        }
-        
-        void getVertexAttrib1(const GLsizei index, GLVertexFloat value[nVertexAttrib1]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib1 > 0);
-            get(GenericGeometryBuffer::map(index), vertexAttrib1Offset, value, nVertexAttrib1);
-        }
-        
-        void getVertexAttrib2(const GLsizei index, GLVertexFloat value[nVertexAttrib2]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib2 > 0);
-            get(GenericGeometryBuffer::map(index), vertexAttrib2Offset, value, nVertexAttrib2);
-        }
-        
-        void getVertexAttrib3(const GLsizei index, GLVertexFloat value[nVertexAttrib3]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib3 > 0);
-            get(GenericGeometryBuffer::map(index), vertexAttrib3Offset, value, nVertexAttrib3);
-        }
-        
-        
-        void setPosition(const GLsizei index, const GLVertexFloat value[nPos]) {
-            BOOST_STATIC_ASSERT(nPos > 0);
-            set(GenericGeometryBuffer::map(index), posOffset, value, nPos);
-        }
-        
-        void setPosition(const GLsizei index, const Vector2 value) {
-            BOOST_STATIC_ASSERT(nPos == 2);
-            setPosition(index, value.toVector2f().as_array);
-        }
-        
-        void setPosition(const GLsizei index, const Vector3 value) {
-            BOOST_STATIC_ASSERT(nPos == 3);
-            setPosition(index, value.toVector3f().as_array);
-        }
-        
-        void setColour(const GLsizei index, const GLVertexFloat value[nColour]) {
-            BOOST_STATIC_ASSERT(nColour > 0);
-            set(GenericGeometryBuffer::map(index), colourOffset, value, nColour);
-        }
-        
-        void setColour(const GLsizei index, const Vector2 value) {
-            BOOST_STATIC_ASSERT(nColour == 2);
-            setColour(index, value.toVector2f().as_array);
-        }
-        
-        void setColour(const GLsizei index, const Vector3 value) {
-            BOOST_STATIC_ASSERT(nColour == 3);
-            setColour(index, value.toVector3f().as_array);
-        }
-        
-        void setColour(const GLsizei index, const Vector4 value) {
-            BOOST_STATIC_ASSERT(nColour == 4);
-            setColour(index, value.toVector4f().as_array);
-        }
-        
-        void setTexCoord0(const GLsizei index, const GLVertexFloat value[nTexCoord0]) {
-            BOOST_STATIC_ASSERT(nTexCoord0 > 0);
-            set(GenericGeometryBuffer::map(index), texCoord0Offset, value, nTexCoord0);
-        }
-        
-        void setTexCoord0(const GLsizei index, const Vector2 value) {
-            BOOST_STATIC_ASSERT(nTexCoord0 == 2);
-            setTexCoord0(index, value.toVector2f().as_array);
-        }
-        
-        void setTexCoord1(const GLsizei index, const GLVertexFloat value[nTexCoord1]) {
-            BOOST_STATIC_ASSERT(nTexCoord1 > 0);
-            set(GenericGeometryBuffer::map(index), texCoord1Offset, value, nTexCoord1);
-        }
-        
-        void setTexCoord2(const GLsizei index, const GLVertexFloat value[nTexCoord2]) {
-            BOOST_STATIC_ASSERT(nTexCoord2 > 0);
-            set(GenericGeometryBuffer::map(index), texCoord2Offset, value, nTexCoord2);
-        }
-        
-        void setTexCoord3(const GLsizei index, const GLVertexFloat value[nTexCoord3]) {
-            BOOST_STATIC_ASSERT(nTexCoord3 > 0);
-            set(GenericGeometryBuffer::map(index), texCoord3Offset, value, nTexCoord3);
-        }
-        
-        void setNormal(const GLsizei index, const GLVertexFloat value[3]) {
-            BOOST_STATIC_ASSERT(normal);
-            set(GenericGeometryBuffer::map(index), normalOffset, value, 3);
-        }
-        
-        void setVertexAttrib0(const GLsizei index, const GLVertexFloat value[nVertexAttrib0]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib0 > 0);
-            set(GenericGeometryBuffer::map(index), vertexAttrib0Offset, value, nVertexAttrib0);
-        }
-        
-        void setVertexAttrib1(const GLsizei index, const GLVertexFloat value[nVertexAttrib1]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib1 > 0);
-            set(GenericGeometryBuffer::map(index), vertexAttrib1Offset, value, nVertexAttrib1);
-        }
-        
-        void setVertexAttrib2(const GLsizei index, const GLVertexFloat value[nVertexAttrib2]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib2 > 0);
-            set(GenericGeometryBuffer::map(index), vertexAttrib2Offset, value, nVertexAttrib2);
-        }
-        
-        void setVertexAttrib3(const GLsizei index, const GLVertexFloat value[nVertexAttrib3]) {
-            BOOST_STATIC_ASSERT(nVertexAttrib3 > 0);
-            set(GenericGeometryBuffer::map(index), vertexAttrib3Offset, value, nVertexAttrib3);
-        }
-        
         
         virtual void unbind() {
             if (nPos > 0) {
