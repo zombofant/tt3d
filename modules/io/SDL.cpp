@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #include "SDL.hpp"
 #include <exception>
 #include <iostream>
+#include "Log.hpp"
 
 namespace tt3d {
 namespace IO {
@@ -93,6 +94,9 @@ void Application::perSkippedFrame() {
 void Application::runApp() {
     try {
         initApp();
+    } catch (Exception e) {
+        IO::log << IO::ML_FATAL << e << IO::submit;
+        throw;
     } catch (std::exception e) {
         std::cerr << e.what() << " during initialization." << std::endl;
         throw;
@@ -150,6 +154,10 @@ void Application::runApp() {
             
             usleep(1);
         }
+    } catch (Exception e) {
+        IO::log << IO::ML_FATAL << e << IO::submit;
+        freeApp();
+        throw;
     } catch (std::exception e) {
         std::cerr << e.what() << " during runtime." << std::endl;
         freeApp();

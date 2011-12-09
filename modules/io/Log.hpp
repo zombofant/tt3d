@@ -30,9 +30,12 @@ named in the AUTHORS file.
 #include "vfs/VFS.hpp"
 #include "Time.hpp"
 #include <boost/thread.hpp>
+#include <modules/utils/Exception.hpp>
 
 namespace tt3d {
 namespace IO {
+    
+using namespace tt3d::Utils;
     
 enum MessageLevel {
     ML_DEBUG = 0,
@@ -127,6 +130,7 @@ class Log {
 typedef boost::shared_ptr<Log> LogHandle;
 
 std::ostream &submit(std::ostream &os);
+std::ostream &operator<<(std::ostream &stream, Exception &exception);
 LogStream &operator<<(Log &log, MessageLevel level);
 extern Log log;
 

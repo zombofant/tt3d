@@ -28,9 +28,12 @@ named in the AUTHORS file.
 #include <string>
 #include <boost/format.hpp>
 #include <execinfo.h>
+#include <typeinfo>
 
 namespace tt3d {
 namespace IO {
+    
+using namespace tt3d::Utils;
     
 static const char *messageLevelNames[6] = {
     "debug",
@@ -185,6 +188,20 @@ std::ostream &submit(std::ostream &os) {
     LogStream *ls = static_cast<LogStream*>(&os);
     ls->submit();
     return os;
+}
+
+std::ostream &operator<<(std::ostream &stream, Exception &exception)  {
+    unsigned int count;
+    void * const* traceback = exception.traceback(&count);
+    stream << "Exception occured: " << typeid(exception).name() << std::endl;
+    stream << "Message: " << exception.what() << std::endl;
+    stream << "Traceback: (most recent call first)" << std::endl;
+    char **tracebackSymbols = backtrace_symbols(traceback, count);
+    for (unsigned int i = 0; i < count; i++) {
+        stream << tracebackSymbols[i] << std::endl;
+    }
+    free(tracebackSymbols);
+    return stream;
 }
 
 LogStream &operator<<(Log &log, MessageLevel level) {

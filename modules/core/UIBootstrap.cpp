@@ -32,11 +32,13 @@ named in the AUTHORS file.
 #include "modules/math/Colours.hpp"
 #include <cmath>
 #include "modules/io/Log.hpp"
+#include "modules/utils/Exception.hpp"
 
 namespace tt3d {
 namespace Core {
     
 using namespace tt3d;
+using namespace tt3d::Utils;
 
 static inline double min(const double a, const double b) {
     return ((a<b)?a:b);
@@ -49,8 +51,8 @@ void TT3D::initIO() {
     IO::OStreamHandle xmlLogStream = IO::OStreamHandle(new std::ofstream("log.xml"));
     IO::OStreamHandle cout = IO::OStreamHandle(&std::cout);
     IO::OStreamHandle cerr = IO::OStreamHandle(&std::cerr);
-    IO::log.addLogTarget(new IO::LogOStreamTarget(cout, (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
-    IO::log.addLogTarget(new IO::LogOStreamTarget(cerr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(cout, (1<<IO::ML_DEBUG) | (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(cerr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR) | (1<<IO::ML_FATAL)));
     IO::log.addLogTarget(new IO::LogOStreamTarget(plainLogStream));
     IO::log.addLogTarget(new IO::LogXMLFormatter(xmlLogStream, "log.xsl"));
     IO::log << IO::ML_INFO << "IO initialized." << IO::submit;
@@ -62,8 +64,9 @@ void TT3D::initSDL() {
     const SDL_VideoInfo *info = SDL_GetVideoInfo();
     if (info == NULL) {
         IO::log << IO::ML_ERROR << "Could not get SDL video info." << IO::submit;
+        const char *error = SDL_GetError();
         SDL_Quit();
-        throw 0;
+        throw ExternalError("SDL", error);
         return;
     }
     
@@ -89,8 +92,9 @@ void TT3D::initSDL() {
     if (window == NULL) {
         IO::log << IO::ML_FATAL << "Could not initialize SDL surface: " << SDL_GetError() << IO::submit;
         IO::log << IO::ML_FATAL << "Check your graphics driver." << IO::submit;
+        const char *error = SDL_GetError();
         SDL_Quit();
-        throw 0;
+        throw ExternalError("SDL", error);
         return;
     }
 
@@ -104,7 +108,7 @@ void TT3D::initGL() {
     GLenum err = glewInit();
     if (err != GLEW_OK) {
         IO::log << IO::ML_FATAL << "Could not initialize glew." << IO::submit;
-        throw 0;
+        throw ExternalError("glew");
         return;
     }
 

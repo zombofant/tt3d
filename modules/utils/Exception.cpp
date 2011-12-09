@@ -25,6 +25,7 @@ named in the AUTHORS file.
 **********************************************************************/
 #include "Exception.hpp"
 #include <boost/format.hpp>
+#include <execinfo.h>
 
 namespace tt3d {
 namespace Utils {
@@ -32,15 +33,19 @@ namespace Utils {
 /* tt3d::Utils::Exception */
 
 Exception::Exception(const std::string message):
-    _message(message)
+    _message(message),
+    _tracebackLength(16)
 {
-    
+    _traceback = (void**)calloc(_tracebackLength, sizeof(void*));
+    _tracebackLength = backtrace(_traceback, 16);
 }
 
 Exception::Exception(const char *message):
-    _message(message)
+    _message(message),
+    _tracebackLength(16)
 {
-    
+    _traceback = (void**)calloc(_tracebackLength, sizeof(void*));
+    _tracebackLength = backtrace(_traceback, 16);
 }
 
 /* tt3d::Utils::IndexError */
@@ -53,6 +58,19 @@ IndexError::IndexError(const int given, const int min, const int max):
 
 IndexError::IndexError(const int given):
     Exception::Exception((boost::format("Index (%d) out of range.") % given).str())
+{
+    
+}
+
+/* tt3d::Utils::ExternalError */
+ExternalError::ExternalError(const char *libraryName):
+    Exception::Exception((boost::format("External error in %s.") % libraryName).str())
+{
+    
+}
+
+ExternalError::ExternalError(const char *libraryName, const char *externalMsg):
+    Exception::Exception((boost::format("External error in %s: %s") % libraryName % externalMsg).str())
 {
     
 }

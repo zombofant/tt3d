@@ -36,13 +36,17 @@ class Exception: public std::exception {
     public:
         Exception(const std::string message);
         Exception(const char *message);
-        virtual ~Exception() throw() {};
+        virtual ~Exception() throw() {free(_traceback);};
     private:
         const std::string _message;
+        unsigned int _tracebackLength;
+        void **_traceback;
     public:
-        virtual const char *what() {
+        virtual const char *what() const throw() {
             return _message.c_str();
         }
+        
+        void* const*traceback(unsigned int *count) const { *count = _tracebackLength; return _traceback; }
 };
 
 class IndexError: public Exception {
@@ -50,6 +54,13 @@ class IndexError: public Exception {
         IndexError(const int given, const int min, const int max);
         IndexError(const int given);
         virtual ~IndexError() throw() {};
+};
+
+class ExternalError: public Exception {
+    public:
+        ExternalError(const char *libraryName);
+        ExternalError(const char *libraryName, const char *externalMsg);
+        virtual ~ExternalError() throw() {};
 };
 
 }
