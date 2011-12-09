@@ -46,7 +46,7 @@ class Surface3x3: public Surface {
             
             QuadInfo();
             
-            void apply(GeometryBuffer *mappedBuffer) const;
+            void apply(GeometryBufferDriver *bufferDriver) const;
             void setAllColours(const Vector4 &colour);
             void setAllTexCoords(const Vector2 &texCoord);
         };

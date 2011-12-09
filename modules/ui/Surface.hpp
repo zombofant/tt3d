@@ -40,11 +40,12 @@ using namespace tt3d::Math;
 /*class GeometryBuffer: public GL::GeometryBuffer<float, 2, 4, 2> {
     
 };*/
-typedef GL::GeometryBuffer<float, 2, 4, 2> GeometryBuffer;
+
+extern const VertexFormatHandle surfaceVertexFormat;
 
 class Material: public GL::Material {
     public:
-        Material();
+        Material(const GenericGeometryBufferHandle bufferHandle);
 };
 typedef boost::shared_ptr<Material> MaterialHandle;
 

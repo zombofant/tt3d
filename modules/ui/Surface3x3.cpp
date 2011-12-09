@@ -53,82 +53,86 @@ void Surface3x3::updateGeometry(const Rect rect, GeometryObjectHandle &geometry)
     const Vector2 innerBR = Vector2(innerTR.x, innerBL.y);
     
     const GenericGeometryBufferHandle bufferHandle = _material->getGeometryBuffer();
-    GeometryBuffer *buffer = dynamic_cast<GeometryBuffer*>(bufferHandle.get());
+    GenericGeometryBuffer *buffer = bufferHandle.get();
+    // GeometryBuffer *buffer = dynamic_cast<GeometryBuffer*>(bufferHandle.get());
+    GeometryBufferDriverHandle driverHandle = GeometryBufferDriver::create(bufferHandle, surfaceVertexFormat);
+    assert(driverHandle.get());
+    GeometryBufferDriver *driver = driverHandle.get();
     Utils::BufferMapHandle mapHandle = geometry->getMap();
     Utils::BufferMap *map = mapHandle.get();
     buffer->setMap(mapHandle);
     
     // Center
     map->setOffset(0);
-    buffer->setPosition(0, innerTL);
-    buffer->setPosition(1, innerBL);
-    buffer->setPosition(2, innerBR);
-    buffer->setPosition(3, innerTR);
-    _quads[0].apply(buffer);
+    driver->setPosition(0, innerTL);
+    driver->setPosition(1, innerBL);
+    driver->setPosition(2, innerBR);
+    driver->setPosition(3, innerTR);
+    _quads[0].apply(driver);
     
     // Top left
     map->setOffset(4);
-    buffer->setPosition(0, topLeft);
-    buffer->setPosition(1, Vector2(topLeft.x, innerTL.y));
-    buffer->setPosition(2, innerTL);
-    buffer->setPosition(3, Vector2(innerTL.x, topLeft.y));
-    _quads[1].apply(buffer);
+    driver->setPosition(0, topLeft);
+    driver->setPosition(1, Vector2(topLeft.x, innerTL.y));
+    driver->setPosition(2, innerTL);
+    driver->setPosition(3, Vector2(innerTL.x, topLeft.y));
+    _quads[1].apply(driver);
     
     // Top center
     map->setOffset(8);
-    buffer->setPosition(0, Vector2(innerTL.x, topLeft.y));
-    buffer->setPosition(1, innerTL);
-    buffer->setPosition(2, innerTR);
-    buffer->setPosition(3, Vector2(innerTR.x, topLeft.y));
-    _quads[2].apply(buffer);
+    driver->setPosition(0, Vector2(innerTL.x, topLeft.y));
+    driver->setPosition(1, innerTL);
+    driver->setPosition(2, innerTR);
+    driver->setPosition(3, Vector2(innerTR.x, topLeft.y));
+    _quads[2].apply(driver);
     
     // Top right
     map->setOffset(12);
-    buffer->setPosition(0, Vector2(innerTR.x, topLeft.y));
-    buffer->setPosition(1, innerTR);
-    buffer->setPosition(2, Vector2(innerTR.x + _margin.right, innerTR.y));
-    buffer->setPosition(3, Vector2(innerTR.x + _margin.right, topLeft.y));
-    _quads[3].apply(buffer);
+    driver->setPosition(0, Vector2(innerTR.x, topLeft.y));
+    driver->setPosition(1, innerTR);
+    driver->setPosition(2, Vector2(innerTR.x + _margin.right, innerTR.y));
+    driver->setPosition(3, Vector2(innerTR.x + _margin.right, topLeft.y));
+    _quads[3].apply(driver);
     
     // Middle right
     map->setOffset(16);
-    buffer->setPosition(0, innerTR);
-    buffer->setPosition(1, innerBR);
-    buffer->setPosition(2, Vector2(innerBR.x + _margin.right, innerBR.y));
-    buffer->setPosition(3, Vector2(innerTR.x + _margin.right, innerTR.y));
-    _quads[4].apply(buffer);
+    driver->setPosition(0, innerTR);
+    driver->setPosition(1, innerBR);
+    driver->setPosition(2, Vector2(innerBR.x + _margin.right, innerBR.y));
+    driver->setPosition(3, Vector2(innerTR.x + _margin.right, innerTR.y));
+    _quads[4].apply(driver);
     
     // Bottom right
     map->setOffset(20);
-    buffer->setPosition(0, innerBR);
-    buffer->setPosition(1, Vector2(innerBR.x, innerBR.y + _margin.bottom));
-    buffer->setPosition(2, Vector2(innerBR.x + _margin.right, innerBR.y + _margin.bottom));
-    buffer->setPosition(3, Vector2(innerBR.x + _margin.right, innerBR.y));
-    _quads[5].apply(buffer);
+    driver->setPosition(0, innerBR);
+    driver->setPosition(1, Vector2(innerBR.x, innerBR.y + _margin.bottom));
+    driver->setPosition(2, Vector2(innerBR.x + _margin.right, innerBR.y + _margin.bottom));
+    driver->setPosition(3, Vector2(innerBR.x + _margin.right, innerBR.y));
+    _quads[5].apply(driver);
     
     // Bottom center
     map->setOffset(24);
-    buffer->setPosition(0, innerBL);
-    buffer->setPosition(1, Vector2(innerBL.x, innerBL.y + _margin.bottom));
-    buffer->setPosition(2, Vector2(innerBR.x, innerBR.y + _margin.bottom));
-    buffer->setPosition(3, innerBR);
-    _quads[6].apply(buffer);
+    driver->setPosition(0, innerBL);
+    driver->setPosition(1, Vector2(innerBL.x, innerBL.y + _margin.bottom));
+    driver->setPosition(2, Vector2(innerBR.x, innerBR.y + _margin.bottom));
+    driver->setPosition(3, innerBR);
+    _quads[6].apply(driver);
     
     // Bottom left
     map->setOffset(28);
-    buffer->setPosition(0, Vector2(topLeft.x, innerBL.y));
-    buffer->setPosition(1, Vector2(topLeft.x, innerBL.y + _margin.bottom));
-    buffer->setPosition(2, Vector2(innerBL.x, innerBL.y + _margin.bottom));
-    buffer->setPosition(3, innerBL);
-    _quads[7].apply(buffer);
+    driver->setPosition(0, Vector2(topLeft.x, innerBL.y));
+    driver->setPosition(1, Vector2(topLeft.x, innerBL.y + _margin.bottom));
+    driver->setPosition(2, Vector2(innerBL.x, innerBL.y + _margin.bottom));
+    driver->setPosition(3, innerBL);
+    _quads[7].apply(driver);
     
     // Middle left
     map->setOffset(32);
-    buffer->setPosition(0, Vector2(topLeft.x, innerTL.y));
-    buffer->setPosition(1, Vector2(topLeft.x, innerBL.y));
-    buffer->setPosition(2, innerBL);
-    buffer->setPosition(3, innerTL);
-    _quads[8].apply(buffer);
+    driver->setPosition(0, Vector2(topLeft.x, innerTL.y));
+    driver->setPosition(1, Vector2(topLeft.x, innerBL.y));
+    driver->setPosition(2, innerBL);
+    driver->setPosition(3, innerTL);
+    _quads[8].apply(driver);
     
     
     buffer->setMap(Utils::BufferMapHandle());
@@ -144,10 +148,10 @@ Surface3x3::QuadInfo::QuadInfo():
     
 }
 
-void Surface3x3::QuadInfo::apply(GeometryBuffer *mappedBuffer) const {
+void Surface3x3::QuadInfo::apply(GeometryBufferDriver *bufferDriver) const {
     for (int i = 0; i < 4; i++) {
-        mappedBuffer->setColour(i, colours[i]);
-        mappedBuffer->setTexCoord0(i, texCoords[i]);
+        bufferDriver->setColour(i, colours[i]);
+        bufferDriver->setTexCoord0(i, texCoords[i]);
         /*mappedBuffer->setColour(i, Vector4(0.7, 0.7, 0.7, 0.5));
         mappedBuffer->setTexCoord0(i, Vector2(0., 0.));*/
     }

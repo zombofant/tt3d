@@ -74,6 +74,8 @@ class GeometryObject {
         const MaterialHandle getMaterial() const { return _material; }
 };
 
+typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
+
 class GeometryRaw: public GeometryObject {
     public:
         GeometryRaw(const MaterialHandle material, const GLsizei vertexCount);
@@ -84,8 +86,9 @@ class GeometryRaw: public GeometryObject {
     public:
         GLsizei getVertexCount() { return _vertexCount; }
 };
+typedef boost::shared_ptr<GeometryRaw> GeometryRawHandle;
 
-typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
+
 
 template <class T>
 void getMappedBuffer(const GeometryObjectHandle handle, 

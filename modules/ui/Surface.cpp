@@ -32,12 +32,14 @@ using namespace tt3d;
 using namespace tt3d::GL;
 using namespace tt3d::Math;
 
+const VertexFormatHandle surfaceVertexFormat(new VertexFormat(2, 4, 2));
+
 /* tt3d::UI::Material */
 
-Material::Material():
-    GL::Material(GenericGeometryBufferHandle(new GeometryBuffer(GL_DYNAMIC_DRAW)))
+Material::Material(const GenericGeometryBufferHandle bufferHandle):
+    GL::Material(bufferHandle)
 {
-    
+    assert(bufferHandle->getFormat()->isCompatible(*(surfaceVertexFormat.get())));
 }
 /* tt3d::UI::Surface */
 
