@@ -399,6 +399,8 @@ class GeometryBufferDriver {
         void getPosition(const GLsizei index, Vector2f &dest);
         void getPosition(const GLsizei index, Vector3f &dest);
         void getPosition(const GLsizei index, Vector4f &dest);
+        
+        void getNormal(const GLsizei index, Vector3f &dest);
 };
 
 }

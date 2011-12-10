@@ -64,6 +64,8 @@ class InGame: public UI::RootWidget {
         bool _cameraMoved;
         
         Terrain::TerrainMesh *_mesh;
+        
+        bool _wireframe, _visualizeNormals;
     private:
         void initAxis();
         void initCamera();

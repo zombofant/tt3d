@@ -131,12 +131,15 @@ void InGame::initTest() {
         terrainSize, terrainSize, 
         Vector3(terrainSize, terrainSize, 0.0),
         Vector3(1., 1., 32.0),
-        0.5, 5, 128.0));
+        0.4, 6, 128.0));
     IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
     _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1.0, 24);
     IO::log << IO::ML_INFO << "Terrain generated, filling buffer" << IO::submit;
     _terrainObjectHandle = _mesh->createGeometryObject(_terrainMaterial, Vector2(0, 0), Vector2(terrainSize, terrainSize));
     IO::log << IO::ML_INFO << "Buffer filled." << IO::submit;
+    
+    _wireframe = false;
+    _visualizeNormals = false;
 }
 
 void InGame::doAbsRectChanged() {
@@ -183,11 +186,36 @@ void InGame::doRenderCallback() {
         glVertex3f(1.0, 1.0, 3.0);
         glVertex3f(1.0, 0.0, 4.0);
     glEnd();*/
-    // glPolygonMode(GL_FRONT, GL_LINE);
+    if (_wireframe)
+        glPolygonMode(GL_FRONT, GL_LINE);
     _terrainMaterial->bind(false);
     _terrainMaterial->render(GL_TRIANGLES);
     _terrainMaterial->unbind();
-    // glPolygonMode(GL_FRONT, GL_FILL);
+    if (_wireframe)
+        glPolygonMode(GL_FRONT, GL_FILL);
+    
+    if (_visualizeNormals) {
+        GL::GeometryBufferDriverHandle driverHandle = GL::GeometryBufferDriver::create(_terrainBuffer, Terrain::terrainVertexFormat);
+        GL::GeometryBufferDriver *driver = driverHandle.get();
+        Utils::BufferMapHandle mapHandle = _terrainObjectHandle->getMap();
+        _terrainBuffer->setMap(mapHandle);
+        mapHandle->setOffset(0);
+        glColor4f(0.7, 0.7, 0.7, 1.0);
+        glBegin(GL_LINES);
+            for (int i = 0; i < _terrainObjectHandle->getVertexCount(); i++) 
+            {
+                Vector3f fPos, fNormal;
+                driver->getPosition(i, fPos);
+                driver->getNormal(i, fNormal);
+                
+                glColor3fv(fNormal.as_array);
+                glVertex3fv(fPos.as_array);
+                Vector3 pos2(fPos);
+                pos2 += Vector3(fNormal) * 10.0;
+                glVertex3dv(pos2.as_array);
+            }
+        glEnd();
+    }
     // _terrainObjectHandle->drawDirect(GL_TRIANGLES);
     
     glDisable(GL_LIGHTING);
@@ -215,6 +243,23 @@ void InGame::handleKeypress(const SDL_keysym &sym, const IO::SDL_KeyActionMode m
                 const Vector2 target = Vector2(0., 0.);
                 _camera->issueMoveTo(target);
                 _camera->issueRotTo(target);
+            }
+            handled = true;
+            return;
+        }
+        case SDLK_TAB: {
+            if (mode == IO::KM_PRESS) {
+                _wireframe = !_wireframe;
+            }
+            handled = true;
+            return;
+        }
+        default: {}
+    }
+    switch (sym.unicode) {
+        case 'n': {
+            if (mode == IO::KM_PRESS) {
+                _visualizeNormals = !_visualizeNormals;
             }
             handled = true;
             return;

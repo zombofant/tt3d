@@ -266,7 +266,7 @@ const MeshTree *MeshTreeNode::getChild(const int index) const {
 }*/
 
 void MeshTreeNode::selectTriangles(const Vector2 min, const Vector2 max,
-    std::list<Triangle*> *triangles, bool odd) const
+    TriangleList *triangles, bool odd) const
 {
     if (_min.x > max.x || _min.y > max.y || _max.x < min.x || _max.y < min.y) {
         return;
@@ -419,7 +419,7 @@ Vector3 *MeshTreeFace::vertex(const int index) {
 }
 
 void MeshTreeFace::selectTriangles(const Vector2 min, const Vector2 max,
-    std::list<Triangle*> *triangles, bool odd) const
+    TriangleList *triangles, bool odd) const
 {
     if (_vertices[0].x > max.x || _vertices[0].y > max.y || _vertices[2].x < min.x || _vertices[2].y < min.y) {
         return;

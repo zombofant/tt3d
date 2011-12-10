@@ -412,5 +412,11 @@ void GeometryBufferDriver::getPosition(const GLsizei index, Vector4f &dest)
     _handle->get(index, _vertexFormat->posOffset, dest.as_array, dest.dimension);
 }
 
+void GeometryBufferDriver::getNormal(const GLsizei index, Vector3f &dest) 
+{
+    assert(_vertexFormat->normal);
+    _handle->get(index, _vertexFormat->normalOffset, dest.as_array, dest.dimension);
+}
+
 }
 }

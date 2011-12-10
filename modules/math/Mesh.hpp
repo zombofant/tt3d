@@ -61,6 +61,7 @@ enum MeshTreeSibling {
 class MeshTree;
 
 typedef VectorFloat (HeightCallbackPtr)(void *userdata, const Vector2 pos);
+typedef std::vector<Triangle*> TriangleList;
 
 struct HeightCallback {
     public:
@@ -101,7 +102,7 @@ class MeshTree {
         
         virtual bool isLeaf() const { return false; }
 
-        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles, bool odd = true) const = 0;
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, TriangleList *triangles, bool odd = true) const = 0;
         void setHeightCallback(HeightCallback heightCallback) { _heightCallback = heightCallback; }
 };
 
@@ -120,7 +121,7 @@ class MeshTreeNode: public MeshTree {
     public:
         MeshTree *getChild(const int index);
         const MeshTree *getChild(const int index) const;
-        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles, bool odd = true) const;
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, TriangleList *triangles, bool odd = true) const;
         void subdivideChild(const int index);
         void traceSiblingVertices(const MeshTreePosition posA, const MeshTreePosition posB, std::vector<const Vector3*> &target) const;
 };
@@ -143,7 +144,7 @@ class MeshTreeFace: public MeshTree {
         
         Vector3 *vertex(const int index);
     public:
-        virtual void selectTriangles(const Vector2 min, const Vector2 max, std::list<Triangle*> *triangles, bool odd = true) const;
+        virtual void selectTriangles(const Vector2 min, const Vector2 max, TriangleList *triangles, bool odd = true) const;
         MeshTreeNode *subdivide();
         
     friend class MeshTreeNode;

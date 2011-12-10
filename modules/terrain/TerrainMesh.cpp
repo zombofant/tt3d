@@ -50,7 +50,8 @@ TerrainMesh::TerrainMesh(const SourceHandle source,
     _source(source),
     _dimensions(dimensions),
     _callback((void*)_source.get(), &heightCallback),
-    _currentError(0.)
+    _currentError(0.),
+    _faceCount(4)
 {
     buildMesh(epsilon, maxLOD);
 }
@@ -64,7 +65,7 @@ void TerrainMesh::buildMesh(const VectorFloat epsilon, const unsigned int maxLOD
     unsigned int i = 0;
     do {
         if (i > 0) {
-            IO::log << IO::ML_DEBUG << "Terrain mesh iteration #" << i << ": rel error estimate: " << _currentError / (_dimensions.x * _dimensions.y) << IO::submit;
+            IO::log << IO::ML_DEBUG << "Terrain mesh iteration #" << i << ": rel error estimate: " << _currentError / (_dimensions.x * _dimensions.y) << "; face count = " << _faceCount << IO::submit;
         }
         _currentError = 0.;
         i++;
@@ -95,6 +96,7 @@ bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, con
             ) {
                 item->subdivideChild(i);
                 changed = true;
+                _faceCount += 3;
                 continue;
             }
         } else {
@@ -112,12 +114,12 @@ bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, con
  * not coming from the GeometryBuffer implementation. This is utterly
  * slow. And I mean it. */
 void TerrainMesh::debugRender() {
-    std::list<Triangle*> *triangles = new std::list<Triangle*>();
+    TriangleList *triangles = new TriangleList();
     _mesh->selectTriangles(Vector2(0, 0), _dimensions, triangles);
     glEnable(GL_CULL_FACE);
     glBegin(GL_TRIANGLES);
         Vector4f colour;
-        for (std::list<Triangle*>::iterator it = triangles->begin();
+        for (TriangleList::iterator it = triangles->begin();
             it != triangles->end();
             it++)
         {
@@ -144,9 +146,11 @@ void TerrainMesh::debugRender() {
 
 GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, const Vector2 min, const Vector2 max) const 
 {
-    const VectorFloat ds = 10e-5;
-    std::list<Triangle*> *triangles = new std::list<Triangle*>();
+    const VectorFloat ds = 10e-12;
+    TriangleList *triangles = new TriangleList();
+    IO::log << IO::ML_DEBUG << "Collecting terrain triangles..." << IO::submit;
     _mesh->selectTriangles(min, max, triangles);
+    IO::log << IO::ML_DEBUG << "Terrain triangle count " << triangles->size() << IO::submit;
     GenericGeometryBufferHandle geoHandle = material->getGeometryBuffer();
     GeometryBufferDriverHandle handle = GeometryBufferDriver::create(geoHandle, terrainVertexFormat);
     GeometryBufferDriver *driver = handle.get();
@@ -157,7 +161,7 @@ GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, 
     geoHandle->setMap(mapHandle);
     
     GLsizei offset = 0;
-    for (std::list<Triangle*>::iterator it = triangles->begin();
+    for (TriangleList::iterator it = triangles->begin();
         it != triangles->end();
         it++)
     {
@@ -171,6 +175,10 @@ GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, 
             const Vector4 colour(0.25, 0.25, 0.25, 1.0);//colour(z, z, z, 1.0);
             Vector3 tangent, bitangent;
             _source->getTangents(vertex2, ds, tangent, bitangent);
+            Vector3 normal(tangent % bitangent);
+            normal.normalize();
+            
+            // const Vector4 colour(normal * 0.5 + 0.5, 1.0);
             Vector2 texCoord(vertex.vec2() - min);
             texCoord.x /= max.x;
             texCoord.y /= max.y;
@@ -178,7 +186,7 @@ GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, 
             driver->setColour(i, colour);
             driver->setTexCoord0(i, texCoord);
             driver->setTexCoord1(i, tangent);
-            driver->setNormal(i, tangent % bitangent);
+            driver->setNormal(i, normal);
         }
         
         delete triangle;
