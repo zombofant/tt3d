@@ -32,21 +32,19 @@ namespace Terrain {
 
 void Source::getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent) 
 {
-    const Vector2 posNX = pos - Vector2(-ds, 0.);
-    const Vector2 posPX = pos - Vector2(ds, 0.);
-    const Vector2 posNY = pos - Vector2(0., -ds);
-    const Vector2 posPY = pos - Vector2(0., ds);
+    const Vector2 posNX = pos + Vector2(-ds, 0.);
+    const Vector2 posPX = pos + Vector2(ds, 0.);
+    const Vector2 posNY = pos + Vector2(0., -ds);
+    const Vector2 posPY = pos + Vector2(0., ds);
     
     const Vector3 vecNX(posNX, getHeight(posNX));
     const Vector3 vecPX(posPX, getHeight(posPX));
     const Vector3 vecNY(posNY, getHeight(posNY));
     const Vector3 vecPY(posPY, getHeight(posPY));
     
-    tangent = vecPX - vecNX;
-    tangent.normalize();
+    tangent = (vecPX - vecNX) / (2.0 * ds);
     
-    bitangent = vecPY - vecNY;
-    bitangent.normalize();
+    bitangent = (vecPY - vecNY) / (2.0 * ds);
 }
     
 }
