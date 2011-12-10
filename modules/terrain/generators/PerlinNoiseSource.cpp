@@ -37,14 +37,16 @@ using namespace Math;
 
 PerlinNoiseSource::PerlinNoiseSource(const VectorFloat width, const VectorFloat height, 
     const Vector3 offset, const Vector3 scale, 
-    const VectorFloat persistence, const unsigned int octaves):
+    const VectorFloat persistence, const unsigned int octaves, 
+    const VectorFloat largestFeature):
     
     _width(width),
     _height(height),
     _offset(offset),
     _scale(scale),
     _persistence(persistence),
-    _octaves(octaves)
+    _octaves(octaves),
+    _largestFeature(largestFeature)
 {
     // assert(_octaves > 0);
 }
@@ -96,7 +98,7 @@ VectorFloat PerlinNoiseSource::smoothedNoise(const int x, const int y) {
 }
 
 VectorFloat PerlinNoiseSource::getHeight(const Vector2 pos) {
-    VectorFloat result = 0.0, frequency = 1./pow(2., _octaves), amplitude = _scale.z;
+    VectorFloat result = 0.0, frequency = 1./_largestFeature, amplitude = _scale.z;
     Vector2 position(pos);
     position.x *= _scale.x;
     position.y *= _scale.y;

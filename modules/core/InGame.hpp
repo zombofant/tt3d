@@ -40,7 +40,7 @@ namespace Core {
 using namespace tt3d;
 
 typedef GL::GeometryBuffer<3, 4> DebugGeometryBuffer;
-typedef GL::GeometryBuffer<3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
+typedef GL::GeometryBuffer<3, 4, 2, 3, 0, 0, true> TerrainGeometryBuffer;
     
 class InGame: public UI::RootWidget {
     public:

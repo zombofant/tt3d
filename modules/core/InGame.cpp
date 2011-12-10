@@ -125,18 +125,18 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 1024;
+    static int terrainSize = 64*16;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
         Vector3(terrainSize, terrainSize, 0.0),
-        Vector3(1., 1., 24.0),
-        0.4, 6));
+        Vector3(1., 1., 32.0),
+        0.5, 5, 128.0));
     IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
-    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1e-15, 12);
+    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1.0, 24);
+    IO::log << IO::ML_INFO << "Terrain generated, filling buffer" << IO::submit;
     _terrainObjectHandle = _mesh->createGeometryObject(_terrainMaterial, Vector2(0, 0), Vector2(terrainSize, terrainSize));
-    
-    IO::log << IO::ML_INFO << "Terrain generated." << IO::submit;
+    IO::log << IO::ML_INFO << "Buffer filled." << IO::submit;
 }
 
 void InGame::doAbsRectChanged() {
@@ -145,18 +145,37 @@ void InGame::doAbsRectChanged() {
 }
 
 void InGame::doRenderCallback() {
+    static Vector4 ambient(0.1, 0.1, 0.1, 1.0);
+    static Vector4 diffuse(1.0, 0.9, 0.8, 1.0);
+    static Vector4 specular(0.0, 0.0, 0.0, 1.0);
+    static Vector4 position(1.0, 1.0, 1.0, 0.);
+    static Vector4 direction(-1.0, -1.0, -1.0, 0.0);
+    position.normalize();
+    
+    
     glClear(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+    
+    glLoadIdentity();
+    // glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, specular.toVector4f().as_array);
     
     _camera->load();
+    glLightfv(GL_LIGHT0, GL_POSITION, position.toVector4f().as_array);
     
     _debugMaterial->bind(false);
     _debugMaterial->render(GL_LINES);
     _debugMaterial->unbind();
     
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient.toVector4f().as_array);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse.toVector4f().as_array);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular.toVector4f().as_array);
+    
+    glEnable(GL_COLOR_MATERIAL);
     /*glColor4f(1.0, 1.0, 1.0, 1.0);
     glBegin(GL_QUADS);
         glVertex3f(0.0, 0.0, 1.0);
@@ -164,11 +183,14 @@ void InGame::doRenderCallback() {
         glVertex3f(1.0, 1.0, 3.0);
         glVertex3f(1.0, 0.0, 4.0);
     glEnd();*/
+    // glPolygonMode(GL_FRONT, GL_LINE);
     _terrainMaterial->bind(false);
     _terrainMaterial->render(GL_TRIANGLES);
     _terrainMaterial->unbind();
+    // glPolygonMode(GL_FRONT, GL_FILL);
     // _terrainObjectHandle->drawDirect(GL_TRIANGLES);
     
+    glDisable(GL_LIGHTING);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);

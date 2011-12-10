@@ -39,12 +39,14 @@ class PerlinNoiseSource: public Source {
     public:
         PerlinNoiseSource(const VectorFloat width, const VectorFloat height, 
             const Vector3 offset, const Vector3 scale, 
-            const VectorFloat persistence, const unsigned int octaves);
+            const VectorFloat persistence, const unsigned int octaves, 
+            const VectorFloat largestFeature);
     private:
         const VectorFloat _width, _height;
         const Vector3 _offset, _scale;
         const VectorFloat _persistence;
         const unsigned int _octaves;
+        const VectorFloat _largestFeature;
     protected:
         VectorFloat interpolatedNoise(const Vector2 &pos);
         VectorFloat noise(const int x, const int y);
