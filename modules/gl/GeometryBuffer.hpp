@@ -211,7 +211,7 @@ class GeometryBuffer: public GenericGeometryBuffer {
             }
             if (normal) {
                 glEnableClientState(GL_NORMAL_ARRAY);
-                glTexCoordPointer(3, glType, vertexSize, (const void*)normalOffset);
+                glNormalPointer(glType, vertexSize, (const void*)normalOffset);
             }
             if (nVertexAttrib0 > 0) {
                 glVertexAttribPointer(0, nVertexAttrib0, glType, GL_FALSE, vertexSize, (const void*)vertexAttrib0Offset);

@@ -26,12 +26,15 @@ named in the AUTHORS file.
 #include "modules/terrain/TerrainMesh.hpp"
 #include <cmath>
 #include <GL/glew.h>
+#include "modules/utils/BufferMap.hpp"
 #include "modules/gl/Base.hpp"
 
 namespace tt3d {
 namespace Terrain {
     
 using namespace GL;
+
+const VertexFormatHandle terrainVertexFormat(new VertexFormat(3, 4, 2, 0, 0, 0, true));
     
 VectorFloat heightCallback(void *userdata, const Vector2 pos) {
     return ((Source*)userdata)->getHeight(pos);
@@ -128,6 +131,48 @@ void TerrainMesh::debugRender() {
     glEnd();
     raiseLastGLError();
     delete triangles;
+}
+
+GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, const Vector2 min, const Vector2 max) const 
+{
+    std::list<Triangle*> *triangles = new std::list<Triangle*>();
+    _mesh->selectTriangles(min, max, triangles);
+    GenericGeometryBufferHandle geoHandle = material->getGeometryBuffer();
+    GeometryBufferDriverHandle handle = GeometryBufferDriver::create(geoHandle, terrainVertexFormat);
+    GeometryBufferDriver *driver = handle.get();
+     GeometryRaw *raw = new GeometryRaw(material, triangles->size()*3);
+    Utils::BufferMapHandle mapHandle = raw->getMap();
+    Utils::BufferMap *map = mapHandle.get();
+    
+    geoHandle->setMap(mapHandle);
+    
+    GLsizei offset = 0;
+    for (std::list<Triangle*>::iterator it = triangles->begin();
+        it != triangles->end();
+        it++)
+    {
+        Triangle *triangle = *it;
+        map->setOffset(offset);
+        
+        for (unsigned int i = 0; i < 3; i++) {
+            const Vector3 &vertex = triangle->vertices[i];
+            const VectorFloat z = vertex.z / 24.0 + 0.5;
+            const Vector4 colour(z, z, z, 1.0);
+            Vector2 texCoord(vertex.vec2() - min);
+            texCoord.x /= max.x;
+            texCoord.y /= max.y;
+            driver->setPosition(i, vertex);
+            driver->setColour(i, colour);
+            driver->setTexCoord0(i, texCoord);
+            driver->setNormal(i, Vector3(0.0, 0.0, 1.0));
+        }
+        
+        delete triangle;
+        offset += 3;
+    }
+    geoHandle->setMap(Utils::BufferMapHandle());
+    delete triangles;
+    return GeometryObjectHandle(raw);
 }
 
 /*template<class GeometryBufferHandle> GeometryRawHandle createGeometryObject(GeometryBufferHandle buffer, 

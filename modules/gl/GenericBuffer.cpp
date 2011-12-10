@@ -102,7 +102,7 @@ void GenericBuffer::initBuffer() {
     std::cout << "initialized buffer " << glID << " capacity is currently " << capacity << std::endl;
     if (capacity > 0) {
         glBindBuffer(bufferKind, glID);
-        std::cout << "writing " << capacity << " items to the buffer as initalization" << std::endl;
+        std::cout << "writing " << capacity * itemSize << " bytes ( = " << capacity << " items) to the buffer as initalization" << std::endl;
         glBufferData(bufferKind, capacity * itemSize, data, bufferPurpose);
     }
 }
@@ -144,6 +144,7 @@ void GenericBuffer::readBack() {
         return;
     }
     bind();
+    std::cout << "reading back " << capacity * itemSize << " bytes from GPU buffer #" << glID << std::endl;
     glGetBufferSubData(bufferKind, 0, capacity * itemSize, data);
 }
 

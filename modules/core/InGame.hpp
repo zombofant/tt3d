@@ -40,6 +40,7 @@ namespace Core {
 using namespace tt3d;
 
 typedef GL::GeometryBuffer<3, 4> DebugGeometryBuffer;
+typedef GL::GeometryBuffer<3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
     
 class InGame: public UI::RootWidget {
     public:
@@ -50,6 +51,10 @@ class InGame: public UI::RootWidget {
         GL::VertexFormatHandle _debugVertexFormatHandle;
         GL::GenericGeometryBufferHandle _debugBuffer;
         GL::MaterialHandle _debugMaterial;
+        
+        GL::GenericGeometryBufferHandle _terrainBuffer;
+        GL::MaterialHandle _terrainMaterial;
+        GL::GeometryObjectHandle _terrainObjectHandle;
         
         GL::GeometryObjectHandle _axis;
         GL::GeometryObjectHandle _grid;

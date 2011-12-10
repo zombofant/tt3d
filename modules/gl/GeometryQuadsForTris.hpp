@@ -42,6 +42,8 @@ class GeometryQuadsForTris: public GeometryObject {
         const GLsizei _quadCount;
     protected:
         virtual VertexAllocationHandle allocateVertices();
+    public:
+        virtual GLsizei getVertexCount() const { return _quadCount * 6; };
 };
 
 }

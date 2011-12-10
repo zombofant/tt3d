@@ -72,6 +72,7 @@ class GeometryObject {
         void drawDirect(const GLenum mode);
         virtual Utils::BufferMapHandle getMap();
         const MaterialHandle getMaterial() const { return _material; }
+        virtual GLsizei getVertexCount() const = 0;
 };
 
 typedef boost::shared_ptr<GeometryObject> GeometryObjectHandle;
@@ -84,7 +85,7 @@ class GeometryRaw: public GeometryObject {
     protected:
         virtual VertexAllocationHandle allocateVertices();
     public:
-        GLsizei getVertexCount() { return _vertexCount; }
+        virtual GLsizei getVertexCount() const { return _vertexCount; }
 };
 typedef boost::shared_ptr<GeometryRaw> GeometryRawHandle;
 

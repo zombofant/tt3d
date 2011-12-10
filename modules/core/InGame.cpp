@@ -44,6 +44,8 @@ InGame::InGame(const GL::ViewportHandle viewport):
     _debugVertexFormatHandle(new GL::VertexFormat(3, 4)),
     _debugBuffer(new DebugGeometryBuffer()),
     _debugMaterial(new GL::Material(_debugBuffer)),
+    _terrainBuffer(new TerrainGeometryBuffer(GL_DYNAMIC_DRAW)),
+    _terrainMaterial(new GL::Material(_terrainBuffer)),
     _axis(new GL::GeometryRaw(_debugMaterial, 6)),
     _grid(new GL::GeometryRaw(_debugMaterial, 84)),
     _camera(new GL::CameraFreeSmooth()),
@@ -123,15 +125,17 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 256;
+    static int terrainSize = 1024;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
-        Vector3(terrainSize, terrainSize, -12.0),
+        Vector3(terrainSize, terrainSize, 0.0),
         Vector3(1., 1., 24.0),
         0.4, 6));
     IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
     _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1e-15, 12);
+    _terrainObjectHandle = _mesh->createGeometryObject(_terrainMaterial, Vector2(0, 0), Vector2(terrainSize, terrainSize));
+    
     IO::log << IO::ML_INFO << "Terrain generated." << IO::submit;
 }
 
@@ -160,7 +164,10 @@ void InGame::doRenderCallback() {
         glVertex3f(1.0, 1.0, 3.0);
         glVertex3f(1.0, 0.0, 4.0);
     glEnd();*/
-    _mesh->debugRender();
+    _terrainMaterial->bind(false);
+    _terrainMaterial->render(GL_TRIANGLES);
+    _terrainMaterial->unbind();
+    // _terrainObjectHandle->drawDirect(GL_TRIANGLES);
     
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
