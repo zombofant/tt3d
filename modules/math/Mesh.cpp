@@ -25,6 +25,7 @@ named in the AUTHORS file.
 **********************************************************************/
 #include "Mesh.hpp"
 #include "modules/utils/Exception.hpp"
+#include "Utils.hpp"
 
 namespace tt3d {
 namespace Math {
@@ -265,13 +266,13 @@ const MeshTree *MeshTreeNode::getChild(const int index) const {
 }*/
 
 void MeshTreeNode::selectTriangles(const Vector2 min, const Vector2 max,
-    std::list<Triangle*> *triangles) const
+    std::list<Triangle*> *triangles, bool odd) const
 {
     if (_min.x > max.x || _min.y > max.y || _max.x < min.x || _max.y < min.y) {
         return;
     }
     for (unsigned int i = 0; i < 4; i++) {
-        _children[i]->selectTriangles(min, max, triangles);
+        _children[i]->selectTriangles(min, max, triangles, odd ^ ((i & 1) == 1));
     }
 }
 
@@ -396,16 +397,20 @@ VectorFloat MeshTreeFace::getError() const {
     const Vector3 northEdge = _vertices[3] - _vertices[0];
     const Vector3 westEdge = _vertices[1] - _vertices[0];
     VectorFloat error = 0.;
+    const VectorFloat xstep = 0.1, ystep = 0.1;
+    const int xcount = 9, ycount = 9;
+    VectorFloat x = xstep;
     
-    for (int xi = 0; xi < 3; xi++) {
-        const VectorFloat x = 0.25 + xi * 0.25;
-        for (int yi = 0; yi < 3; yi++) {
-            const VectorFloat y = 0.25 + yi * 0.25;
+    for (int xi = 0; xi < xcount; xi++) {
+        VectorFloat y = ystep;
+        for (int yi = 0; yi < ycount; yi++) {
             const Vector3 pos = origin + northEdge * x + westEdge * y;
-            error += abs(pos.z - _heightCallback.call(pos.vec2()));
+            error += sqr(pos.z - _heightCallback.call(pos.vec2()));
+            y += ystep;
         }
+        x += xstep;
     }
-    return error;
+    return error / (xcount * ycount);
 }
 
 Vector3 *MeshTreeFace::vertex(const int index) {
@@ -414,7 +419,7 @@ Vector3 *MeshTreeFace::vertex(const int index) {
 }
 
 void MeshTreeFace::selectTriangles(const Vector2 min, const Vector2 max,
-    std::list<Triangle*> *triangles) const
+    std::list<Triangle*> *triangles, bool odd) const
 {
     if (_vertices[0].x > max.x || _vertices[0].y > max.y || _vertices[2].x < min.x || _vertices[2].y < min.y) {
         return;
@@ -430,8 +435,13 @@ void MeshTreeFace::selectTriangles(const Vector2 min, const Vector2 max,
     getAdditionalSiblingVertices(TS_NORTH, *list);
     
     if (list->size() == 4) {
-        triangles->push_back(new Triangle((*list)[0], (*list)[1], (*list)[2]));
-        triangles->push_back(new Triangle((*list)[0], (*list)[2], (*list)[3]));
+        if (odd) {
+            triangles->push_back(new Triangle((*list)[0], (*list)[1], (*list)[2]));
+            triangles->push_back(new Triangle((*list)[0], (*list)[2], (*list)[3]));
+        } else {
+            triangles->push_back(new Triangle((*list)[0], (*list)[1], (*list)[3]));
+            triangles->push_back(new Triangle((*list)[1], (*list)[2], (*list)[3]));   
+        }
     } else {
         for (unsigned int i = 1; i < list->size(); i++) {
             triangles->push_back(new Triangle(&center, (*list)[i-1], (*list)[i]));
