@@ -130,7 +130,8 @@ void StaticIndexBuffer::compress() {
     }
     count = nextStart;
     if ((minChange < maxChange) && (minChange >= 0)) {
-        flushRange(minChange, (maxChange - minChange) + 1);
+        bind();
+        doFlushRange(minChange, (maxChange - minChange) + 1);
     }
 }
 

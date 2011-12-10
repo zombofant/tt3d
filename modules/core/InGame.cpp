@@ -80,7 +80,8 @@ void InGame::initAxis() {
     driver->setPosition(5, Vector3(0.0, 0.0, 1.0));
     driver->setColour(5, Vector4(0.0, 0.0, 1.0, 1.0));
     
-    bufferHandle->setMap(Utils::BufferMapHandle());
+    bufferHandle->setMap(mapHandle);
+    IO::log << IO::ML_INFO << "Initialized axis debug geometry." << IO::submit;
 }
 
 void InGame::initCamera() {
@@ -88,6 +89,7 @@ void InGame::initCamera() {
     _camera->setNearZ(1.0);
     _camera->setFarZ(1000.0);
     _camera->setViewport(_viewport);
+    IO::log << IO::ML_INFO << "Initialized camera." << IO::submit;
 }
 
 void InGame::initGrid() {
@@ -95,7 +97,7 @@ void InGame::initGrid() {
     Utils::BufferMapHandle mapHandle;
     Utils::BufferMap *map;
     GL::GeometryBufferDriverHandle driverHandle;
-    GL::getMappedBufferDriver(_debugVertexFormatHandle, _axis, bufferHandle, mapHandle, map, driverHandle);
+    GL::getMappedBufferDriver(_debugVertexFormatHandle, _grid, bufferHandle, mapHandle, map, driverHandle);
     GL::GeometryBufferDriver *driver = driverHandle.get();
     
     const Vector4 gridColour(0.25, 0.25, 0.25, 0.75);
@@ -117,6 +119,7 @@ void InGame::initGrid() {
     }
     
     bufferHandle->setMap(Utils::BufferMapHandle());
+    IO::log << IO::ML_INFO << "Initialized grid debug geometry." << IO::submit;
 }
 
 void InGame::initTest() {
