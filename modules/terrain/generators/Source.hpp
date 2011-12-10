@@ -38,6 +38,7 @@ class Source {
     public:
         virtual VectorFloat getHeight(const Vector2 pos) = 0;
         virtual void getMetrics(VectorFloat &width, VectorFloat &height) = 0;
+        void getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent);
 };
 
 typedef boost::shared_ptr<Source> SourceHandle;

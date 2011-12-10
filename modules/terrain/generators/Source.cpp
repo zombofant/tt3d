@@ -24,3 +24,30 @@ For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
 #include "Source.hpp"
+
+namespace tt3d {
+namespace Terrain {
+    
+/* tt3d::Terrain::Source */
+
+void Source::getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent) 
+{
+    const Vector2 posNX = pos - Vector2(-ds, 0.);
+    const Vector2 posPX = pos - Vector2(ds, 0.);
+    const Vector2 posNY = pos - Vector2(0., -ds);
+    const Vector2 posPY = pos - Vector2(0., ds);
+    
+    const Vector3 vecNX(posNX, getHeight(posNX));
+    const Vector3 vecPX(posPX, getHeight(posPX));
+    const Vector3 vecNY(posNY, getHeight(posNY));
+    const Vector3 vecPY(posPY, getHeight(posPY));
+    
+    tangent = vecPX - vecNX;
+    tangent.normalize();
+    
+    bitangent = vecPY - vecNY;
+    bitangent.normalize();
+}
+    
+}
+}
