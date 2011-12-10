@@ -438,5 +438,29 @@ bool operator== (Vector4 a, Vector4 b) {
 }
 
 
+std::ostream &operator<< (std::ostream &stream, const Vector2 &v) {
+    return stream << "vec2(" << v.x << ", " << v.y << ")";
+}
+
+std::ostream &operator<< (std::ostream &stream, const Vector2f &v) {
+    return stream << "vec2(" << v.x << ", " << v.y << ")";
+}
+
+std::ostream &operator<< (std::ostream &stream, const Vector3 &v) {
+    return stream << "vec3(" << v.x << ", " << v.y << ", " << v.z << ")";
+}
+
+std::ostream &operator<< (std::ostream &stream, const Vector3f &v) {
+    return stream << "vec3(" << v.x << ", " << v.y << ", " << v.z << ")";
+}
+
+std::ostream &operator<< (std::ostream &stream, const Vector4 &v) {
+    return stream << "vec4(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+}
+
+std::ostream &operator<< (std::ostream &stream, const Vector4f &v) {
+    return stream << "vec4(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+}
+
 }
 }

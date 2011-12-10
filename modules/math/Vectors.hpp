@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #define _TT3D_GEOMETRY_H
 
 #include <vector>
+#include <ostream>
 
 namespace tt3d {
 namespace Math {
@@ -226,6 +227,14 @@ Vector4 operator* (Vector4 a, VectorFloat b);
 Vector4 operator/ (Vector4 a, VectorFloat b);
 
 bool operator== (Vector4 a, Vector4 b);
+
+
+std::ostream &operator<< (std::ostream &stream, const Vector2 &v);
+std::ostream &operator<< (std::ostream &stream, const Vector2f &v);
+std::ostream &operator<< (std::ostream &stream, const Vector3 &v);
+std::ostream &operator<< (std::ostream &stream, const Vector3f &v);
+std::ostream &operator<< (std::ostream &stream, const Vector4 &v);
+std::ostream &operator<< (std::ostream &stream, const Vector4f &v);
 
 }
 }
