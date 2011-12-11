@@ -120,7 +120,7 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 256;
+    static int terrainSize = 1024;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
