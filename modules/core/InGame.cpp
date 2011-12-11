@@ -125,15 +125,15 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 64*16;
+    static int terrainSize = 64*8;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
         Vector3(terrainSize, terrainSize, 0.0),
         Vector3(1., 1., 32.0),
-        0.4, 6, 128.0));
+        0.45, 7, 128.0));
     IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
-    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 1.0, 24);
+    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 0.5, 32);
     IO::log << IO::ML_INFO << "Terrain generated, filling buffer" << IO::submit;
     _terrainObjectHandle = _mesh->createGeometryObject(_terrainMaterial, Vector2(0, 0), Vector2(terrainSize, terrainSize));
     IO::log << IO::ML_INFO << "Buffer filled." << IO::submit;
@@ -149,7 +149,7 @@ void InGame::doAbsRectChanged() {
 
 void InGame::doRenderCallback() {
     static Vector4 ambient(0.1, 0.1, 0.1, 1.0);
-    static Vector4 diffuse(1.0, 0.9, 0.8, 1.0);
+    static Vector4 diffuse(1.0, 0.95, 0.9, 1.0);
     static Vector4 specular(0.0, 0.0, 0.0, 1.0);
     static Vector4 position(1.0, 1.0, 1.0, 0.);
     static Vector4 direction(-1.0, -1.0, -1.0, 0.0);

@@ -56,6 +56,7 @@ class TerrainMesh {
         const HeightCallback _callback;
         VectorFloat _currentError;
         unsigned int _faceCount;
+        unsigned int _currentMaxLOD;
         MeshTreeNode *_mesh;
     protected:
         void buildMesh(const VectorFloat epsilon, const unsigned int maxLOD);

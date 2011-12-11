@@ -51,7 +51,8 @@ TerrainMesh::TerrainMesh(const SourceHandle source,
     _dimensions(dimensions),
     _callback((void*)_source.get(), &heightCallback),
     _currentError(0.),
-    _faceCount(4)
+    _faceCount(4),
+    _currentMaxLOD(0)
 {
     buildMesh(epsilon, maxLOD);
 }
@@ -65,14 +66,18 @@ void TerrainMesh::buildMesh(const VectorFloat epsilon, const unsigned int maxLOD
     unsigned int i = 0;
     do {
         if (i > 0) {
-            IO::log << IO::ML_DEBUG << "Terrain mesh iteration #" << i << ": rel error estimate: " << _currentError / (_dimensions.x * _dimensions.y) << "; face count = " << _faceCount << IO::submit;
+            IO::log << IO::ML_DEBUG << "Terrain mesh iteration #" << i << ": rel error estimate: " << _currentError / (_dimensions.x * _dimensions.y) << "; face count = " << _faceCount << "; current max tree depth = " << _currentMaxLOD << IO::submit;
         }
         _currentError = 0.;
+        _currentMaxLOD = 0;
         i++;
     } while (recurseMesh(_mesh, epsilon, 0, maxLOD));
 }
 
 bool TerrainMesh::recurseMesh(MeshTreeNode *item, const VectorFloat epsilon, const unsigned int currLOD, const unsigned int maxLOD) {
+    if (currLOD > _currentMaxLOD) {
+        _currentMaxLOD = currLOD;
+    }
     if (currLOD > maxLOD) {
         return false;
     }
@@ -171,7 +176,7 @@ GeometryObjectHandle TerrainMesh::createGeometryObject(MaterialHandle material, 
         for (unsigned int i = 0; i < 3; i++) {
             const Vector3 &vertex = triangle->vertices[i];
             const Vector2 vertex2(vertex.vec2());
-            const VectorFloat z = vertex.z / 24.0 + 0.5;
+            // const VectorFloat z = vertex.z / 24.0 + 0.5;
             const Vector4 colour(0.25, 0.25, 0.25, 1.0);//colour(z, z, z, 1.0);
             Vector3 tangent, bitangent;
             _source->getTangents(vertex2, ds, tangent, bitangent);
