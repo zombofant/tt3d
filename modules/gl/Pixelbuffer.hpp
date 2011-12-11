@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Base.hpp
+File name: Pixelbuffer.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,49 +23,35 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _TT3D_GL_BASE_H
-#define _TT3D_GL_BASE_H
+#ifndef _TT3D_GL_PIXELBUFFER_H
+#define _TT3D_GL_PIXELBUFFER_H
 
-#include "modules/utils/Exception.hpp"
 #include <GL/glew.h>
-#include <string>
+#include "Base.hpp"
 #include <boost/shared_ptr.hpp>
 
 namespace tt3d {
 namespace GL {
     
-using namespace tt3d;
-    
-class Error: public Utils::Exception {
+typedef void (GLAPIENTRY * glAttachFunc) (GLenum, GLenum, GLenum, GLuint);
+
+class Pixelbuffer: public Class {
     public:
-        Error(const std::string aMessage);
-        ~Error() throw() {};
+        Pixelbuffer(const GLenum format, const GLsizei width, 
+            const GLsizei height, const GLenum bufferKind);
     private:
-        const std::string message;
+        const GLenum _format;
+        const GLsizei _width, _height;
+        const GLenum _bufferKind;
     public:
-        const char *what() {
-            return message.c_str();
-        }
+        virtual glAttachFunc getAttachFunc() const = 0;
+        GLenum getBufferKind() const { return _bufferKind; };
+        virtual GLenum getFormat() const { return _format; };
+        virtual GLsizei getHeight() const { return _height; };
+        virtual GLsizei getWidth() const { return _width; };
 };
 
-class Struct {
-    public:
-        virtual void bind() = 0;
-        virtual void unbind() = 0;
-};
-
-class Class: public Struct {
-    public:
-        Class();
-    protected:
-        GLuint glID;
-    public:
-        GLuint getID() const { return glID; }
-};
-
-typedef boost::shared_ptr<Class> ClassHandle;
-
-void raiseLastGLError();
+typedef boost::shared_ptr<Pixelbuffer> PixelbufferHandle;
 
 }
 }

@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Base.hpp
+File name: Pixelbuffer.cpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,51 +23,22 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _TT3D_GL_BASE_H
-#define _TT3D_GL_BASE_H
-
-#include "modules/utils/Exception.hpp"
-#include <GL/glew.h>
-#include <string>
-#include <boost/shared_ptr.hpp>
+#include "Pixelbuffer.hpp"
 
 namespace tt3d {
 namespace GL {
+
+/* tt3d::GL::Pixelbuffer */
+
+Pixelbuffer::Pixelbuffer(const GLenum format, const GLsizei width, 
+    const GLsizei height, const GLenum bufferKind):
+    _format(format),
+    _width(width),
+    _height(height),
+    _bufferKind(bufferKind)
+{
     
-using namespace tt3d;
-    
-class Error: public Utils::Exception {
-    public:
-        Error(const std::string aMessage);
-        ~Error() throw() {};
-    private:
-        const std::string message;
-    public:
-        const char *what() {
-            return message.c_str();
-        }
-};
-
-class Struct {
-    public:
-        virtual void bind() = 0;
-        virtual void unbind() = 0;
-};
-
-class Class: public Struct {
-    public:
-        Class();
-    protected:
-        GLuint glID;
-    public:
-        GLuint getID() const { return glID; }
-};
-
-typedef boost::shared_ptr<Class> ClassHandle;
-
-void raiseLastGLError();
+}
 
 }
 }
-
-#endif
