@@ -23,6 +23,7 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
+#include "modules/utils/Exception.hpp"
 #include "GenericBuffer.hpp"
 #include <exception>
 #include <stdexcept>
@@ -33,6 +34,7 @@ namespace tt3d {
 namespace GL {
     
 using namespace tt3d;
+using namespace Utils;
 
 /* tt3d::GL::GenericBuffer */
 
@@ -56,8 +58,20 @@ GenericBuffer::~GenericBuffer() {
     }
 }
 
+void GenericBuffer::autoFlush() {
+    doFlushAll();
+}
+
 void GenericBuffer::doExpand(const GLsizei oldCapacity, const GLsizei newCapacity) {
     
+}
+
+void GenericBuffer::doFlushAll() {
+    glBufferSubData(bufferKind, 0, capacity * itemSize, data);
+}
+
+void GenericBuffer::doFlushRange(const GLsizei minItem, const GLsizei count) {
+    glBufferSubData(bufferKind, minItem * itemSize, count * itemSize, data);
 }
 
 void GenericBuffer::expand() {
@@ -77,14 +91,6 @@ void GenericBuffer::expand() {
     capacity = newCapacity;
     doExpand(oldCapacity, newCapacity);
 }
-
-void GenericBuffer::flushRange(const GLsizei minItem, const GLsizei count) {
-    if (glID == 0) {
-        return;
-    }
-    bind();
-    glBufferSubData(bufferKind, minItem * itemSize, count * itemSize, data);
-}
     
 void GenericBuffer::freeBuffer() {
     glDeleteBuffers(1, &glID);
@@ -96,6 +102,7 @@ void GenericBuffer::initBuffer() {
     std::cout << "initialized buffer " << glID << " capacity is currently " << capacity << std::endl;
     if (capacity > 0) {
         glBindBuffer(bufferKind, glID);
+        std::cout << "writing " << capacity * itemSize << " bytes ( = " << capacity << " items) to the buffer as initalization" << std::endl;
         glBufferData(bufferKind, capacity * itemSize, data, bufferPurpose);
     }
 }
@@ -111,13 +118,16 @@ void GenericBuffer::requireBuffer() {
         initBuffer();
     }
     if (glID == 0) {
-        throw 0;
+        throw Exception("buffer initialized with id 0.");
     }
 }
 
 void GenericBuffer::bind() {
     requireBuffer();
     glBindBuffer(bufferKind, glID);
+    if (needsFlush()) {
+        autoFlush();
+    }
 }
 
 void GenericBuffer::flush() {
@@ -125,7 +135,7 @@ void GenericBuffer::flush() {
         return;
     }
     bind();
-    glBufferSubData(bufferKind, 0, capacity * itemSize, data);
+    autoFlush();
 }
 
 void GenericBuffer::readBack() {
@@ -134,6 +144,7 @@ void GenericBuffer::readBack() {
         return;
     }
     bind();
+    std::cout << "reading back " << capacity * itemSize << " bytes from GPU buffer #" << glID << std::endl;
     glGetBufferSubData(bufferKind, 0, capacity * itemSize, data);
 }
 

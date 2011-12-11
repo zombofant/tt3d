@@ -29,6 +29,7 @@ named in the AUTHORS file.
 #include "modules/utils/Exception.hpp"
 #include <GL/glew.h>
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 namespace tt3d {
 namespace GL {
@@ -58,7 +59,11 @@ class Class: public Struct {
         Class();
     protected:
         GLuint glID;
+    public:
+        GLuint getID() const { return glID; }
 };
+
+typedef boost::shared_ptr<Class> ClassHandle;
 
 void raiseLastGLError();
 

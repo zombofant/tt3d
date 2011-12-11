@@ -130,7 +130,8 @@ void StaticIndexBuffer::compress() {
     }
     count = nextStart;
     if ((minChange < maxChange) && (minChange >= 0)) {
-        flushRange(minChange, (maxChange - minChange) + 1);
+        bind();
+        doFlushRange(minChange, (maxChange - minChange) + 1);
     }
 }
 
@@ -171,6 +172,12 @@ const IndexEntryHandle StaticIndexBuffer::add(const VertexIndexListHandle vertic
         dataptr++;
     }
     count += entry->count;
+    if (glID != 0) {
+        glBindBuffer(bufferKind, glID);
+        std::cout << "writethrough" << std::endl;
+        glBufferSubData(bufferKind, entry->start * sizeof(GLuint), entry->count * sizeof(GLuint), (unsigned char *)( ((GLuint *)dataptr)+entry->start));
+        glBindBuffer(bufferKind, 0);
+    }
     
     handles->push_back(handle);
     

@@ -83,7 +83,10 @@ VertexFormat::VertexFormat(const unsigned int aNPosition,
 
 GenericGeometryBuffer::GenericGeometryBuffer(const VertexFormatHandle vertexFormat, const GLenum aPurpose):
     GenericBuffer(vertexFormat->vertexSize, GL_ARRAY_BUFFER, aPurpose),
-    _vertexFormat(vertexFormat)
+    _vertexFormat(vertexFormat),
+    _handles(),
+    _freeVertices(),
+    _dirtyVertices()
 {
     
 }
@@ -92,7 +95,7 @@ void GenericGeometryBuffer::doExpand(const GLsizei oldCapacity, const GLsizei ne
 {
     GenericBuffer::doExpand(oldCapacity, newCapacity);
     for (VertexIndex i = oldCapacity; i < newCapacity; i++) {
-        freeVertices.push_back(i);
+        _freeVertices.push_back(i);
     }
 }
 
@@ -103,12 +106,12 @@ void GenericGeometryBuffer::gc_one(const VertexIndexListHandle handle) {
         it != list->end();
         it++)
     {
-        freeVertices.push_back(*it);
+        _freeVertices.push_back(*it);
     }
 }
 
 void GenericGeometryBuffer::get(const GLsizei index, const GLsizei offset, GLVertexFloat *value, const GLsizei n) {
-    memcpy(value, data + (index * itemSize) + offset, n);    
+    memcpy(value, data + (map(index) * itemSize) + offset, n * glTypeSize);    
 }
 
 GLsizei GenericGeometryBuffer::map(const GLsizei index) {
@@ -120,26 +123,27 @@ GLsizei GenericGeometryBuffer::map(const GLsizei index) {
 }
 
 void GenericGeometryBuffer::set(const GLsizei index, const GLsizei offset, const GLVertexFloat *value, const GLsizei n) {
-    memcpy(data + (index * itemSize) + offset, value, n);
-    dirtyVertices.insert(index);
+    const GLsizei mappedIndex = map(index);
+    memcpy(data + (mappedIndex * itemSize) + offset, value, n * glTypeSize);
+    _dirtyVertices.insert(mappedIndex);
 }
 
 VertexIndexListHandle GenericGeometryBuffer::allocateVertices(const GLsizei count) {
-    if ((GLsizei)freeVertices.size() < count) {
+    if ((GLsizei)_freeVertices.size() < count) {
         gc();
-        while ((GLsizei)freeVertices.size() < count) {
+        while ((GLsizei)_freeVertices.size() < count) {
             expand();
         }
     }
     
     VertexIndexList *result = new VertexIndexList();
     for (GLsizei i = 0; i < count; i++) {
-        result->push_back(freeVertices.front());
-        freeVertices.pop_front();
+        result->push_back(_freeVertices.front());
+        _freeVertices.pop_front();
     }
     
     VertexIndexListHandle handle = VertexIndexListHandle(result);
-    handles.push_back(handle);
+    _handles.push_back(handle);
     return handle;
 }
 
@@ -147,14 +151,14 @@ void GenericGeometryBuffer::gc() {
     bool changed = true;
     while (changed) {
         changed = false;
-        for (VertexIndexListHandleList::iterator it = handles.begin();
-            it != handles.end();
+        for (VertexIndexListHandleList::iterator it = _handles.begin();
+            it != _handles.end();
             it++)
         {
             VertexIndexListHandle handle = *it;
             if (handle.use_count() == 1) {
                 gc_one(handle);
-                handles.erase(it);
+                _handles.erase(it);
                 changed = true;
                 break;
             }
@@ -172,14 +176,15 @@ Utils::BufferMapHandle GenericGeometryBuffer::getMap()
     return bufferMap;
 }
 
-void GenericGeometryBuffer::flush() {
-    GLsizei min, max;
-    std::set<VertexIndex>::iterator it = dirtyVertices.begin();
+void GenericGeometryBuffer::autoFlush() {
+    std::cout << "auto-flushing geometry buffer " << glID << std::endl;
+    VertexIndex min, max;
+    std::set<VertexIndex>::iterator it = _dirtyVertices.begin();
     min = *it;
     max = *it;
     
     for (it++;
-        it != dirtyVertices.end();
+        it != _dirtyVertices.end();
         it++) 
     {
         if (min > *it) {
@@ -189,8 +194,8 @@ void GenericGeometryBuffer::flush() {
             max = *it;
         }
     }
-    flushRange(min, (max - min) + 1);
-    dirtyVertices.clear();
+    doFlushRange(min, (max - min) + 1);
+    _dirtyVertices.clear();
 }
 
 void GenericGeometryBuffer::setMap(Utils::BufferMapHandle aValue) {
@@ -387,6 +392,30 @@ void GeometryBufferDriver::setVertexAttrib3(const GLsizei index, const Vector4f 
 {
     assert(source.dimension <= _vertexFormat->nVertexAttrib3);
     _handle->set(index, _vertexFormat->vertexAttrib3Offset, source.as_array, source.dimension);
+}
+
+void GeometryBufferDriver::getPosition(const GLsizei index, Vector2f &dest) 
+{
+    assert(dest.dimension <= _vertexFormat->nPosition);
+    _handle->get(index, _vertexFormat->posOffset, dest.as_array, dest.dimension);
+}
+
+void GeometryBufferDriver::getPosition(const GLsizei index, Vector3f &dest) 
+{
+    assert(dest.dimension <= _vertexFormat->nPosition);
+    _handle->get(index, _vertexFormat->posOffset, dest.as_array, dest.dimension);
+}
+
+void GeometryBufferDriver::getPosition(const GLsizei index, Vector4f &dest) 
+{
+    assert(dest.dimension <= _vertexFormat->nPosition);
+    _handle->get(index, _vertexFormat->posOffset, dest.as_array, dest.dimension);
+}
+
+void GeometryBufferDriver::getNormal(const GLsizei index, Vector3f &dest) 
+{
+    assert(_vertexFormat->normal);
+    _handle->get(index, _vertexFormat->normalOffset, dest.as_array, dest.dimension);
 }
 
 }

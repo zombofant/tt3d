@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #include "modules/math/Mesh.hpp"
 #include "modules/math/ModelGeometry.hpp"
 #include "modules/gl/GeometryBuffer.hpp"
+#include "modules/gl/GeometryObject.hpp"
 #include "modules/gl/Material.hpp"
 #include "generators/Source.hpp"
 #include "boost/shared_ptr.hpp"
@@ -38,8 +39,9 @@ using namespace tt3d;
 using namespace tt3d::Math;
 using namespace tt3d::GL;
 
-typedef GeometryBuffer<3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
-typedef boost::shared_ptr<TerrainGeometryBuffer> TerrainGeometryBufferHandle;
+//typedef GeometryBuffer<3, 4, 2, 0, 0, 0, true> TerrainGeometryBuffer;
+//typedef boost::shared_ptr<TerrainGeometryBuffer> TerrainGeometryBufferHandle;
+extern const VertexFormatHandle terrainVertexFormat;
 
 class TerrainMesh {
     public:
@@ -52,6 +54,9 @@ class TerrainMesh {
         const SourceHandle _source;
         const Vector2 _dimensions;
         const HeightCallback _callback;
+        VectorFloat _currentError;
+        unsigned int _faceCount;
+        unsigned int _currentMaxLOD;
         MeshTreeNode *_mesh;
     protected:
         void buildMesh(const VectorFloat epsilon, const unsigned int maxLOD);
@@ -59,7 +64,7 @@ class TerrainMesh {
     public:
         void debugRender();
         void selectTriangles(const Vector2 min, const Vector2 max, std::vector<Triangle> *triangles) const;
-        //template<class GeometryBufferHandle> GeometryRawHandle createGeometryObject(MaterialHandle material, const Vector2 min, const Vector2 max) const;
+        GeometryObjectHandle createGeometryObject(MaterialHandle material, const Vector2 min, const Vector2 max) const;
     public:
         MeshTree *getMesh();
 };

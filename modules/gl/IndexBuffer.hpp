@@ -88,6 +88,7 @@ class StaticIndexBuffer: public GenericIndexBuffer {
         virtual void clear();
         void drawHandle(const IndexEntryHandle handle, const GLenum mode);
         void gc();
+        GLsizei getIndex(const GLsizei index) const { return ((GLuint *)data)[index]; }
         void remove(const IndexEntryHandle handle, const bool autoCompress = true);
         const VertexIndexListHandle resolveIndexEntry(const IndexEntryHandle handle) const;
 };

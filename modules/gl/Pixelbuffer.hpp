@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Source.hpp
+File name: Pixelbuffer.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,25 +23,35 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _TT3D_TERRAIN_SOURCE_H
-#define _TT3D_TERRAIN_SOURCE_H
+#ifndef _TT3D_GL_PIXELBUFFER_H
+#define _TT3D_GL_PIXELBUFFER_H
 
-#include "modules/math/Vectors.hpp"
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include <GL/glew.h>
+#include "Base.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace tt3d {
-namespace Terrain {
+namespace GL {
     
-using namespace tt3d::Math;
+typedef void (GLAPIENTRY * glAttachFunc) (GLenum, GLenum, GLenum, GLuint);
 
-class Source {
+class Pixelbuffer: public Class {
     public:
-        virtual VectorFloat getHeight(const Vector2 pos) = 0;
-        virtual void getMetrics(VectorFloat &width, VectorFloat &height) = 0;
-        void getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent);
+        Pixelbuffer(const GLenum format, const GLsizei width, 
+            const GLsizei height, const GLenum bufferKind);
+    private:
+        const GLenum _format;
+        const GLsizei _width, _height;
+        const GLenum _bufferKind;
+    public:
+        virtual glAttachFunc getAttachFunc() const = 0;
+        GLenum getBufferKind() const { return _bufferKind; };
+        virtual GLenum getFormat() const { return _format; };
+        virtual GLsizei getHeight() const { return _height; };
+        virtual GLsizei getWidth() const { return _width; };
 };
 
-typedef boost::shared_ptr<Source> SourceHandle;
+typedef boost::shared_ptr<Pixelbuffer> PixelbufferHandle;
 
 }
 }

@@ -40,6 +40,7 @@ namespace Core {
 using namespace tt3d;
 
 typedef GL::GeometryBuffer<3, 4> DebugGeometryBuffer;
+typedef GL::GeometryBuffer<3, 4, 2, 3, 0, 0, true> TerrainGeometryBuffer;
     
 class InGame: public UI::RootWidget {
     public:
@@ -51,6 +52,10 @@ class InGame: public UI::RootWidget {
         GL::GenericGeometryBufferHandle _debugBuffer;
         GL::MaterialHandle _debugMaterial;
         
+        GL::GenericGeometryBufferHandle _terrainBuffer;
+        GL::MaterialHandle _terrainMaterial;
+        GL::GeometryObjectHandle _terrainObjectHandle;
+        
         GL::GeometryObjectHandle _axis;
         GL::GeometryObjectHandle _grid;
         
@@ -59,6 +64,8 @@ class InGame: public UI::RootWidget {
         bool _cameraMoved;
         
         Terrain::TerrainMesh *_mesh;
+        
+        bool _wireframe, _visualizeNormals;
     private:
         void initAxis();
         void initCamera();

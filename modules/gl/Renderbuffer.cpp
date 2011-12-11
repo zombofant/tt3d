@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Source.hpp
+File name: Renderbuffer.cpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,27 +23,37 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _TT3D_TERRAIN_SOURCE_H
-#define _TT3D_TERRAIN_SOURCE_H
-
-#include "modules/math/Vectors.hpp"
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include "Renderbuffer.hpp"
 
 namespace tt3d {
-namespace Terrain {
+namespace GL {
     
-using namespace tt3d::Math;
+/* tt3d::GL::Renderbuffer */
 
-class Source {
-    public:
-        virtual VectorFloat getHeight(const Vector2 pos) = 0;
-        virtual void getMetrics(VectorFloat &width, VectorFloat &height) = 0;
-        void getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent);
-};
+Renderbuffer::Renderbuffer(const GLenum format, const GLsizei width, 
+    const GLsizei height):
+    Pixelbuffer::Pixelbuffer(format, width, height, GL_RENDERBUFFER)
+{
+    glGenRenderbuffers(1, &glID);
+    bind();
+    glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
+    unbind();
+}
 
-typedef boost::shared_ptr<Source> SourceHandle;
+Renderbuffer::~Renderbuffer() 
+{
+    glDeleteRenderbuffers(1, &glID);
+}
+
+void Renderbuffer::bind()
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, glID);
+}
+
+void Renderbuffer::unbind()
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
 
 }
 }
-
-#endif

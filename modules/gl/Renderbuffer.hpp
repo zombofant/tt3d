@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Source.hpp
+File name: Renderbuffer.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,27 +23,25 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _TT3D_TERRAIN_SOURCE_H
-#define _TT3D_TERRAIN_SOURCE_H
+#ifndef _TT3D_GL_RENDERBUFFER_H
+#define _TT3D_GL_RENDERBUFFER_H
 
-#include "modules/math/Vectors.hpp"
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include "Pixelbuffer.hpp"
 
 namespace tt3d {
-namespace Terrain {
-    
-using namespace tt3d::Math;
+namespace GL {
 
-class Source {
+class Renderbuffer: public Pixelbuffer {
     public:
-        virtual VectorFloat getHeight(const Vector2 pos) = 0;
-        virtual void getMetrics(VectorFloat &width, VectorFloat &height) = 0;
-        void getTangents(const Vector2 pos, const VectorFloat ds, Vector3 &tangent, Vector3 &bitangent);
+        Renderbuffer(const GLenum format, const GLsizei width, const GLsizei height);
+        virtual ~Renderbuffer();
+    public:
+        virtual glAttachFunc getAttachFunc() { return glFramebufferRenderbuffer; };
+        virtual void bind();
+        virtual void unbind();
 };
 
-typedef boost::shared_ptr<Source> SourceHandle;
-
 }
 }
 
-#endif
+#endif 

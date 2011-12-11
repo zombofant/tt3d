@@ -104,16 +104,18 @@ class GenericGeometryBuffer: public GenericBuffer {
         GenericGeometryBuffer(const VertexFormatHandle vertexFormat, const GLenum aPurpose);
     protected:
         const VertexFormatHandle _vertexFormat;
-        VertexIndexListHandleList handles;
-        std::list<VertexIndex> freeVertices;
-        std::set<VertexIndex> dirtyVertices;
+        VertexIndexListHandleList _handles;
+        std::list<VertexIndex> _freeVertices;
+        std::set<VertexIndex> _dirtyVertices;
         
         Utils::BufferMapHandle bufferMap;
     protected:
+        virtual void autoFlush();
         virtual void doExpand(const GLsizei oldCapacity, const GLsizei newCapacity);
         void gc_one(const VertexIndexListHandle handle);
         void get(const GLsizei index, const GLsizei offset, GLVertexFloat *value, const GLsizei n);
         GLsizei map(const GLsizei index);
+        virtual bool needsFlush() const { return _dirtyVertices.size() > 0; };
         void set(const GLsizei index, const GLsizei offset, const GLVertexFloat *value, const GLsizei n);
     public:
         VertexIndexListHandle allocateVertices(const GLsizei count);
@@ -123,7 +125,6 @@ class GenericGeometryBuffer: public GenericBuffer {
         // GeometryBufferDriverHandle createDriver(const VertexFormatHandle format);
         const VertexFormatHandle getFormat() const { return _vertexFormat; }
         Utils::BufferMapHandle getMap();
-        virtual void flush();
         void setMap(Utils::BufferMapHandle aValue);
         
     friend class GeometryBufferDriver;
@@ -210,7 +211,7 @@ class GeometryBuffer: public GenericGeometryBuffer {
             }
             if (normal) {
                 glEnableClientState(GL_NORMAL_ARRAY);
-                glTexCoordPointer(3, glType, vertexSize, (const void*)normalOffset);
+                glNormalPointer(glType, vertexSize, (const void*)normalOffset);
             }
             if (nVertexAttrib0 > 0) {
                 glVertexAttribPointer(0, nVertexAttrib0, glType, GL_FALSE, vertexSize, (const void*)vertexAttrib0Offset);
@@ -394,6 +395,12 @@ class GeometryBufferDriver {
         void setVertexAttrib3(const GLsizei index, const Vector3 &source) { setVertexAttrib3(index, source.toVector3f()); };
         void setVertexAttrib3(const GLsizei index, const Vector4 &source) { setVertexAttrib3(index, source.toVector4f()); };
         
+        
+        void getPosition(const GLsizei index, Vector2f &dest);
+        void getPosition(const GLsizei index, Vector3f &dest);
+        void getPosition(const GLsizei index, Vector4f &dest);
+        
+        void getNormal(const GLsizei index, Vector3f &dest);
 };
 
 }

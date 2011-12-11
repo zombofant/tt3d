@@ -54,9 +54,11 @@ class GenericBuffer: public Class {
         const GLenum bufferKind;
         const GLsizei itemSize;
     protected:
+        virtual void autoFlush();
         virtual void doExpand(const GLsizei oldCapacity, const GLsizei newCapacity);
+        void doFlushAll();
+        void doFlushRange(const GLsizei minItem, const GLsizei count);
         void expand();
-        void flushRange(const GLsizei minItem, const GLsizei count);
         virtual void freeBuffer();
         virtual void initBuffer();
         virtual bool needsFlush() const { return false; };
@@ -64,7 +66,7 @@ class GenericBuffer: public Class {
         virtual void requireBuffer();
     public:
         virtual void bind();
-        virtual void flush();
+        void flush();
         void readBack();
         virtual void unbind();
     public:

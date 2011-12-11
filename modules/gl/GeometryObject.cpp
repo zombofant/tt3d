@@ -24,11 +24,13 @@ For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
 #include "GeometryObject.hpp"
+#include "modules/utils/Exception.hpp"
 
 namespace tt3d {
 namespace GL {
     
 using namespace tt3d;
+using namespace tt3d::Utils;
 
 /* tt3d::GL::VertexIndexListMap */
 
@@ -41,7 +43,7 @@ VertexIndexListMap::VertexIndexListMap(const VertexIndexListHandle vertices):
 
 void VertexIndexListMap::rangeCheck(const size_t index) {
     if ((index < 0) || (index >= _vertices->size())) {
-        throw 0;
+        throw IndexError(index, 0, _vertices->size()-1);
     }
 }
 
