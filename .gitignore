@@ -1,7 +1,7 @@
 CMakeCache*
 CMakeFiles
 Makefile
-*.cmake
+cmake_install.cmake
 *.o
 tt3d
 *.a
