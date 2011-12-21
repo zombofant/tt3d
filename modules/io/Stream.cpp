@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Streams.cpp
+File name: Stream.cpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -53,11 +53,19 @@ sizeuint Stream::write(const void *data, const sizeuint length) {
     return write((const char*)data, length);
 }
 
+void Stream::raiseReadError(const sizeuint read, const sizeuint required) {
+    throw StreamReadError((boost::format("Stream read error. Read %d bytes, wanted %d.") % read % required).str());
+}
+
+void Stream::raiseWriteError(const sizeuint written, const sizeuint required) {
+    throw StreamReadError((boost::format("Stream write error. Wrote %d bytes, wanted %d.") % written % required).str());
+}
+
 template <class _T> _T Stream::readInt() {
     _T result;
     sizeuint readBytes = read(&result, sizeof(_T));
     if (readBytes < sizeof(_T)) {
-        throw StreamReadError((boost::format("Failed to read %d bytes.") % sizeof(_T)).str());
+        raiseReadError(readBytes, sizeof(_T));
     }
     return result;
 }
@@ -65,7 +73,7 @@ template <class _T> _T Stream::readInt() {
 template <class _T> void Stream::writeInt(const _T value) {
     sizeuint writtenBytes = write(&value, sizeof(_T));
     if (writtenBytes < sizeof(_T)) {
-        throw StreamWriteError((boost::format("Failed to write %d bytes.") % sizeof(_T)).str());
+        raiseWriteError(writtenBytes, sizeof(_T));
     }
 }
 
@@ -91,7 +99,7 @@ std::string Stream::readString() {
     sizeuint readBytes = read(buffer, length);
     if (readBytes < length) {
         free(buffer);
-        throw StreamReadError((boost::format("Failed to read %d bytes.") % length).str());
+        raiseReadError(readBytes, length);
     }
     std::string result((char*)buffer);
     free(buffer);
@@ -138,7 +146,7 @@ void Stream::writeString(const std::string &value) {
     writeInt32(length);
     sizeuint writtenBytes = write(value.c_str(), length);
     if (writtenBytes < length) {
-        throw StreamWriteError((boost::format("Failed to write %d bytes.") % length).str());
+        raiseWriteError(writtenBytes, length);
     }
 }
 
@@ -158,6 +166,7 @@ void Stream::writeUInt64(const uint64 value) {
     return writeInt<uint64>(value);
 }
 
+#include "includes/StreamOperators.cpp.inc"
 
 }
 }

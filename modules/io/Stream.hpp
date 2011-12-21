@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: Streams.hpp
+File name: Stream.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -77,6 +77,8 @@ class Stream {
         sizeuint write(const void *data, const sizeuint length);
         virtual sizeuint write(const char *data, const sizeuint length);
     protected:
+        void raiseReadError(const sizeuint read, const sizeuint required);
+        void raiseWriteError(const sizeuint written, const sizeuint required);
         template <class _T> _T readInt();
         template <class _T> void writeInt(const _T value);
     public:
@@ -99,6 +101,8 @@ class Stream {
         void writeUInt32(const uint32 value);
         void writeUInt64(const uint64 value);
 };
+
+#include "includes/StreamOperators.hpp.inc"
 
 }
 }
