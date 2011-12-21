@@ -1,0 +1,163 @@
+/**********************************************************************
+File name: Streams.cpp
+This file is part of: tt3d — Freeform transport simulation
+
+LICENSE
+
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in
+compliance with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS IS"
+basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+License for the specific language governing rights and limitations under
+the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public license (the  "GPL License"), in which case  the
+provisions of GPL License are applicable instead of those above.
+
+FEEDBACK & QUESTIONS
+
+For feedback and questions about tt3d please e-mail one of the authors
+named in the AUTHORS file.
+**********************************************************************/
+
+#include "Stream.hpp"
+#include <boost/format.hpp>
+#include <typeinfo>
+
+namespace tt3d {
+namespace IO {
+
+/* tt3d::IO::Stream */
+
+sizeuint Stream::read(char *data, const sizeuint length) {
+    throw StreamNotSupportedError((boost::format("%s does not support reading.") % typeid(this).name()).str());
+}
+
+sizeuint Stream::read(void *data, const sizeuint length) {
+    return read((char*)data, length);
+}
+
+sizeuint Stream::seek(const int whence, const sizeint offset) {
+    throw StreamNotSupportedError((boost::format("%s does not support seeking.") % typeid(this).name()).str());
+}
+
+sizeuint Stream::write(const char *data, const sizeuint length) {
+    throw StreamNotSupportedError((boost::format("%s does not support writing.") % typeid(this).name()).str());
+}
+
+sizeuint Stream::write(const void *data, const sizeuint length) {
+    return write((const char*)data, length);
+}
+
+template <class _T> _T Stream::readInt() {
+    _T result;
+    sizeuint readBytes = read(&result, sizeof(_T));
+    if (readBytes < sizeof(_T)) {
+        throw StreamReadError((boost::format("Failed to read %d bytes.") % sizeof(_T)).str());
+    }
+    return result;
+}
+
+template <class _T> void Stream::writeInt(const _T value) {
+    sizeuint writtenBytes = write(&value, sizeof(_T));
+    if (writtenBytes < sizeof(_T)) {
+        throw StreamWriteError((boost::format("Failed to write %d bytes.") % sizeof(_T)).str());
+    }
+}
+
+int8 Stream::readInt8() {
+    return readInt<int8>();
+}
+
+int16 Stream::readInt16() {
+    return readInt<int16>();
+}
+
+int32 Stream::readInt32() {
+    return readInt<int32>();
+}
+
+int64 Stream::readInt64() {
+    return readInt<int64>();
+}
+
+std::string Stream::readString() {
+    uint32 length = readUInt32();
+    void* buffer = malloc(length);
+    sizeuint readBytes = read(buffer, length);
+    if (readBytes < length) {
+        free(buffer);
+        throw StreamReadError((boost::format("Failed to read %d bytes.") % length).str());
+    }
+    std::string result((char*)buffer);
+    free(buffer);
+    return result;
+}
+
+uint8 Stream::readUInt8() {
+    return readInt<uint8>();
+}
+
+uint16 Stream::readUInt16() {
+    return readInt<uint16>();
+}
+
+uint32 Stream::readUInt32() {
+    return readInt<uint32>();
+}
+
+uint64 Stream::readUInt64() {
+    return readInt<uint64>();
+}
+
+void Stream::writeInt8(const int8 value) {
+    return writeInt<int8>(value);
+}
+
+void Stream::writeInt16(const int16 value) {
+    return writeInt<int16>(value);
+}
+
+void Stream::writeInt32(const int32 value) {
+    return writeInt<int32>(value);
+}
+
+void Stream::writeInt64(const int64 value) {
+    return writeInt<int64>(value);
+}
+
+void Stream::writeString(const std::string &value) {
+    if (value.size() > 4294967295) {
+        throw StreamError((boost::format("String too long (more than 4294967295) bytes.")).str());
+    }
+    uint32 length = value.size();
+    writeInt32(length);
+    sizeuint writtenBytes = write(value.c_str(), length);
+    if (writtenBytes < length) {
+        throw StreamWriteError((boost::format("Failed to write %d bytes.") % length).str());
+    }
+}
+
+void Stream::writeUInt8(const uint8 value) {
+    return writeInt<uint8>(value);
+}
+
+void Stream::writeUInt16(const uint16 value) {
+    return writeInt<uint16>(value);
+}
+
+void Stream::writeUInt32(const uint32 value) {
+    return writeInt<uint32>(value);
+}
+
+void Stream::writeUInt64(const uint64 value) {
+    return writeInt<uint64>(value);
+}
+
+
+}
+}
