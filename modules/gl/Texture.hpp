@@ -44,6 +44,8 @@ class Texture2D: public Pixelbuffer {
         virtual void unbind();
 };
 
+typedef boost::shared_ptr<Texture2D> Texture2DHandle;
+
 }
 }
 

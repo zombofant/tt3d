@@ -125,15 +125,20 @@ void InGame::initGrid() {
 }
 
 void InGame::initTest() {
-    static int terrainSize = 64*8;
+    static const int terrainSize = 64;
+    static const double height = 32.;
+    static const double persistence = 0.35;
+    static const unsigned int octaves = 8;
+    static const double largestFeature = 128.0;
+    static const double maxError = 1e-3;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 
         Vector3(terrainSize, terrainSize, 0.0),
-        Vector3(1., 1., 32.0),
-        0.45, 7, 128.0));
+        Vector3(1., 1., height),
+        persistence, octaves, largestFeature));
     IO::log << IO::ML_INFO << "Perlin initialized." << IO::submit;
-    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), 0.5, 32);
+    _mesh = new Terrain::TerrainMesh(source, Vector2(terrainSize, terrainSize), maxError, 32);
     IO::log << IO::ML_INFO << "Terrain generated, filling buffer" << IO::submit;
     _terrainObjectHandle = _mesh->createGeometryObject(_terrainMaterial, Vector2(0, 0), Vector2(terrainSize, terrainSize));
     IO::log << IO::ML_INFO << "Buffer filled." << IO::submit;
