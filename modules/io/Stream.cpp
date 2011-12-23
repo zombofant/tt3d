@@ -93,9 +93,8 @@ int64 Stream::readInt64() {
     return readInt<int64>();
 }
 
-std::string Stream::readString() {
-    uint32 length = readUInt32();
-    void* buffer = malloc(length);
+std::string Stream::readString(const sizeuint length) {
+    void *buffer = malloc(length);
     sizeuint readBytes = read(buffer, length);
     if (readBytes < length) {
         free(buffer);
@@ -139,11 +138,6 @@ void Stream::writeInt64(const int64 value) {
 }
 
 void Stream::writeString(const std::string &value) {
-    if (value.size() > 4294967295) {
-        throw StreamError((boost::format("String too long (more than 4294967295) bytes.")).str());
-    }
-    uint32 length = value.size();
-    writeInt32(length);
     sizeuint writtenBytes = write(value.c_str(), length);
     if (writtenBytes < length) {
         raiseWriteError(writtenBytes, length);

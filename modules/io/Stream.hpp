@@ -69,6 +69,10 @@ class StreamWriteError: public StreamError {
         virtual ~StreamWriteError() throw() {};
 };
 
+/** 
+ * Class to replace the std::[io]?[f]?stream classes. The rationale for
+ * that can be... uh... requested at some of the developers.
+ */
 class Stream {
     public:
         sizeuint read(void *data, const sizeuint length);
@@ -86,11 +90,12 @@ class Stream {
         int16 readInt16();
         int32 readInt32();
         int64 readInt64();
-        std::string readString();
+        std::string readString(const sizeuint length);
         uint8 readUInt8();
         uint16 readUInt16();
         uint32 readUInt32();
         uint64 readUInt64();
+        
         void writeInt8(const int8 value);
         void writeInt16(const int16 value);
         void writeInt32(const int32 value);
@@ -100,6 +105,7 @@ class Stream {
         void writeUInt16(const uint16 value);
         void writeUInt32(const uint32 value);
         void writeUInt64(const uint64 value);
+        
 };
 
 #include "includes/StreamOperators.hpp.inc"
