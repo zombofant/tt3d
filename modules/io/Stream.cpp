@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #include "Stream.hpp"
 #include <boost/format.hpp>
 #include <typeinfo>
+#include <limits>
 
 namespace tt3d {
 namespace IO {
@@ -43,6 +44,14 @@ sizeuint Stream::read(void *data, const sizeuint length) {
 
 sizeuint Stream::seek(const int whence, const sizeint offset) {
     throw StreamNotSupportedError((boost::format("%s does not support seeking.") % typeid(this).name()).str());
+}
+
+const sizeuint Stream::size() const {
+    throw StreamNotSupportedError((boost::format("%s does not support seeking.") % typeid(this).name()).str());
+}
+
+const sizeuint Stream::tell() const {
+    return 0;
 }
 
 sizeuint Stream::write(const char *data, const sizeuint length) {
@@ -63,7 +72,7 @@ void Stream::raiseWriteError(const sizeuint written, const sizeuint required) {
 
 template <class _T> _T Stream::readInt() {
     _T result;
-    sizeuint readBytes = read(&result, sizeof(_T));
+    const sizeuint readBytes = read(&result, sizeof(_T));
     if (readBytes < sizeof(_T)) {
         raiseReadError(readBytes, sizeof(_T));
     }
@@ -71,7 +80,7 @@ template <class _T> _T Stream::readInt() {
 }
 
 template <class _T> void Stream::writeInt(const _T value) {
-    sizeuint writtenBytes = write(&value, sizeof(_T));
+    const sizeuint writtenBytes = write(&value, sizeof(_T));
     if (writtenBytes < sizeof(_T)) {
         raiseWriteError(writtenBytes, sizeof(_T));
     }
@@ -95,7 +104,7 @@ int64 Stream::readInt64() {
 
 std::string Stream::readString(const sizeuint length) {
     void *buffer = malloc(length);
-    sizeuint readBytes = read(buffer, length);
+    const sizeuint readBytes = read(buffer, length);
     if (readBytes < length) {
         free(buffer);
         raiseReadError(readBytes, length);
@@ -138,7 +147,13 @@ void Stream::writeInt64(const int64 value) {
 }
 
 void Stream::writeString(const std::string &value) {
-    sizeuint writtenBytes = write(value.c_str(), length);
+    
+    // TODO: Replace this by a proper <limits> query
+    if (value.size() >= 4294967296) {
+        throw StreamError((boost::format("String is too long (%d).") % value.size()).str());
+    }
+    const uint32 length = value.size();
+    const sizeuint writtenBytes = write(value.c_str(), length);
     if (writtenBytes < length) {
         raiseWriteError(writtenBytes, length);
     }

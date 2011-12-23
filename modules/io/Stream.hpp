@@ -72,12 +72,83 @@ class StreamWriteError: public StreamError {
 /** 
  * Class to replace the std::[io]?[f]?stream classes. The rationale for
  * that can be... uh... requested at some of the developers.
+ * 
+ * These streams are binary only. If you want to write human-readable
+ * data, you are supposed to format it to a string and use the write
+ * string operator.
+ * 
+ * However, we do not provide a >> operator for strings, as any 
+ * behaviour we could supply would not be satisfactory for all purposes.
+ * If you want to read strings, you should use the supplied methods on
+ * your own.
  */
 class Stream {
     public:
+        /**
+         * Attempts to read length bytes from the stream and stores 
+         * these in data. Returns the amount of bytes read. This might
+         * be less than length if an error occured. The contents of 
+         * data behind the last position where data was written to 
+         * should be considered as uninitialized.
+         * 
+         * This may throw an exception if it is not possible to read 
+         * from the stream.
+         * 
+         * You may check for reading ability by calling isReadable.
+         */
         sizeuint read(void *data, const sizeuint length);
+        
         virtual sizeuint read(char *data, const sizeuint length);
+        
+        /**
+         * Change the read/write pointer position of the stream. This
+         * method behaves the same as fseek from Standard C.
+         * 
+         * This may throw an exception if it is not possible to seek
+         * in the stream.
+         * 
+         * You may check for seeking ability by calling isSeekable.
+         */
         virtual sizeuint seek(const int whence, const sizeint offset);
+        
+        /**
+         * Returns the size of the stream in bytes. This may throw an
+         * exception if seeking is not supported. You can check for
+         * seek support by calling isSeekable.
+         * 
+         * A similar effect can be achived by calling seek(SEEK_END, 0),
+         * but this does not change the current reading/writing 
+         * position.
+         */
+        virtual const sizeuint size() const;
+        
+        /**
+         * This has the same effect as seek(SEEK_CUR, 0), except that it
+         * should also work on non-seekable streams and constant 
+         * references. 
+         * 
+         * Return value: absolute position of the read/write pointer 
+         * from the beginning of the stream.
+         * 
+         * You may check for seeking/telling ability by calling 
+         * isSeekable. If a stream is seekable, it must be able to tell
+         * the current position.
+         * 
+         * tell must never throw an exception. At may return 0 if 
+         * telling the position/bytecount is not supported.
+         */
+        virtual const sizeuint tell() const;
+        
+        /**
+         * Write length bytes read from data to the stream. Returns the
+         * amount of bytes actually written which might be less than
+         * length in case of an error.
+         * 
+         * This may throw an exception if its not possible to write to
+         * the stream.
+         * 
+         * You may check for writing ability by calling isWritable.
+         */
         sizeuint write(const void *data, const sizeuint length);
         virtual sizeuint write(const char *data, const sizeuint length);
     protected:
@@ -105,8 +176,12 @@ class Stream {
         void writeUInt16(const uint16 value);
         void writeUInt32(const uint32 value);
         void writeUInt64(const uint64 value);
-        
+    public:
+        virtual bool isReadable() = 0;
+        virtual bool isSeekable() = 0;
+        virtual bool isWritable() = 0;
 };
+
 
 #include "includes/StreamOperators.hpp.inc"
 

@@ -34,6 +34,7 @@ Stream &operator<<(Stream &stream, const uint8 value);
 Stream &operator<<(Stream &stream, const uint16 value);
 Stream &operator<<(Stream &stream, const uint32 value);
 Stream &operator<<(Stream &stream, const uint64 value);
+Stream &operator<<(Stream &stream, const std::string &value);
 
 Stream &operator>>(Stream &stream, int8 &value);
 Stream &operator>>(Stream &stream, int16 &value);
