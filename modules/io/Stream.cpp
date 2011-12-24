@@ -34,11 +34,11 @@ namespace IO {
 
 /* tt3d::IO::Stream */
 
-sizeuint Stream::read(char *data, const sizeuint length) {
+sizeuint Stream::read(void *data, const sizeuint length) {
     throw StreamNotSupportedError((boost::format("%s does not support reading.") % typeid(this).name()).str());
 }
 
-sizeuint Stream::read(void *data, const sizeuint length) {
+sizeuint Stream::read(char *data, const sizeuint length) {
     return read((char*)data, length);
 }
 
@@ -54,11 +54,11 @@ const sizeuint Stream::tell() const {
     return 0;
 }
 
-sizeuint Stream::write(const char *data, const sizeuint length) {
+sizeuint Stream::write(const void *data, const sizeuint length) {
     throw StreamNotSupportedError((boost::format("%s does not support writing.") % typeid(this).name()).str());
 }
 
-sizeuint Stream::write(const void *data, const sizeuint length) {
+sizeuint Stream::write(const char *data, const sizeuint length) {
     return write((const char*)data, length);
 }
 

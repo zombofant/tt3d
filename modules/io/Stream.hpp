@@ -85,6 +85,18 @@ class StreamWriteError: public StreamError {
 class Stream {
     public:
         /**
+         * Make sure the stream is synchronized with any low-level,
+         * hardware or file system primitives. The meaning of this call
+         * is dependent on the actual stream type.
+         * 
+         * A flush call should generally be made before switching
+         * from reading to writing and vice versa or when itsk neccessary
+         * to be sure that data is actually stored (or sent, if its a 
+         * network stream for example).
+         */
+        virtual void flush();
+    
+        /**
          * Attempts to read length bytes from the stream and stores 
          * these in data. Returns the amount of bytes read. This might
          * be less than length if an error occured. The contents of 
@@ -96,13 +108,13 @@ class Stream {
          * 
          * You may check for reading ability by calling isReadable.
          */
-        sizeuint read(void *data, const sizeuint length);
+        sizeuint read(char *data, const sizeuint length);
         
-        virtual sizeuint read(char *data, const sizeuint length);
+        virtual sizeuint read(void *data, const sizeuint length);
         
         /**
-         * Change the read/write pointer position of the stream. This
-         * method behaves the same as fseek from Standard C.
+         * Change the read/write pointer position of the stream. For
+         * documentation of whence and offset, see lseek(2).
          * 
          * This may throw an exception if it is not possible to seek
          * in the stream.
@@ -149,8 +161,8 @@ class Stream {
          * 
          * You may check for writing ability by calling isWritable.
          */
-        sizeuint write(const void *data, const sizeuint length);
-        virtual sizeuint write(const char *data, const sizeuint length);
+        virtual sizeuint write(const void *data, const sizeuint length);
+        sizeuint write(const char *data, const sizeuint length);
     protected:
         void raiseReadError(const sizeuint read, const sizeuint required);
         void raiseWriteError(const sizeuint written, const sizeuint required);

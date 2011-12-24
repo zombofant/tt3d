@@ -33,6 +33,7 @@ named in the AUTHORS file.
 #include <ostream>
 #include <iostream>
 #include <boost/smart_ptr.hpp>
+#include "modules/io/FileStream.hpp"
 
 namespace tt3d {
 
@@ -56,26 +57,6 @@ enum MountPriority {
     MP_IMPORTANT = 1,
     MP_OVERRIDE = 2,
     MP_PENETRANT = 3
-};
-
-enum WriteMode {
-    WM_IGNORE = 0,
-    WM_OVERWRITE = 1,
-    WM_APPEND = 2
-};
-
-enum OpenMode {
-    OM_READ = 0,
-    OM_WRITE = 1,
-    OM_BOTH = 2
-};
-
-enum ShareMode {
-    SM_EXCLUSIVE = 0,
-    SM_ALLOW_READ = 1,
-    SM_ALLOW_WRITE = 2,
-    SM_ALLOW_BOTH = 3,
-    SM_DONT_CARE = 4
 };
 
 enum ProtocolCapability {

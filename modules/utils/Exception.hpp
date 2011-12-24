@@ -63,6 +63,15 @@ class ExternalError: public Exception {
         virtual ~ExternalError() throw() {};
 };
 
+class OSError: public Exception {
+    public:
+        OSError(const std::string message);
+        virtual ~OSError() throw() {};
+};
+
+void raiseLastOSError();
+void raiseLastOSError(const std::string prefix);
+
 }
 }
 
