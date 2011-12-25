@@ -23,6 +23,9 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
+#ifndef _TT3D_IO_LOG_H
+#define _TT3D_IO_LOG_H
+
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <istream>
 #include <ostream>
@@ -30,7 +33,11 @@ named in the AUTHORS file.
 #include "vfs/VFS.hpp"
 #include "Time.hpp"
 #include <boost/thread.hpp>
-#include <modules/utils/Exception.hpp>
+#include "modules/utils/Exception.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 namespace tt3d {
 namespace IO {
@@ -136,3 +143,5 @@ extern Log log;
 
 }
 }
+
+#endif
