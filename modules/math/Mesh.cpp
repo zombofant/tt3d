@@ -350,6 +350,10 @@ void MeshTreeFace::getAdditionalSiblingVertices(const MeshTreeSibling siblingPos
                 thisChild = TP_SOUTH_EAST;
                 break;
             }
+            default: {
+                assert((siblingPosition == TS_NORTH) || (siblingPosition == TS_WEST) || (siblingPosition == TS_SOUTH) || (siblingPosition == TS_EAST));
+                return;
+            }
         }
         target.push_back(&_vertices[thisChild]);
         return;
@@ -376,7 +380,11 @@ void MeshTreeFace::getAdditionalSiblingVertices(const MeshTreeSibling siblingPos
             childA = TP_NORTH_WEST;
             childB = TP_SOUTH_WEST;
             break;
-        };
+        }; 
+        default: {
+            assert((siblingPosition == TS_NORTH) || (siblingPosition == TS_WEST) || (siblingPosition == TS_SOUTH) || (siblingPosition == TS_EAST));
+            return;
+        }
     }
     
     node->traceSiblingVertices(childA, childB, target);
