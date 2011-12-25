@@ -102,6 +102,7 @@ class FileStream: public FDStream {
             const ShareMode shareMode = SM_DONT_CARE);
     private:
         const OpenMode _openMode;
+        bool _seekable;
     public:
         virtual bool isReadable() const;
         virtual bool isSeekable() const;

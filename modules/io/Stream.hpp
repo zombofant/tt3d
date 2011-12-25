@@ -31,6 +31,11 @@ named in the AUTHORS file.
 namespace tt3d {
 namespace IO {
     
+/**
+ * Just that we can be sure these two are equivalent.
+ */
+static_assert((sizeof(ssize_t) == sizeof(off_t)) && (sizeof(ssize_t) == sizeof(sizeint)), "Sizes of ssize_t and off_t differ.");
+    
 using namespace tt3d::Utils;
     
 class StreamError: public Exception {
@@ -189,9 +194,9 @@ class Stream {
         void writeUInt32(const uint32 value);
         void writeUInt64(const uint64 value);
     public:
-        virtual bool isReadable() = 0;
-        virtual bool isSeekable() = 0;
-        virtual bool isWritable() = 0;
+        virtual bool isReadable() const = 0;
+        virtual bool isSeekable() const = 0;
+        virtual bool isWritable() const = 0;
 };
 
 

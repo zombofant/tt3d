@@ -104,6 +104,10 @@ FileStream::FileStream(const std::string fileName,
     if (shareMode != SM_DONT_CARE) {
         log << ML_WARNING << "File stream for `" << fileName << "' opened with a ShareMode nonequal to SM_DONT_CARE. This is ignored." << submit;
     }
+    struct stat fileStat;
+    fileStat.st_mode = 0;
+    fstat(_fd, &fileStat);
+    _seekable = !(S_ISFIFO(fileStat.st_mode) || S_ISSOCK(fileStat.st_mode) || S_ISCHR(fileStat.st_mode));
 }
 
 bool FileStream::isReadable() const {
@@ -111,7 +115,7 @@ bool FileStream::isReadable() const {
 }
 
 bool FileStream::isSeekable() const {
-    return lseek(_fd, 0, SEEK_CUR) != -1;
+    return _seekable;
 }
 
 bool FileStream::isWritable() const {

@@ -34,6 +34,10 @@ namespace IO {
 
 /* tt3d::IO::Stream */
 
+void Stream::flush() {
+    
+}
+
 sizeuint Stream::read(void *data, const sizeuint length) {
     throw StreamNotSupportedError((boost::format("%s does not support reading.") % typeid(this).name()).str());
 }
