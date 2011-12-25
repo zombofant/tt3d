@@ -26,6 +26,7 @@ named in the AUTHORS file.
 
 #include <cstddef>
 #include <cstdint>
+#include <unistd.h>
 
 namespace tt3d {
 // We put this in the global tt3d namespace. It's available everywhere.
@@ -41,7 +42,7 @@ typedef int64_t int64;
 
 typedef size_t sizeuint;
 typedef size_t ptruint;
-typedef ptrdiff_t sizeint;
-typedef ptrdiff_t ptrint;
+typedef ssize_t sizeint;
+typedef ssize_t ptrint;
 
 }
