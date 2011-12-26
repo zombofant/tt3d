@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(tt3d CXX C)
 
-set(CMAKE_CXX_FLAGS "-g -Wall -std=c++0x -O1")
+set(CMAKE_CXX_FLAGS "-g -Wall -std=c++0x")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "CMakeModules")
 
 set(tt3d_VERSION_MAJOR 0)
