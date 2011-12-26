@@ -26,6 +26,7 @@ named in the AUTHORS file.
 #include "MountDirectory.hpp"
 #include <fstream>
 #include <unistd.h>
+#include "modules/io/FileStream.hpp"
 
 namespace tt3d {
 namespace VFS {
@@ -53,24 +54,28 @@ ProtocolCapabilities MountDirectory::getCapabilities() {
     return PC_READ + PC_WRITE;
 }
 
-IOStreamHandle MountDirectory::openBidirectional(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
-    return IOStreamHandle();
-}
-
-IStreamHandle MountDirectory::openReadStream(std::string aPath, ShareMode shareMode) {
+StreamHandle MountDirectory::openBidirectional(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
     if (!pathValid(aPath)) {
-        return IStreamHandle();
+        throw VFSError("Path leaves local scope.");
     }
     std::string fullPath = rootPath + aPath;
-    return IStreamHandle(new std::ifstream(fullPath.c_str()));
+    return StreamHandle(new FileStream(fullPath, OM_BOTH, writeMode, shareMode));
 }
 
-OStreamHandle MountDirectory::openWriteStream(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
+StreamHandle MountDirectory::openReadStream(std::string aPath, ShareMode shareMode) {
     if (!pathValid(aPath)) {
-        return OStreamHandle();
+        throw VFSError("Path leaves local scope.");
     }
     std::string fullPath = rootPath + aPath;
-    return OStreamHandle(new std::ofstream(fullPath.c_str(), writeModeToOpenMode(writeMode)));
+    return StreamHandle(new FileStream(fullPath, OM_READ, WM_IGNORE, shareMode));
+}
+
+StreamHandle MountDirectory::openWriteStream(std::string aPath, WriteMode writeMode, ShareMode shareMode) {
+    if (!pathValid(aPath)) {
+        throw VFSError("Path leaves local scope.");
+    }
+    std::string fullPath = rootPath + aPath;
+    return StreamHandle(new FileStream(fullPath, OM_WRITE, writeMode, shareMode));
 }
 
 bool MountDirectory::fileExists(std::string aPath) {

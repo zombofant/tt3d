@@ -72,25 +72,23 @@ ProtocolCapabilities Mount::getCapabilities() {
     return PC_NONE;
 }
 
-IStreamHandle Mount::openReadStream(std::string aPath, 
+StreamHandle Mount::openReadStream(std::string aPath, 
     ShareMode shareMode) 
 {
     if (getCapabilities() & PC_READ) {
         return openBidirectional(aPath, WM_IGNORE, shareMode);
     } else {
-        // TODO: Raise an exception here!
-        return IStreamHandle();
+        throw VFSNotSupported("Reading from a non-readable mount.");
     }
 }
 
-OStreamHandle Mount::openWriteStream(std::string aPath,
+StreamHandle Mount::openWriteStream(std::string aPath,
     WriteMode writeMode, ShareMode shareMode)
 {
     if (getCapabilities() & PC_WRITE) {
         return openBidirectional(aPath, writeMode, shareMode);
     } else {
-        // TODO: Raise an exception here!
-        return OStreamHandle();
+        throw VFSNotSupported("Writing to a non-writable mount.");
     }
 }
 
@@ -100,19 +98,27 @@ const std::string Mount::toString() {
 
 /* tt3d::VFS::MountWrapper */
 
-const std::string MountWrapper::getLocation() {
-    return location;
+MountWrapper::MountWrapper (MountHandle aMount, const std::string aLocation, const MountPriority aPriority):
+    _location(aLocation),
+    _mount(aMount),
+    _priority(aPriority)
+{
+    
+};
+
+const std::string MountWrapper::getLocation() const {
+    return _location;
 }
 
-MountPtr MountWrapper::getMount() {
-    return mount;
+MountHandle MountWrapper::getMount() const {
+    return _mount;
 }
 
-MountPriority MountWrapper::getPriority() {
-    return priority;
+MountPriority MountWrapper::getPriority() const {
+    return _priority;
 }
 
-bool comparePriority(MountWrapperPtr a, MountWrapperPtr b) {
+bool comparePriority(MountWrapperHandle a, MountWrapperHandle b) {
     int cmp = b->getPriority() - a->getPriority();
     if (cmp == 0) {
         return a->getLocation().length() > b->getLocation().length();
@@ -123,45 +129,48 @@ bool comparePriority(MountWrapperPtr a, MountWrapperPtr b) {
 
 /* tt3d::VFS::VFS */
 
-VFS::VFS() {
-    mounts = new std::list<MountWrapperPtr>;
+VFS::VFS():
+    _mounts(new std::list<MountWrapperHandle>)
+{
+    
 }
 
-MountPtr VFS::findMount(std::string path) {
-    for (std::list<MountWrapperPtr>::iterator i = mounts->begin();
-        i != mounts->end();
+MountHandle VFS::findMount(std::string path) {
+    for (std::list<MountWrapperHandle>::iterator i = _mounts->begin();
+        i != _mounts->end();
         i++)
     {
-        MountWrapperPtr p = *i;
+        MountWrapperHandle p = *i;
         const std::string location = p->getLocation();
         if (location.compare(0, location.length(), path, 0, location.length()) == 0) {
             std::string stripped = path.substr(location.length());
-            MountPtr result = p->getMount();
+            MountHandle result = p->getMount();
             if (result->fileExists(stripped)) {
                 return result;
             }
         }
     }
-    return MountPtr();
+    return MountHandle();
 }
 
-void VFS::addMount(MountPtr aMount, const std::string aRoot, const MountPriority aPriority) {
-    mounts->push_back(MountWrapperPtr(new MountWrapper(aMount, aRoot, aPriority)));
-    mounts->sort(comparePriority);
+void VFS::addMount(MountHandle aMount, const std::string aRoot, const MountPriority aPriority) {
+    _mounts->push_back(MountWrapperHandle(new MountWrapper(aMount, aRoot, aPriority)));
+    // FIXME: Can we make the mount container somehow sort itself automagically?
+    _mounts->sort(comparePriority);
 }
 
 void VFS::dumpMounts() {
-    for (std::list<MountWrapperPtr>::iterator i = mounts->begin();
-        i != mounts->end();
+    for (std::list<MountWrapperHandle>::iterator i = _mounts->begin();
+        i != _mounts->end();
         i++) 
     {
-        MountWrapperPtr p = *i;
+        MountWrapperHandle p = *i;
         std::cout << "mount with priority " << p->getPriority() << " at \"" << p->getLocation() << "\": " << p->getMount()->toString() << std::endl;
     }
 }
 
 bool VFS::fileExists(std::string path) {
-    return (findMount(path) != MountPtr());
+    return (findMount(path) != MountHandle());
 }
 
 }

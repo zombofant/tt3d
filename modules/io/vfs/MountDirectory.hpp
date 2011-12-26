@@ -45,9 +45,9 @@ class MountDirectory: public Mount {
         MountDirectory(const std::string aRootPath);
         
         ProtocolCapabilities getCapabilities();
-        IOStreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        IStreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        OStreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        StreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        StreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
+        StreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         bool fileExists(std::string aPath);
         
         const std::string toString();
