@@ -32,13 +32,6 @@ named in the AUTHORS file.
 namespace tt3d {
 namespace IO {
     
-static inline int checkFD(int fd) {
-    if (fd == -1) {
-        raiseLastOSError();
-    }
-    return fd;
-}
-    
 /* tt3d::IO::FDStream */
 
 FDStream::FDStream(int fd, bool ownsFD):

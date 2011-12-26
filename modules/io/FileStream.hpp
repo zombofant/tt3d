@@ -30,6 +30,14 @@ named in the AUTHORS file.
 
 namespace tt3d {
 namespace IO {
+    
+static inline int checkFD(int fd) {
+    if (fd == -1) {
+        raiseLastOSError();
+    }
+    return fd;
+}
+
 
 enum WriteMode {
     WM_IGNORE = 0,
