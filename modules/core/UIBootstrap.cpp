@@ -47,10 +47,10 @@ static inline double min(const double a, const double b) {
 /* tt3d::Core::TT3D */
 
 void TT3D::initIO() {
-    IO::StreamHandle plainLogStream = IO::StreamHandle(new FileStream("log.txt", OM_WRITE, WM_OVERWRITE));
-    IO::StreamHandle xmlLogStream = IO::StreamHandle(new FileStream("log.xml", OM_WRITE, WM_OVERWRITE));
     IO::log.addLogTarget(new IO::LogOStreamTarget(IO::stdout, (1<<IO::ML_DEBUG) | (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
     IO::log.addLogTarget(new IO::LogOStreamTarget(IO::stderr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR) | (1<<IO::ML_FATAL)));
+    IO::StreamHandle plainLogStream = IO::StreamHandle(new FileStream("log.txt", OM_WRITE, WM_OVERWRITE, SM_ALLOW_READ));
+    IO::StreamHandle xmlLogStream = IO::StreamHandle(new FileStream("log.xml", OM_WRITE, WM_OVERWRITE, SM_ALLOW_READ));
     IO::log.addLogTarget(new IO::LogOStreamTarget(plainLogStream));
     IO::log.addLogTarget(new IO::LogXMLFormatter(xmlLogStream, "log.xsl"));
     IO::log << IO::ML_INFO << "IO initialized." << IO::submit;
