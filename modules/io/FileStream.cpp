@@ -89,16 +89,17 @@ sizeuint FDStream::write(const void *data, const sizeuint length) {
 
 /* tt3d::IO::FileStream */
 
+// note that throwing the exception on a failed open is done in checkFD
 FileStream::FileStream(const std::string fileName, 
     const OpenMode openMode, const WriteMode writeMode,
     const ShareMode shareMode):
     FDStream::FDStream(
-        open(
+        checkFD(open(
             fileName.c_str(),
             (openMode==OM_BOTH?O_RDWR:(openMode==OM_READ?O_RDONLY:O_WRONLY)) |
             (((openMode!=OM_READ) && ((writeMode==WM_OVERWRITE) || (writeMode==WM_IGNORE)))?O_CREAT:O_APPEND),
             (S_IRWXU | S_IRWXG | S_IRWXO) & (~(S_IXUSR | S_IXGRP | S_IXOTH))
-        ), true),
+        )), true),
     _openMode(openMode)
 {
     if (shareMode != SM_DONT_CARE) {

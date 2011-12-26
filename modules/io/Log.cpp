@@ -79,7 +79,7 @@ LogStreamTarget::LogStreamTarget(const MessageLevels levels):
 
 /* tt3d::IO::LogOStreamTarget */
 
-LogOStreamTarget::LogOStreamTarget(const OStreamHandle stream, 
+LogOStreamTarget::LogOStreamTarget(const StreamHandle stream, 
     const MessageLevels levels):
     LogStreamTarget::LogStreamTarget(levels),
     _stream(stream)
@@ -89,18 +89,18 @@ LogOStreamTarget::LogOStreamTarget(const OStreamHandle stream,
 
 LogTargetBase &LogOStreamTarget::operator<<(const LogStream &logStream) {
     std::string str = (boost::format("[%12.5f] [tid=%016.16x] [%s] [%s] ") % logStream.getTimestamp() % logStream.getThreadID() % logStream.getCallSymbol() % messageLevelNames[logStream.getLevel()]).str();
-    std::ostream *stream = _stream.get();
+    Stream *stream = _stream.get();
     
-    std::operator<<(*stream, str);
-    std::operator<<(*stream, logStream.str());
-    std::endl(*stream);
+    stream->writeString(str);
+    stream->writeString(logStream.str());
+    stream->writeEndl();
     stream->flush();
     return *this;
 }
 
 /* tt3d::IO::LogXMLFormatter */
 
-LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream, 
+LogXMLFormatter::LogXMLFormatter(const StreamHandle stream, 
     const MessageLevels levels):
     LogOStreamTarget::LogOStreamTarget(stream, levels),
     _xslPath()
@@ -108,7 +108,7 @@ LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream,
     initOutput();
 }
 
-LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream,
+LogXMLFormatter::LogXMLFormatter(const StreamHandle stream,
     const std::string xslPath, 
     const MessageLevels levels):
     LogOStreamTarget::LogOStreamTarget(stream, levels),
@@ -118,27 +118,39 @@ LogXMLFormatter::LogXMLFormatter(const OStreamHandle stream,
 }
 
 LogXMLFormatter::~LogXMLFormatter() {
-    std::ostream &stream = *_stream.get();
-    stream << "</log>" << std::endl;
+    Stream &stream = *_stream.get();
+    stream.writeString("</log>");
+    stream.writeEndl();
 }
 
 void LogXMLFormatter::initOutput() {
-    std::ostream &stream = *_stream.get();
-    stream << "<?xml version=\"1.0\"?>" << std::endl;
+    Stream &stream = *_stream.get();
+    stream.writeString("<?xml version=\"1.0\"?>");
+    stream.writeEndl();
     if (_xslPath.length() > 0) {
-        stream << "<?xml-stylesheet type=\"text/xsl\" href=\"" << _xslPath << "\"?>" << std::endl;
+        stream.writeString("<?xml-stylesheet type=\"text/xsl\" href=\"");
+        stream.writeString(_xslPath);
+        stream.writeString("\"?>");
+        stream.writeEndl();
     }
-    stream << "<log application=\"tt3d\">" << std::endl;
+    stream.writeString("<log application=\"tt3d\">");
+    stream.writeEndl();
 }
 
 LogTargetBase &LogXMLFormatter::operator<<(const LogStream &logStream) {
-    std::ostream &stream = *_stream.get();
-    stream << "  <event level=\"" << messageLevelNames[logStream.getLevel()] << "\">" << std::endl;
-    stream << "    <timestamp>" << logStream.getTimestamp() << "</timestamp>" << std::endl;
-    stream << "    <thread>" << logStream.getThreadID() << "</thread>" << std::endl;
-    stream << "    <call-symbol><![CDATA[" << logStream.getCallSymbol() << "]]></call-symbol>" << std::endl;
-    stream << "    <message><![CDATA[" << logStream.str() << "]]>" << std::endl;
-    stream << "  </event>" << std::endl;
+    // Not sure whether and how ugly this is; But its probably the most
+    // clean solution one can get, considering that some of the parts
+    // which are to be written are numbers which should be represented
+    // as human-readable.
+    std::ostringstream tmp;
+    Stream &stream = *_stream.get();
+    tmp << "  <event level=\"" << messageLevelNames[logStream.getLevel()] << "\">" << std::endl;
+    tmp << "    <timestamp>" << logStream.getTimestamp() << "</timestamp>" << std::endl;
+    tmp << "    <thread>" << logStream.getThreadID() << "</thread>" << std::endl;
+    tmp << "    <call-symbol><![CDATA[" << logStream.getCallSymbol() << "]]></call-symbol>" << std::endl;
+    tmp << "    <message><![CDATA[" << logStream.str() << "]]></message>" << std::endl;
+    tmp << "  </event>" << std::endl;
+    stream.writeString(tmp.str());
     return *this;
 }
 

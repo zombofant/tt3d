@@ -23,16 +23,16 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#include <fstream>
 #include "UIBootstrap.hpp"
 #include <SDL/SDL.h>
 #include <GL/glew.h>
 #include "modules/math/Vectors.hpp"
-#include <iostream>
 #include "modules/math/Colours.hpp"
 #include <cmath>
 #include "modules/io/Log.hpp"
 #include "modules/utils/Exception.hpp"
+#include "modules/io/FileStream.hpp"
+#include "modules/io/StdIOStream.hpp"
 
 namespace tt3d {
 namespace Core {
@@ -47,12 +47,10 @@ static inline double min(const double a, const double b) {
 /* tt3d::Core::TT3D */
 
 void TT3D::initIO() {
-    IO::OStreamHandle plainLogStream = IO::OStreamHandle(new std::ofstream("log.txt"));
-    IO::OStreamHandle xmlLogStream = IO::OStreamHandle(new std::ofstream("log.xml"));
-    IO::OStreamHandle cout = IO::OStreamHandle(&std::cout);
-    IO::OStreamHandle cerr = IO::OStreamHandle(&std::cerr);
-    IO::log.addLogTarget(new IO::LogOStreamTarget(cout, (1<<IO::ML_DEBUG) | (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
-    IO::log.addLogTarget(new IO::LogOStreamTarget(cerr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR) | (1<<IO::ML_FATAL)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(IO::stdout, (1<<IO::ML_DEBUG) | (1<<IO::ML_HINT) | (1<<IO::ML_INFO)));
+    IO::log.addLogTarget(new IO::LogOStreamTarget(IO::stderr, (1<<IO::ML_WARNING) | (1<<IO::ML_ERROR) | (1<<IO::ML_FATAL)));
+    IO::StreamHandle plainLogStream = IO::StreamHandle(new FileStream("log.txt", OM_WRITE, WM_OVERWRITE, SM_ALLOW_READ));
+    IO::StreamHandle xmlLogStream = IO::StreamHandle(new FileStream("log.xml", OM_WRITE, WM_OVERWRITE, SM_ALLOW_READ));
     IO::log.addLogTarget(new IO::LogOStreamTarget(plainLogStream));
     IO::log.addLogTarget(new IO::LogXMLFormatter(xmlLogStream, "log.xsl"));
     IO::log << IO::ML_INFO << "IO initialized." << IO::submit;

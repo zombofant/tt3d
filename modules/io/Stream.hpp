@@ -27,6 +27,7 @@ named in the AUTHORS file.
 #include <cstdint>
 #include "modules/utils/Int.hpp"
 #include "modules/utils/Exception.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace tt3d {
 namespace IO {
@@ -184,11 +185,18 @@ class Stream {
         uint32 readUInt32();
         uint64 readUInt64();
         
+        /** 
+         * a convenience function to overcome the need to write an \n
+         * or \r or both to a char buffer. Writes the current OS:s line
+         * ending to the stream.
+         */
+        void writeEndl();
         void writeInt8(const int8 value);
         void writeInt16(const int16 value);
         void writeInt32(const int32 value);
         void writeInt64(const int64 value);
         void writeString(const std::string &value);
+        void writeString(const char* value);
         void writeUInt8(const uint8 value);
         void writeUInt16(const uint16 value);
         void writeUInt32(const uint32 value);
@@ -199,6 +207,7 @@ class Stream {
         virtual bool isWritable() const = 0;
 };
 
+typedef boost::shared_ptr<Stream> StreamHandle;
 
 #include "includes/StreamOperators.hpp.inc"
 

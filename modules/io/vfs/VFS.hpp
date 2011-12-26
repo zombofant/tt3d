@@ -34,20 +34,27 @@ named in the AUTHORS file.
 #include <iostream>
 #include <boost/smart_ptr.hpp>
 #include "modules/io/FileStream.hpp"
+#include "modules/utils/Exception.hpp"
 
-namespace tt3d {
-
-namespace IO {
-
-typedef boost::shared_ptr<std::ostream> OStreamHandle;
-typedef boost::shared_ptr<std::istream> IStreamHandle;
-typedef boost::shared_ptr<std::iostream> IOStreamHandle;
-
-}
-    
+namespace tt3d {    
 namespace VFS {
     
 using namespace IO;
+using namespace Utils;
+
+class VFSError: public Exception {
+    public:
+        VFSError(const std::string message): Exception(message) {};
+        VFSError(const char* message): Exception(message) {};
+        virtual ~VFSError() throw() {};
+};
+
+class VFSNotSupported: public VFSError {
+    public:
+        VFSNotSupported(const std::string message): VFSError(message) {};
+        VFSNotSupported(const char* message): VFSError(message) {};
+        virtual ~VFSNotSupported() throw() {};
+};
     
 enum MountPriority {
     MP_PRACTICALLY_INEXISTANT = -3,
@@ -82,49 +89,45 @@ class Mount {
         virtual void enableMount();
     public:
         virtual ProtocolCapabilities getCapabilities();
-        virtual IOStreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE) = 0;
-        virtual IStreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        virtual OStreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        virtual StreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE) = 0;
+        virtual StreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
+        virtual StreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         virtual bool fileExists(std::string aPath) = 0;
         
         virtual const std::string toString();
 };
 
-typedef boost::shared_ptr<Mount> MountPtr;
+typedef boost::shared_ptr<Mount> MountHandle;
 
 class MountWrapper {
-    private:
-        const std::string location;
-        MountPtr mount;
-        const MountPriority priority;
     public:
-        MountWrapper (MountPtr aMount, const std::string aLocation, const MountPriority aPriority):
-            location(aLocation),
-            mount(aMount),
-            priority(aPriority)
-            {};
-        
-        const std::string getLocation();
-        MountPtr getMount();
-        MountPriority getPriority();
+        MountWrapper(MountHandle aMount, const std::string aLocation, const MountPriority aPriority);
+    private:
+        const std::string _location;
+        MountHandle _mount;
+        const MountPriority _priority;
+    public:
+        const std::string getLocation() const;
+        MountHandle getMount() const;
+        MountPriority getPriority() const;
 };
     
-typedef boost::shared_ptr<MountWrapper> MountWrapperPtr;
+typedef boost::shared_ptr<MountWrapper> MountWrapperHandle;
 
-bool comparePriority(MountWrapperPtr a, MountWrapperPtr b);
+bool comparePriority(MountWrapperHandle a, MountWrapperHandle b);
 
 class VFS {
     private:
-        std::list<MountWrapperPtr> *mounts;
+        std::list<MountWrapperHandle> *_mounts;
     protected:
-        MountPtr findMount(std::string aPath);
+        MountHandle findMount(std::string aPath);
     public:
         VFS();
         
-        void addMount(MountPtr aMount, const std::string aRoot, const MountPriority aPriority);
-        std::iostream *openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        std::istream *openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        std::ostream *openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        void addMount(MountHandle aMount, const std::string aRoot, const MountPriority aPriority);
+        StreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
+        StreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
+        StreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
         bool fileExists(std::string aPath);
         void dumpMounts();
 };

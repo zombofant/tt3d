@@ -28,6 +28,7 @@ named in the AUTHORS file.
 #include <boost/format.hpp>
 #include <typeinfo>
 #include <limits>
+#include <cstring>
 
 namespace tt3d {
 namespace IO {
@@ -43,7 +44,7 @@ sizeuint Stream::read(void *data, const sizeuint length) {
 }
 
 sizeuint Stream::read(char *data, const sizeuint length) {
-    return read((char*)data, length);
+    return read((void*)data, length);
 }
 
 sizeuint Stream::seek(const int whence, const sizeint offset) {
@@ -63,7 +64,7 @@ sizeuint Stream::write(const void *data, const sizeuint length) {
 }
 
 sizeuint Stream::write(const char *data, const sizeuint length) {
-    return write((const char*)data, length);
+    return write((const void*)data, length);
 }
 
 void Stream::raiseReadError(const sizeuint read, const sizeuint required) {
@@ -134,6 +135,26 @@ uint64 Stream::readUInt64() {
     return readInt<uint64>();
 }
 
+void Stream::writeEndl() {
+    #if defined (__linux__)
+        static const int length = 1;
+        static const char lineEnding[length+1] = "\n";
+    #else
+        #if defined (__win32__)
+            static const int length = 2;
+            static const char lineEnding[length+1] = "\r\n";
+        #else
+            #if defined (__APPLE__)
+                static const int length = 1;
+                static const char lineEnding[length+1] = "\r";
+            #else
+                static_assert(false, "Could not detect operating system.");
+            #endif
+        #endif
+    #endif
+    write(lineEnding, length);
+}
+
 void Stream::writeInt8(const int8 value) {
     return writeInt<int8>(value);
 }
@@ -160,6 +181,14 @@ void Stream::writeString(const std::string &value) {
     const sizeuint writtenBytes = write(value.c_str(), length);
     if (writtenBytes < length) {
         raiseWriteError(writtenBytes, length);
+    }
+}
+
+void Stream::writeString(const char *value) {
+    const sizeuint len = strlen(value);
+    const sizeuint writtenBytes = write(value, len);
+    if (writtenBytes < len) {
+        raiseWriteError(writtenBytes, len);
     }
 }
 
