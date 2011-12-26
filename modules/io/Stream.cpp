@@ -44,7 +44,7 @@ sizeuint Stream::read(void *data, const sizeuint length) {
 }
 
 sizeuint Stream::read(char *data, const sizeuint length) {
-    return read((char*)data, length);
+    return read((void*)data, length);
 }
 
 sizeuint Stream::seek(const int whence, const sizeint offset) {
@@ -64,7 +64,7 @@ sizeuint Stream::write(const void *data, const sizeuint length) {
 }
 
 sizeuint Stream::write(const char *data, const sizeuint length) {
-    return write((const char*)data, length);
+    return write((const void*)data, length);
 }
 
 void Stream::raiseReadError(const sizeuint read, const sizeuint required) {
