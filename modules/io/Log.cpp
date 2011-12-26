@@ -148,7 +148,7 @@ LogTargetBase &LogXMLFormatter::operator<<(const LogStream &logStream) {
     tmp << "    <timestamp>" << logStream.getTimestamp() << "</timestamp>" << std::endl;
     tmp << "    <thread>" << logStream.getThreadID() << "</thread>" << std::endl;
     tmp << "    <call-symbol><![CDATA[" << logStream.getCallSymbol() << "]]></call-symbol>" << std::endl;
-    tmp << "    <message><![CDATA[" << logStream.str() << "]]></message)" << std::endl;
+    tmp << "    <message><![CDATA[" << logStream.str() << "]]></message>" << std::endl;
     tmp << "  </event>" << std::endl;
     stream.writeString(tmp.str());
     return *this;
