@@ -23,6 +23,8 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
+#ifndef _TT3D_IO_STREAM_H
+#define _TT3D_IO_STREAM_H
 
 #include <cstdint>
 #include "modules/utils/Int.hpp"
@@ -213,3 +215,5 @@ typedef boost::shared_ptr<Stream> StreamHandle;
 
 }
 }
+
+#endif
