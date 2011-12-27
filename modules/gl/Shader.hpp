@@ -27,16 +27,27 @@ named in the AUTHORS file.
 #define _TT3D_GL_SHADER_H
 
 #include "Base.hpp"
+#include <GL/glew.h>
+#include "modules/io/Stream.hpp"
 
 namespace tt3d {
 namespace GL {
+    
+using namespace IO;
 
 class Shader: public Class {
     public:
-        Shader();
-        ~Shader();
+        Shader(StreamHandle vertexShader, StreamHandle fragmentShader);
+        Shader(const std::string &vertexShader, const std::string &fragmentShader);
+        virtual ~Shader() {};
+    protected:
+        GLuint compileShader(const GLenum kind, const std::string &source);
+        void loadFromStream(StreamHandle vertexShader, StreamHandle fragmentShader);
+        void loadFromString(const std::string &vertexShader, const std::string &fragmentShader);
     public:
-        void loadFromStream(
+        virtual void bind();
+        void clear();
+        virtual void unbind();
 };
 
 }

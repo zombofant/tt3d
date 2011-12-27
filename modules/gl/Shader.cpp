@@ -24,3 +24,89 @@ For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
 
+#include "Shader.hpp"
+#include "modules/io/Log.hpp"
+
+namespace tt3d {
+namespace GL {
+
+/* tt3d::GL::Shader */
+
+Shader::Shader(StreamHandle vertexShader, StreamHandle fragmentShader):
+    Class::Class()
+{
+    loadFromStream(vertexShader, fragmentShader);
+}
+
+Shader::Shader(const std::string &vertexShader, const std::string &fragmentShader):
+    Class::Class()
+{
+    loadFromString(vertexShader, fragmentShader);
+}
+
+GLuint Shader::compileShader(const GLenum kind, const std::string &source)
+{
+    GLuint result = glCreateShader(kind);
+    const char *source_cstr = source.c_str();
+    const GLint len = source.length();
+    glShaderSource(result, 1, &source_cstr, &len);
+    glCompileShader(result);
+    
+    GLsizei errorLen = 0;
+    glGetShaderiv(result, GL_INFO_LOG_LENGTH, &errorLen);
+    if (len > 1) {
+        char *error = (char *)malloc(len);
+        glGetShaderInfoLog(result, errorLen, &errorLen, error);
+        IO::log << IO::ML_WARNING << "Shader compilation returned warnings/errors:" << std::endl << error << IO::submit;
+        free(error);
+    }
+    
+    return result;
+}
+
+void Shader::loadFromStream(StreamHandle vertexShader, StreamHandle fragmentShader) 
+{
+    std::string vertexShaderStr = vertexShader->readString(vertexShader->size());
+    std::string fragmentShaderStr = fragmentShader->readString(fragmentShader->size());
+    loadFromString(vertexShaderStr, fragmentShaderStr);
+}
+
+void Shader::loadFromString(const std::string &vertexShader, const std::string &fragmentShader) 
+{
+    clear();
+    raiseLastGLError();
+    glID = glCreateProgram();
+    raiseLastGLError();
+    try {
+        GLuint vertexObj, fragmentObj;
+        vertexObj = compileShader(GL_VERTEX_SHADER, vertexShader);
+        fragmentObj = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+        
+        glAttachShader(glID, vertexObj);
+        glAttachShader(glID, fragmentObj);
+        
+        glLinkProgram(glID);
+        const GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            glDeleteShader(vertexObj);
+            glDeleteShader(fragmentObj);
+            
+            IO::log << IO::ML_ERROR << "Shader linking failed." << IO::submit;
+            glDeleteProgram(glID);
+            glID = -1;
+            return;
+        }
+        
+        glDeleteShader(vertexObj);
+        raiseLastGLError();
+        glDeleteShader(fragmentObj);
+        raiseLastGLError();
+    } catch (...) {
+        glDeleteProgram(glID);
+        raiseLastGLError();
+        throw;
+    }
+}
+
+}
+}
