@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: MountDirectory.hpp
+File name: Int.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,36 +23,26 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _MODULES_IO_VFS_MOUNTDIRECTORY_HPP
-#define _MODULES_IO_VFS_MOUNTDIRECTORY_HPP
 
-#include <string>
-#include <vector>
-#include <istream>
-#include <iostream>
-#include <boost/smart_ptr.hpp>
-#include "VFS.hpp"
+#include <cstddef>
+#include <cstdint>
+#include <unistd.h>
 
 namespace tt3d {
-namespace VFS {
+// We put this in the global tt3d namespace. It's available everywhere.
 
-class MountDirectory: public Mount {
-    private:
-        const std::string rootPath;
-    protected:
-        std::ios_base::openmode writeModeToOpenMode(WriteMode writeMode);
-    public:
-        MountDirectory(const std::string aRootPath);
-        
-        ProtocolCapabilities getCapabilities();
-        StreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        StreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        StreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        bool fileExists(std::string aPath);
-        
-        const std::string toString();
-};
+typedef uint8_t uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
+typedef int8_t int8;
+typedef int16_t int16;
+typedef int32_t int32;
+typedef int64_t int64;
+
+typedef size_t sizeuint;
+typedef size_t ptruint;
+typedef ssize_t sizeint;
+typedef ssize_t ptrint;
 
 }
-}
-#endif

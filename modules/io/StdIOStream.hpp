@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: MountDirectory.hpp
+File name: StdIOStream.hpp
 This file is part of: tt3d — Freeform transport simulation
 
 LICENSE
@@ -23,36 +23,49 @@ FEEDBACK & QUESTIONS
 For feedback and questions about tt3d please e-mail one of the authors
 named in the AUTHORS file.
 **********************************************************************/
-#ifndef _MODULES_IO_VFS_MOUNTDIRECTORY_HPP
-#define _MODULES_IO_VFS_MOUNTDIRECTORY_HPP
 
-#include <string>
-#include <vector>
-#include <istream>
-#include <iostream>
-#include <boost/smart_ptr.hpp>
-#include "VFS.hpp"
+#ifndef _TT3D_IO_STDIOSTREAM_H
+#define _TT3D_IO_STDIOSTREAM_H
+
+#include "FileStream.hpp"
 
 namespace tt3d {
-namespace VFS {
+namespace IO {
 
-class MountDirectory: public Mount {
-    private:
-        const std::string rootPath;
-    protected:
-        std::ios_base::openmode writeModeToOpenMode(WriteMode writeMode);
+class StdIOStream: public FDStream {
     public:
-        MountDirectory(const std::string aRootPath);
-        
-        ProtocolCapabilities getCapabilities();
-        StreamHandle openBidirectional(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        StreamHandle openReadStream(std::string aPath, ShareMode shareMode = SM_DONT_CARE);
-        StreamHandle openWriteStream(std::string aPath, WriteMode writeMode = WM_IGNORE, ShareMode shareMode = SM_DONT_CARE);
-        bool fileExists(std::string aPath);
-        
-        const std::string toString();
+        StdIOStream(int origFD);
+    public:
+        virtual bool isSeekable() const;
 };
 
+class StdInStream: public StdIOStream {
+    public:
+        StdInStream();
+    public:
+        virtual bool isReadable() const;
+        virtual bool isWritable() const;
+};
+
+class StdOutStream: public StdIOStream {
+    public:
+        StdOutStream();
+    public:
+        virtual bool isReadable() const;
+        virtual bool isWritable() const;
+};
+
+class StdErrStream: public StdIOStream {
+    public:
+        StdErrStream();
+    public:
+        virtual bool isReadable() const;
+        virtual bool isWritable() const;
+};
+
+extern StreamHandle stdin, stdout, stderr;
+
 }
 }
+
 #endif

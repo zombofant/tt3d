@@ -75,5 +75,34 @@ ExternalError::ExternalError(const char *libraryName, const char *externalMsg):
     
 }
 
+/* tt3d::Utils::OSError */
+OSError::OSError(const std::string message):
+    Exception::Exception((boost::format("OS error: %s.") % message).str())
+{
+    
+}
+
+/* free functions */
+
+std::string getErrorName(const int errorNumber) {
+    
+    switch (errorNumber) {
+        case EACCES:
+        {
+            return "Permission denied";
+        }
+        default:
+            return (boost::format("Unkown error code %d.") % errorNumber).str();
+    }
+}
+
+void raiseLastOSError() {
+    throw OSError(getErrorName(errno));
+}
+
+void raiseLastOSError(const std::string prefix) {
+    throw OSError((boost::format("%s: %s") % prefix % getErrorName(errno)).str());
+}
+
 }
 }
