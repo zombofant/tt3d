@@ -1,6 +1,7 @@
 add_subdirectory("utils")
 add_subdirectory("io")
 add_subdirectory("math")
+add_subdirectory("transport")
 add_subdirectory("gl")
 add_subdirectory("terrain")
 add_subdirectory("ui")
