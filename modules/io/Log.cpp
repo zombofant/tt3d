@@ -207,7 +207,7 @@ std::ostream &operator<<(std::ostream &stream, Exception &exception)  {
     void * const* traceback = exception.traceback(&count);
     stream << "Exception occured: " << typeid(exception).name() << std::endl;
     stream << "Message: " << exception.what() << std::endl;
-    stream << "Traceback: (most recent call first)" << std::endl;
+    stream << "Traceback (most recent call first):" << std::endl;
     char **tracebackSymbols = backtrace_symbols(traceback, count);
     for (unsigned int i = 0; i < count; i++) {
         stream << tracebackSymbols[i] << std::endl;

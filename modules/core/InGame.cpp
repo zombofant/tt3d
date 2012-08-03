@@ -127,10 +127,10 @@ void InGame::initGrid() {
 void InGame::initTest() {
     static const int terrainSize = 64;
     static const double height = 32.;
-    static const double persistence = 0.35;
+    static const double persistence = 0.4;
     static const unsigned int octaves = 8;
     static const double largestFeature = 128.0;
-    static const double maxError = 1e-3;
+    static const double maxError = 0.5e-3;
     IO::log << IO::ML_INFO << "Generating terrain (" << terrainSize << "×" << terrainSize << ")." << IO::submit;
     Terrain::SourceHandle source = Terrain::SourceHandle(new Terrain::PerlinNoiseSource(
         terrainSize, terrainSize, 

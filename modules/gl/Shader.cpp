@@ -92,8 +92,7 @@ void Shader::loadFromString(const std::string &vertexShader, const std::string &
             glDeleteShader(fragmentObj);
             
             IO::log << IO::ML_ERROR << "Shader linking failed." << IO::submit;
-            glDeleteProgram(glID);
-            glID = -1;
+            clear();
             return;
         }
         
@@ -102,10 +101,29 @@ void Shader::loadFromString(const std::string &vertexShader, const std::string &
         glDeleteShader(fragmentObj);
         raiseLastGLError();
     } catch (...) {
-        glDeleteProgram(glID);
-        raiseLastGLError();
+        clear();
         throw;
     }
+}
+
+void Shader::bind() {
+    if (glID == 0) {
+        return;
+    }
+    glUseProgram(glID);
+    raiseLastGLError();
+}
+
+void Shader::clear() {
+    if (glID == 0) {
+        return;
+    }
+    glDeleteProgram(glID);
+    raiseLastGLError();
+}
+
+void Shader::unbind() {
+    glUseProgram(0);
 }
 
 }
